@@ -6,6 +6,7 @@ public class Payment_slip {
     private String ID;
     private String ID_Loan_slip;
     private String ID_Staff;
+    private int so_luong;
     private LocalDate payment_Date;
     private float late_fee;
     private float damage_fee;
@@ -13,10 +14,11 @@ public class Payment_slip {
     public Payment_slip(){
 
     }
-    public Payment_slip(String ID, String ID_Loan_slip, String ID_Staff, LocalDate payment_Date, float late_fee, float damage_fee){
+    public Payment_slip(String ID, String ID_Loan_slip, String ID_Staff, int so_luong, LocalDate payment_Date, float late_fee, float damage_fee){
         this.ID = ID;
         this.ID_Loan_slip = ID_Loan_slip;
         this.ID_Staff = ID_Staff;
+        this.so_luong = so_luong;
         this.payment_Date = payment_Date;
         this.late_fee = late_fee;
         this.damage_fee = damage_fee;
@@ -38,6 +40,13 @@ public class Payment_slip {
     }
     public void setID_Staff(String ID_Staff){
         this.ID_Staff = ID_Staff;
+    }
+
+    public int getSo_luong(){
+        return this.so_luong;
+    }
+    public void setSo_luong(int so_luong){
+        this.so_luong = so_luong;
     }
 
     public LocalDate getPayment_Date(){
