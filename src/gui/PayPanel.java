@@ -1,7 +1,4 @@
-<<<<<<< HEAD:gui/PayPanel.java
-=======
 package gui;
->>>>>>> f6341ee83cb44d9f41ae8b0cdff091869cc4a949:src/gui/PayPanel.java
 
 import java.awt.*;
 import java.util.*;
