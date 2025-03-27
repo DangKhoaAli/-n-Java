@@ -25,13 +25,13 @@ public class LibrarianPanel extends JPanel {
     private JButton btnTim;
 
     public LibrarianPanel() {
-        setBackground(Color.GRAY);
+        setBackground(Color.BLUE);
         setLayout(new BorderLayout(10,10));
 
         JPanel panelTable = new JPanel(new BorderLayout());
-        panelTable.setBackground(Color.GRAY);
+        panelTable.setBackground(Color.BLUE);
 
-        String[] columnNames = {"Mã Thủ Thư", "Họ Tên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ", "Email", "Lương"};
+        String[] columnNames = {"Mã Thủ Thư", "Họ  và Tên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ", "Email", "Lương"};
         tableModel = new DefaultTableModel(columnNames,0);
 
         tableModel.addRow(new Object[]{"TT001","Nguyễn Văn A", "Nam", "01/01/2001","0987654321","A","a@email.com", "1000000000"});
@@ -43,45 +43,45 @@ public class LibrarianPanel extends JPanel {
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
 
-        JPanel panelInput = new JPanel();
-        panelInput.setLayout(new GridLayout(8,2,5,5));
-        panelInput.setBackground(Color.GRAY);
-
-        panelInput.add(new JLabel("Mã thủ thư:"));
         txtMaThuThu = new JTextField();
-        panelInput.add(txtMaThuThu);
+        txtMaThuThu.setBorder(BorderFactory.createTitledBorder("Mã thủ thư"));
 
-        panelInput.add(new JLabel("Họ và tên:"));
         txtTenThuThu = new JTextField();
-        panelInput.add(txtTenThuThu);
+        txtTenThuThu.setBorder(BorderFactory.createTitledBorder("Họ và tên"));
 
-        panelInput.add(new JLabel("Giới tính:"));
         txtGioiTinh = new JTextField();
-        panelInput.add(txtGioiTinh);
-        
-        panelInput.add(new JLabel("Ngày sinh:"));
+        txtGioiTinh.setBorder(BorderFactory.createTitledBorder("Giới tính"));
+
         txtNgaySinh = new JTextField();
-        panelInput.add(txtNgaySinh);
-        
-        panelInput.add(new JLabel("Số điện thoại:"));
+        txtNgaySinh.setBorder(BorderFactory.createTitledBorder("Ngày sinh"));
+
         txtSoDienThoai = new JTextField();
-        panelInput.add(txtSoDienThoai);
+        txtSoDienThoai.setBorder(BorderFactory.createTitledBorder("Số điện thoại"));
 
-        panelInput.add(new JLabel("Địa chỉ:"));
         txtDiaChi = new JTextField();
-        panelInput.add(txtDiaChi);
+        txtDiaChi.setBorder(BorderFactory.createTitledBorder("Địa chỉ"));
 
-        panelInput.add(new JLabel("Email:"));
         txtEmail = new JTextField();
-        panelInput.add(txtEmail);
-        
-        panelInput.add(new JLabel("Lương:"));
+        txtEmail.setBorder(BorderFactory.createTitledBorder("Email"));
+
         txtLuong = new JTextField();
+        txtLuong.setBorder(BorderFactory.createTitledBorder("Lương"));
+
+        JPanel panelInput = new JPanel();
+        panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
+        panelInput.setBackground(Color.BLUE);
+        panelInput.add(txtMaThuThu);
+        panelInput.add(txtTenThuThu);
+        panelInput.add(txtGioiTinh);
+        panelInput.add(txtNgaySinh);
+        panelInput.add(txtSoDienThoai);
+        panelInput.add(txtDiaChi);
+        panelInput.add(txtEmail);
         panelInput.add(txtLuong);
 
         // Panel tìm kiếm
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.GRAY);
+        panelSearch.setBackground(Color.BLUE);
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new JTextField(20);
         panelSearch.add(txtTuKhoa);
@@ -90,7 +90,7 @@ public class LibrarianPanel extends JPanel {
         
         // Panel chứa các nút
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.GRAY);
+        panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
         btnLuu = new JButton("Lưu");

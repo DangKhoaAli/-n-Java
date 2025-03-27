@@ -8,9 +8,11 @@ public class ReaderPanel extends JPanel {
 
     private JTextField txtMaDocGia;
     private JTextField txtTenDocGia;
+    private JTextField txtGioiTinh;
     private JTextField txtNgaySinh;
     private JTextField txtSoDienThoai;
     private JTextField txtDiaChi;
+    private JTextField txtEmail;
     private JTextField txtNgayDangKy;
 
     private JTextField txtTuKhoa;
@@ -23,16 +25,16 @@ public class ReaderPanel extends JPanel {
     private JButton btnTim;
 
     public ReaderPanel() {
-        setBackground(Color.GRAY);
+        setBackground(Color.BLUE);
         setLayout(new BorderLayout(10,10));
 
         JPanel panelTable = new JPanel(new BorderLayout());
-        panelTable.setBackground(Color.GRAY);
+        panelTable.setBackground(Color.BLUE);
 
-        String[] columnNames = {"Mã Độc Giả", "Họ Tên", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ", "Ngày Đăng Ký"};
+        String[] columnNames = {"Mã Độc Giả", "Họ Tên","Giới tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ","Email", "Ngày Đăng Ký"};
         tableModel = new DefaultTableModel(columnNames,0);
 
-        tableModel.addRow(new Object[]{"DG001","Nguyễn Văn A","01/01/2001","0987654321","A","03/25/2025"});
+        tableModel.addRow(new Object[]{"DG001","Nguyễn Văn A","Nam","01/01/2001","0987654321","A","a@email.com","03/25/2025"});
 
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
@@ -41,37 +43,45 @@ public class ReaderPanel extends JPanel {
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
 
-        JPanel panelInput = new JPanel();
-        panelInput.setLayout(new GridLayout(6,2,5,5));
-        panelInput.setBackground(Color.GRAY);
-
-        panelInput.add(new JLabel("Mã độc giả:"));
         txtMaDocGia = new JTextField();
-        panelInput.add(txtMaDocGia);
+        txtMaDocGia.setBorder(BorderFactory.createTitledBorder("Mã độc giả"));
 
-        panelInput.add(new JLabel("Họ và tên:"));
         txtTenDocGia = new JTextField();
-        panelInput.add(txtTenDocGia);
-        
-        panelInput.add(new JLabel("Ngày sinh:"));
-        txtNgaySinh = new JTextField();
-        panelInput.add(txtNgaySinh);
-        
-        panelInput.add(new JLabel("Số điện thoại:"));
-        txtSoDienThoai = new JTextField();
-        panelInput.add(txtSoDienThoai);
+        txtTenDocGia.setBorder(BorderFactory.createTitledBorder("Họ và tên"));
 
-        panelInput.add(new JLabel("Địa chỉ:"));
+        txtGioiTinh = new JTextField();
+        txtGioiTinh.setBorder(BorderFactory.createTitledBorder("Giới tính"));
+
+        txtNgaySinh = new JTextField();
+        txtNgaySinh.setBorder(BorderFactory.createTitledBorder("Ngày sinh"));
+
+        txtSoDienThoai = new JTextField();
+        txtSoDienThoai.setBorder(BorderFactory.createTitledBorder("Số điện thoại"));
+
         txtDiaChi = new JTextField();
-        panelInput.add(txtDiaChi);
-        
-        panelInput.add(new JLabel("Ngày đăng ký:"));
+        txtDiaChi.setBorder(BorderFactory.createTitledBorder("Địa chỉ"));
+
+        txtEmail = new JTextField();
+        txtEmail.setBorder(BorderFactory.createTitledBorder("Email"));
+
         txtNgayDangKy = new JTextField();
+        txtNgayDangKy.setBorder(BorderFactory.createTitledBorder("Ngày đăng ký"));
+
+        JPanel panelInput = new JPanel();
+        panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
+        panelInput.setBackground(Color.BLUE);
+        panelInput.add(txtMaDocGia);
+        panelInput.add(txtTenDocGia);
+        panelInput.add(txtGioiTinh);
+        panelInput.add(txtNgaySinh);
+        panelInput.add(txtSoDienThoai);
+        panelInput.add(txtDiaChi);
+        panelInput.add(txtEmail);
         panelInput.add(txtNgayDangKy);
 
         // Panel tìm kiếm
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.GRAY);
+        panelSearch.setBackground(Color.BLUE);
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new JTextField(20);
         panelSearch.add(txtTuKhoa);
@@ -80,7 +90,7 @@ public class ReaderPanel extends JPanel {
         
         // Panel chứa các nút
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.GRAY);
+        panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
         btnLuu = new JButton("Lưu");
@@ -96,9 +106,11 @@ public class ReaderPanel extends JPanel {
         btnThem.addActionListener(e -> {
             String maDocGia = txtMaDocGia.getText();
             String tenDocGia = txtTenDocGia.getText();
+            String gioiTinh = txtGioiTinh.getText();
             String ngaySinh = txtNgaySinh.getText();
             String soDienThoai = txtSoDienThoai.getText();
             String diaChi = txtDiaChi.getText();
+            String email = txtEmail.getText();
             String ngayDangKy = txtNgayDangKy.getText();
 
             boolean isDuplicate = false;
@@ -115,7 +127,7 @@ public class ReaderPanel extends JPanel {
                 "Lỗi trùng mã",
                 JOptionPane.ERROR_MESSAGE);
             } else {
-                tableModel.addRow((new Object[]{maDocGia,tenDocGia,ngaySinh,soDienThoai,diaChi,ngayDangKy}));
+                tableModel.addRow((new Object[]{maDocGia,tenDocGia,gioiTinh,ngaySinh,soDienThoai,diaChi,email,ngayDangKy}));
                 JOptionPane.showMessageDialog(this, "Thêm độc giả mới thành công!");
             }
         });
@@ -128,10 +140,12 @@ public class ReaderPanel extends JPanel {
             }
             txtMaDocGia.setText(tableModel.getValueAt(selectedRow,0).toString());
             txtTenDocGia.setText(tableModel.getValueAt(selectedRow,1).toString());
-            txtNgaySinh.setText(tableModel.getValueAt(selectedRow, 2).toString());
-            txtSoDienThoai.setText(tableModel.getValueAt(selectedRow, 3).toString());
-            txtDiaChi.setText(tableModel.getValueAt(selectedRow, 4).toString());
-            txtNgayDangKy.setText(tableModel.getValueAt(selectedRow, 5).toString());
+            txtGioiTinh.setText(tableModel.getValueAt(selectedRow, 2).toString());
+            txtNgaySinh.setText(tableModel.getValueAt(selectedRow, 3).toString());
+            txtSoDienThoai.setText(tableModel.getValueAt(selectedRow, 4).toString());
+            txtDiaChi.setText(tableModel.getValueAt(selectedRow, 5).toString());
+            txtEmail.setText(tableModel.getValueAt(selectedRow, 6).toString());
+            txtNgayDangKy.setText(tableModel.getValueAt(selectedRow, 7).toString());
         });
 
         btnLuu.addActionListener(e -> {
@@ -142,10 +156,12 @@ public class ReaderPanel extends JPanel {
             }
             tableModel.setValueAt(txtMaDocGia.getText(),selectedRow, 0);
             tableModel.setValueAt(txtTenDocGia.getText(),selectedRow,1);
-            tableModel.setValueAt(txtNgaySinh.getText(),selectedRow, 2);
-            tableModel.setValueAt(txtSoDienThoai.getText(),selectedRow, 3);
-            tableModel.setValueAt(txtDiaChi.getText(),selectedRow, 4);
-            tableModel.setValueAt(txtNgayDangKy.getText(),selectedRow, 5);
+            tableModel.setValueAt(txtGioiTinh.getText(), selectedRow, 2);
+            tableModel.setValueAt(txtNgaySinh.getText(),selectedRow, 3);
+            tableModel.setValueAt(txtSoDienThoai.getText(),selectedRow, 4);
+            tableModel.setValueAt(txtDiaChi.getText(),selectedRow, 5);
+            tableModel.setValueAt(txtEmail.getText(),selectedRow, 6);
+            tableModel.setValueAt(txtNgayDangKy.getText(),selectedRow, 7);
             JOptionPane.showMessageDialog(this, "Cập nhật độc giả thành công!");
         });
 
@@ -162,9 +178,11 @@ public class ReaderPanel extends JPanel {
         btnHuy.addActionListener(e -> {
             txtMaDocGia.setText("");
             txtTenDocGia.setText("");
+            txtGioiTinh.setText("");
             txtNgaySinh.setText("");
             txtSoDienThoai.setText("");
             txtDiaChi.setText("");
+            txtEmail.setText("");
             txtNgayDangKy.setText("");
         });
 

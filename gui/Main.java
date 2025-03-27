@@ -5,7 +5,7 @@ public class Main extends JFrame {
     public Main() {
         super("Chương trình quản lý thư viện");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(900, 500);
+        setSize(1200,800);
         setLocationRelativeTo(null);
 
         JTabbedPane tabbedPane = new JTabbedPane();
