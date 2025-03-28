@@ -38,7 +38,7 @@ public class Borrow_Details_DAO {
     }
 
     // Thêm 1 chi tiết phiếu mượn
-    public void addBorrow_Detail(String ID_Book, String ID_Loan_slip) throws SQLException{
+    public void addBorrow_Detail(String ID_Book, String ID_Loan_slip){
         String sql = "INSERT INTO borrowed_book_details (ID_Book, ID_Loan_slip) VALUES (?, ?)";
         try(PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(2, ID_Loan_slip);
@@ -51,7 +51,7 @@ public class Borrow_Details_DAO {
 
     // Cập nhập 1 chi tiết phiếu mượn
     public void updateBorrow_Details(String ID_Book_f, String ID_Loan_slip_f, String ID_Book, String ID_Loan_slip){
-        String sql = "UPDATE borrowed_book_details SET ID_Loan_slip = ?, ID_Book = ? WHERE ID_Loan_slip = ?, ID_Book = ?";
+        String sql = "UPDATE borrowed_book_details SET ID_Loan_slip = ?, ID_Book = ? WHERE ID_Loan_slip = ? AND ID_Book = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID_Loan_slip);
             ps.setString(2, ID_Book);
@@ -65,7 +65,7 @@ public class Borrow_Details_DAO {
 
     // Xóa 1 chi tiết phiếu mượn
     public void deleteBorrow_Deatils(String ID_Loan_slip, String ID_Book) throws SQLException{
-        String sql = "DELETE FROM borrowed_book_details WHERE ID_Loan_slip = ?, ID_Book = ?";
+        String sql = "DELETE FROM borrowed_book_details WHERE ID_Loan_slip = ? AND ID_Book = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID_Loan_slip);
             ps.setString(2, ID_Book);
@@ -73,5 +73,10 @@ public class Borrow_Details_DAO {
         } catch(SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public static void main(String [] args){
+        Borrow_Details_DAO a = new Borrow_Details_DAO();
+        a.addBorrow_Detail("1", "1");
     }
 }
