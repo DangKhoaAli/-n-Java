@@ -1,10 +1,20 @@
 package gui;
 
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import BLL.Staff_BLL;
+import model.Staff;
+
 public class LibrarianPanel extends JPanel {
+    private Staff_BLL staff_BLL;
+
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -27,6 +37,7 @@ public class LibrarianPanel extends JPanel {
     private JButton btnTim;
 
     public LibrarianPanel() {
+        staff_BLL = new Staff_BLL();
         setBackground(Color.BLUE);
         setLayout(new BorderLayout(10,10));
 
@@ -35,8 +46,6 @@ public class LibrarianPanel extends JPanel {
 
         String[] columnNames = {"Mã Thủ Thư", "Họ  và Tên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ", "Email", "Lương"};
         tableModel = new DefaultTableModel(columnNames,0);
-
-        tableModel.addRow(new Object[]{"TT001","Nguyễn Văn A", "Nam", "01/01/2001","0987654321","A","a@email.com", "1000000000"});
 
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
@@ -106,31 +115,26 @@ public class LibrarianPanel extends JPanel {
         panelButtons.add(btnHuy);
         
         btnThem.addActionListener(e -> {
-            String maThuThu = txtMaThuThu.getText();
-            String tenThuThu = txtTenThuThu.getText();
-            String gioiTinh = txtGioiTinh.getText();
-            String ngaySinh = txtNgaySinh.getText();
-            String soDienThoai = txtSoDienThoai.getText();
-            String diaChi = txtDiaChi.getText();
-            String email = txtEmail.getText();
-            String Luong = txtLuong.getText();
-
-            boolean isDuplicate = false;
-            for(int i = 0; i < tableModel.getRowCount(); i++) {
-                String existingID = tableModel.getValueAt(i, 0).toString();
-                if(existingID.equalsIgnoreCase(maThuThu)) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-            if(isDuplicate) {
-                JOptionPane.showMessageDialog(this,
-                "Mã thủ thư đã tồn tại, vui lòng nhập mã khác!",
-                "Lỗi trùng mã",
-                JOptionPane.ERROR_MESSAGE);
-            } else {
-                tableModel.addRow((new Object[]{maThuThu,tenThuThu,gioiTinh,ngaySinh,soDienThoai,diaChi,email,Luong}));
-                JOptionPane.showMessageDialog(this, "Thêm thủ thư mới thành công!");
+            try{
+                String maThuThu = txtMaThuThu.getText();
+                String tenThuThu = txtTenThuThu.getText();
+                String gioiTinh = txtGioiTinh.getText();
+                String ngaySinh = txtNgaySinh.getText();
+                String soDienThoai = txtSoDienThoai.getText();
+                String diaChi = txtDiaChi.getText();
+                String email = txtEmail.getText();
+                String Luong = txtLuong.getText();
+    
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+                LocalDate ngaysinh = LocalDate.parse(ngaySinh, formatter);
+    
+                JOptionPane.showMessageDialog(null, staff_BLL.addStaff(maThuThu, tenThuThu, gioiTinh, ngaysinh, diaChi, soDienThoai, email, Float.parseFloat(Luong)));
+                loadStaffTable();
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(null, "Lỗi định dạng ngày. Vui lòng nhập ngày theo định dạng dd/MM/yyyy!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -151,20 +155,25 @@ public class LibrarianPanel extends JPanel {
         });
 
         btnLuu.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng muốn lưu thay đổi");
-                return;
+            try{
+                // Lấy dữ liệu từ các ô nhập
+                String maThuthu = txtMaThuThu.getText();
+                String tenThuthu = txtTenThuThu.getText();
+                String gioiTinh = txtGioiTinh.getText();
+                LocalDate ngaySinh = LocalDate.parse(txtNgaySinh.getText()); // Chuyển đổi từ String sang LocalDate
+                String soDienThoai = txtSoDienThoai.getText();
+                String diaChi = txtDiaChi.getText();
+                String email = txtEmail.getText();
+                Float Luong = Float.parseFloat(txtLuong.getText());
+
+                String result = staff_BLL.updateStaff(maThuthu, tenThuthu, gioiTinh, ngaySinh, diaChi, soDienThoai, email, Luong);
+
+                JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                loadStaffTable();
+
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
-            tableModel.setValueAt(txtMaThuThu.getText(),selectedRow, 0);
-            tableModel.setValueAt(txtTenThuThu.getText(),selectedRow,1);
-            tableModel.setValueAt(txtGioiTinh.getText(), selectedRow, 2);
-            tableModel.setValueAt(txtNgaySinh.getText(),selectedRow, 3);
-            tableModel.setValueAt(txtSoDienThoai.getText(),selectedRow, 4);
-            tableModel.setValueAt(txtDiaChi.getText(),selectedRow, 5);
-            tableModel.setValueAt(txtEmail.getText(), selectedRow, 6);
-            tableModel.setValueAt(txtLuong.getText(),selectedRow, 7);
-            JOptionPane.showMessageDialog(this, "Cập nhật thủ thư thành công!");
         });
 
         btnXoa.addActionListener(e -> {
@@ -173,8 +182,16 @@ public class LibrarianPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
                 return;
             }
-            tableModel.removeRow(selectedRow);
-            JOptionPane.showMessageDialog(this, "Xóa thủ thư thành công!");
+            try{
+                String ID = tableModel.getValueAt(selectedRow,0).toString();
+                
+                
+                String result = staff_BLL.deleteStaff(ID);
+                JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                loadStaffTable();
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, "Lỗi" + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         btnHuy.addActionListener(e -> {
@@ -190,18 +207,34 @@ public class LibrarianPanel extends JPanel {
 
         btnTim.addActionListener(e -> {
             String keyword = txtTuKhoa.getText().trim().toLowerCase();
-            if(!keyword .isEmpty()) {
-                for(int i = 0; i < tableModel.getRowCount(); i++) {
-                    String matt = tableModel.getValueAt(i, 0).toString();
-                    if(matt.contains(keyword)) {
-                        table.setRowSelectionInterval(i, i);
-                        break;
+            if (keyword == null || keyword.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Cần nhập dữ liệu tìm kiếm!");
+                loadStaffTable();
+            }
+            else{
+                List<Staff> Staffs = staff_BLL.searchStaff(keyword);
+                if (Staffs != null) {
+                    tableModel.setRowCount(0);
+                    for (Staff Staff : Staffs) {
+                        tableModel.addRow(new Object[]{
+                            Staff.getID(),
+                            Staff.getName(),
+                            Staff.getGender(),
+                            Staff.getBirth(),
+                            Staff.getPhone(),
+                            Staff.getAddress(),
+                            Staff.getEmail(),
+                            Staff.getWage()
+                        });
                     }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Không thể tải danh sách độc giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
         add(panelTable, BorderLayout.CENTER);
+        loadStaffTable();
 
         JPanel panelBottom = new JPanel(new BorderLayout(10,10));
         panelBottom.add(panelSearch, BorderLayout.NORTH);
@@ -209,6 +242,29 @@ public class LibrarianPanel extends JPanel {
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
 
         add(panelBottom, BorderLayout.SOUTH);
+    }
+
+    public void loadStaffTable(){
+        tableModel.setRowCount(0);
+
+        List<Staff> staffs = staff_BLL.getStaff();
+
+        if(staffs != null){
+            for (Staff staff : staffs) {
+                tableModel.addRow(new Object[]{
+                    staff.getID(),
+                    staff.getName(),
+                    staff.getGender(),
+                    staff.getBirth(),
+                    staff.getPhone(),
+                    staff.getAddress(),
+                    staff.getEmail(),
+                    staff.getWage()
+                });
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Không thể tải danh sách thủ thư", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 

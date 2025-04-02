@@ -32,7 +32,7 @@ public class Book_Returned_DAO {
                                   + rs.getString("Status") + "-" + rs.getString("fee"));
             }
         }
-        return null;
+        return List_Returned;
     }
 
     // Thêm 1 chi tiết phiếu trả

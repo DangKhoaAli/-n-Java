@@ -28,14 +28,12 @@ public class Loan_slip_DAO {
                     loan.add(new Loan_slip(rs.getString("ID"), rs.getString("ID_Reader"), rs.getString("ID_Staff"), rs.getInt("so_luong"),
                             rs.getDate("Borrow_Date").toLocalDate(), rs.getDate("Expected_Date").toLocalDate(), rs.getFloat("loan_fee")));
             }
-        } catch(SQLException e){
-            e.printStackTrace();
         }
         return loan;
     }
 
     // Thêm 1 phiếu mượn vào danh sách
-    public void addLoan_slip(String ID, String ID_Reader, String ID_Staff, int so_luong, LocalDate Borrow_Date, LocalDate Expected_Date){
+    public void addLoan_slip(String ID, String ID_Reader, String ID_Staff, int so_luong, LocalDate Borrow_Date, LocalDate Expected_Date) throws SQLException{
         String sql = "INSERT INTO Loan_slip (ID, ID_Reader, ID_Staff, so_luong, Borrow_Date, Expected_Date, loan_fee) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID);
@@ -48,13 +46,11 @@ public class Loan_slip_DAO {
             ps.setFloat(7, fee);
             ps.executeUpdate();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
     // Tìm kiếm phiếu mượn theo mã phiếu
-    public Loan_slip searchLoan_slip(String ID){
+    public Loan_slip searchLoan_slip(String ID) throws SQLException{
         String sql = "SELECT * FROM Loan_slip WHERE ID LIKE ? LIMIT 1";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID);
@@ -63,14 +59,12 @@ public class Loan_slip_DAO {
                 return new Loan_slip(rs.getString("ID"), rs.getString("ID_Reader"), rs.getString("ID_Staff"),
                            rs.getInt("so_luong"), rs.getDate("Borrow_Date").toLocalDate(), rs.getDate("Expected_Date").toLocalDate(), rs.getFloat("loan_fee"));
             }
-        } catch(SQLException e){
-            e.printStackTrace();
         }
         return null;
     }
 
     // Cập nhập phiếu mượn
-    public void updateLoan_slip(String ID, String ID_Reader, String ID_Staff, LocalDate Borrow_Date, LocalDate Expected_Date){
+    public void updateLoan_slip(String ID, String ID_Reader, String ID_Staff, LocalDate Borrow_Date, LocalDate Expected_Date) throws SQLException{
         String sql = "UPDATE Loan_slip SET ID_Reader = ?, ID_Staff = ?, Borrow_Date = ?, Expected_Date = ? WHERE ID = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID_Reader);
@@ -80,19 +74,15 @@ public class Loan_slip_DAO {
             ps.setString(5, ID);
             ps.executeUpdate();
             
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
     // Xóa phiếu mượn
-    public void deleteLoan_slip(String ID){
+    public void deleteLoan_slip(String ID) throws SQLException{
         String sql = "DELETE FROM Loan_slip WHERE ID = ?";
         try(PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, ID);
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -118,7 +108,7 @@ public class Loan_slip_DAO {
         return totalFee; 
     }
 
-    public static void main(String [] args){
+    public static void main(String [] args) throws SQLException{
         Loan_slip_DAO a = new Loan_slip_DAO();
         LocalDate Borrow_Date = LocalDate.of(2024, 3, 25); 
         LocalDate Expected_Date = LocalDate.of(2024, 3, 30); 

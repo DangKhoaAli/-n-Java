@@ -29,9 +29,8 @@ public class Reader_DAO {
                                 rs.getDate("birth").toLocalDate(), rs.getString("address"), rs.getString("phone"), 
                                 rs.getString("email"), rs.getDate("registrationDate").toLocalDate()));
                 }
-        } catch (SQLException e){
-            e.printStackTrace();
         }
+
         return Readers;
     }
 
@@ -49,8 +48,6 @@ public class Reader_DAO {
             ps.setDate(8, java.sql.Date.valueOf(registrationDate));
             ps.executeUpdate();
             
-        } catch (SQLException e){
-            e.printStackTrace();
         }
     }
 
@@ -66,10 +63,22 @@ public class Reader_DAO {
                             rs.getDate("birth").toLocalDate(), rs.getString("address"), rs.getString("phone"), 
                             rs.getString("email"), rs.getDate("registrationDate").toLocalDate()));
             }
-        } catch (SQLException e){
-            e.printStackTrace();
         }
+
         return Readers;
+    }
+
+    public Boolean searchReaderID(String key) throws SQLException{
+        List<Reader> Readers = new ArrayList<>();
+        String sql = "SELECT * FROM Reader WHERE ID LIKE ? LIMIT 1";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, key);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next())
+                return true;
+        }
+        return false;
+        
     }
 
     // Cập nhập thông tin độc giả
@@ -86,8 +95,6 @@ public class Reader_DAO {
             ps.setString(8, ID);
             ps.executeUpdate();
 
-        } catch (SQLException e){
-            e.printStackTrace();
         }
     }
 
@@ -97,8 +104,20 @@ public class Reader_DAO {
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID);
             ps.executeUpdate();
-        } catch(SQLException e){
-            e.printStackTrace();
+        }
+    }
+
+    public static void main(String [] args){
+        Reader_DAO a = new Reader_DAO();
+        LocalDate Borrow_Date = LocalDate.of(2024, 3, 25); 
+        LocalDate Expected_Date = LocalDate.of(2024, 3, 30); 
+        try {
+            a.addReader("2", "Khoa",  "nam", Borrow_Date, "HCM", "05434543", "ajsb@sak.sd", Expected_Date);
+            a.updateReader("1", "Linh",  "nam", Borrow_Date, "HCM", "05434543", "ajsb@sak.sd", Expected_Date);
+
+                // a.deleteReader("1");
+        } catch (Exception e) {
+            // TODO: handle exception
         }
     }
 }
