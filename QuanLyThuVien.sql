@@ -38,9 +38,9 @@ create table Book_Details(
 create table Staff(
 	ID varchar(20) primary key,
 	name varchar(30) not null,
-    address varchar(255),
-    birth date not null,
     gender enum ('Nam','Nu') not null,
+    birth date not null,
+    address varchar(255),
     phone varchar(10),
     email varchar(100),
     wage decimal(10,2),

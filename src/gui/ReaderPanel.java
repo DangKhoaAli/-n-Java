@@ -1,10 +1,22 @@
 package gui;
 
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Reader;
+import BLL.Reader_BLL;
+
 public class ReaderPanel extends JPanel {
+    private Reader_BLL reader_BLL;
+
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -27,6 +39,7 @@ public class ReaderPanel extends JPanel {
     private JButton btnTim;
 
     public ReaderPanel() {
+        reader_BLL = new Reader_BLL();
         setBackground(Color.BLUE);
         setLayout(new BorderLayout(10,10));
 
@@ -106,31 +119,30 @@ public class ReaderPanel extends JPanel {
         panelButtons.add(btnHuy);
         
         btnThem.addActionListener(e -> {
-            String maDocGia = txtMaDocGia.getText();
-            String tenDocGia = txtTenDocGia.getText();
-            String gioiTinh = txtGioiTinh.getText();
-            String ngaySinh = txtNgaySinh.getText();
-            String soDienThoai = txtSoDienThoai.getText();
-            String diaChi = txtDiaChi.getText();
-            String email = txtEmail.getText();
-            String ngayDangKy = txtNgayDangKy.getText();
+            try {
+                String maDocGia = txtMaDocGia.getText();
+                String tenDocGia = txtTenDocGia.getText();
+                String gioiTinh = txtGioiTinh.getText();
+                String ngaySinhStr = txtNgaySinh.getText();
+                String soDienThoai = txtSoDienThoai.getText();
+                String diaChi = txtDiaChi.getText();
+                String email = txtEmail.getText();
+                String ngayDangKyStr = txtNgayDangKy.getText();
 
-            boolean isDuplicate = false;
-            for(int i = 0; i < tableModel.getRowCount(); i++) {
-                String existingID = tableModel.getValueAt(i, 0).toString();
-                if(existingID.equalsIgnoreCase(maDocGia)) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-            if(isDuplicate) {
-                JOptionPane.showMessageDialog(this,
-                "Mã độc giả đã tồn tại, vui lòng nhập mã khác!",
-                "Lỗi trùng mã",
-                JOptionPane.ERROR_MESSAGE);
-            } else {
-                tableModel.addRow((new Object[]{maDocGia,tenDocGia,gioiTinh,ngaySinh,soDienThoai,diaChi,email,ngayDangKy}));
-                JOptionPane.showMessageDialog(this, "Thêm độc giả mới thành công!");
+                // Định dạng ngày (cần khớp với dữ liệu nhập vào)
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                // Chuyển đổi chuỗi ngày thành LocalDate
+                LocalDate ngaySinh = LocalDate.parse(ngaySinhStr, formatter);
+                LocalDate ngayDangKy = LocalDate.parse(ngayDangKyStr, formatter);
+
+                // Gọi phương thức thêm độc giả
+                JOptionPane.showMessageDialog(null, reader_BLL.addReader(maDocGia, tenDocGia, gioiTinh, ngaySinh, diaChi, soDienThoai, email, ngayDangKy));
+                loadReaderTable();
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(null, "Lỗi định dạng ngày. Vui lòng nhập ngày theo định dạng dd/MM/yyyy!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -141,6 +153,7 @@ public class ReaderPanel extends JPanel {
                 return;
             }
             txtMaDocGia.setText(tableModel.getValueAt(selectedRow,0).toString());
+            txtMaDocGia.setEditable(false);
             txtTenDocGia.setText(tableModel.getValueAt(selectedRow,1).toString());
             txtGioiTinh.setText(tableModel.getValueAt(selectedRow, 2).toString());
             txtNgaySinh.setText(tableModel.getValueAt(selectedRow, 3).toString());
@@ -151,21 +164,31 @@ public class ReaderPanel extends JPanel {
         });
 
         btnLuu.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng muốn lưu thay đổi");
-                return;
+            try {
+                // Lấy dữ liệu từ các ô nhập
+                String maDocGia = txtMaDocGia.getText();
+                String tenDocGia = txtTenDocGia.getText();
+                String gioiTinh = txtGioiTinh.getText();
+                LocalDate ngaySinh = LocalDate.parse(txtNgaySinh.getText()); // Chuyển đổi từ String sang LocalDate
+                String soDienThoai = txtSoDienThoai.getText();
+                String diaChi = txtDiaChi.getText();
+                String email = txtEmail.getText();
+                LocalDate ngayDangKy = LocalDate.parse(txtNgayDangKy.getText()); // Chuyển đổi từ String sang LocalDate
+
+                
+        
+                // Gọi phương thức updateReader
+                String result = reader_BLL.updateReader(maDocGia, tenDocGia, gioiTinh, ngaySinh, diaChi, soDienThoai, email, ngayDangKy);
+                
+                // Hiển thị thông báo từ kết quả trả về
+                JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                loadReaderTable();
+        
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
-            tableModel.setValueAt(txtMaDocGia.getText(),selectedRow, 0);
-            tableModel.setValueAt(txtTenDocGia.getText(),selectedRow,1);
-            tableModel.setValueAt(txtGioiTinh.getText(), selectedRow, 2);
-            tableModel.setValueAt(txtNgaySinh.getText(),selectedRow, 3);
-            tableModel.setValueAt(txtSoDienThoai.getText(),selectedRow, 4);
-            tableModel.setValueAt(txtDiaChi.getText(),selectedRow, 5);
-            tableModel.setValueAt(txtEmail.getText(),selectedRow, 6);
-            tableModel.setValueAt(txtNgayDangKy.getText(),selectedRow, 7);
-            JOptionPane.showMessageDialog(this, "Cập nhật độc giả thành công!");
         });
+        
 
         btnXoa.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
@@ -173,12 +196,22 @@ public class ReaderPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
                 return;
             }
-            tableModel.removeRow(selectedRow);
-            JOptionPane.showMessageDialog(this, "Xóa độc giả thành công!");
+
+            try{
+                String ID = tableModel.getValueAt(selectedRow,0).toString();
+                
+                
+                String result = reader_BLL.deleteReader(ID);
+                JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                loadReaderTable();
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, "Lỗi" + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         btnHuy.addActionListener(e -> {
             txtMaDocGia.setText("");
+            txtMaDocGia.setEditable(true);
             txtTenDocGia.setText("");
             txtGioiTinh.setText("");
             txtNgaySinh.setText("");
@@ -190,17 +223,33 @@ public class ReaderPanel extends JPanel {
 
         btnTim.addActionListener(e -> {
             String keyword = txtTuKhoa.getText().trim().toLowerCase();
-            if(!keyword .isEmpty()) {
-                for(int i = 0; i < tableModel.getRowCount(); i++) {
-                    String madg = tableModel.getValueAt(i, 0).toString();
-                    if(madg.contains(keyword)) {
-                        table.setRowSelectionInterval(i, i);
-                        break;
+            if (keyword == null || keyword.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Cần nhập dữ liệu tìm kiếm!");
+                loadReaderTable();
+            }
+            else{
+                List<Reader> readers = reader_BLL.searchReader(keyword);
+                if (readers != null) {
+                    tableModel.setRowCount(0);
+                    for (Reader reader : readers) {
+                        tableModel.addRow(new Object[]{
+                            reader.getID(),
+                            reader.getName(),
+                            reader.getGender(),
+                            reader.getBirth(),
+                            reader.getPhone(),
+                            reader.getAddress(),
+                            reader.getEmail(),
+                            reader.getRegistrationDate()
+                        });
                     }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Không thể tải danh sách độc giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
+        loadReaderTable();
         add(panelTable, BorderLayout.CENTER);
 
         JPanel panelBottom = new JPanel(new BorderLayout(10,10));
@@ -211,5 +260,31 @@ public class ReaderPanel extends JPanel {
         add(panelBottom, BorderLayout.SOUTH);
     }
 
+    private void loadReaderTable() {
+        // Xóa dữ liệu cũ trên bảng
+        tableModel.setRowCount(0);
+    
+        // Gọi BLL để lấy danh sách độc giả từ CSDL
+        List<Reader> readers = reader_BLL.getReader();
+        
+        // Kiểm tra danh sách có dữ liệu không
+        if (readers != null) {
+            for (Reader reader : readers) {
+                tableModel.addRow(new Object[]{
+                    reader.getID(),
+                    reader.getName(),
+                    reader.getGender(),
+                    reader.getBirth(),
+                    reader.getPhone(),
+                    reader.getAddress(),
+                    reader.getEmail(),
+                    reader.getRegistrationDate()
+                });
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Không thể tải danh sách độc giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
 
 }
