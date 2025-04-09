@@ -85,9 +85,13 @@ public class PayPanel extends JPanel {
 
         txtPhiTreHan = new JTextField();
         txtPhiTreHan.setBorder(BorderFactory.createTitledBorder("Phí trễ hạn"));
+        txtPhiTreHan.setEditable(false);
+        txtPhiTreHan.setText("0");
 
         txtPhiHuHai = new JTextField();
         txtPhiHuHai.setBorder(BorderFactory.createTitledBorder("Phí hư hại"));
+        txtPhiHuHai.setEditable(false);
+        txtPhiHuHai.setText("0");
 
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
