@@ -1,23 +1,14 @@
 package gui;
 
+import BLL.Book_BLL;
+import BLL.Book_Details_BLL;
 import java.awt.*;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
-<<<<<<< HEAD
-=======
-import java.util.List;
-
-
-import BLL.Book_BLL;
 import model.Books;
-import model.Reader;
-import BLL.Book_Details_BLL;
->>>>>>> deb326ed8e4e97ee4d328469e2d8c4171bd0a348
 
 public class BookPanel extends JPanel {
     private Book_BLL book_BLL;
@@ -225,24 +216,6 @@ public class BookPanel extends JPanel {
         
         
         btnSua.addActionListener(e -> {
-<<<<<<< HEAD
-            int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng muốn lưu thay đổi");
-                return;
-            }
-            tableModel.setValueAt(txtMaSach.getText(),selectedRow, 0);
-            tableModel.setValueAt(txtTenSach.getText(),selectedRow,1);
-            tableModel.setValueAt(txtTheLoai.getText(),selectedRow, 2);
-            tableModel.setValueAt(txtTacGia.getText(),selectedRow, 3);
-            tableModel.setValueAt(txtNCC.getText(),selectedRow, 4);
-            tableModel.setValueAt(txtNXB.getText(),selectedRow, 5);
-            tableModel.setValueAt(txtSoTrang.getText(),selectedRow, 6);
-            tableModel.setValueAt(txtGia.getText(),selectedRow, 7);
-            tableModel.setValueAt(txtPhiMuon.getText(),selectedRow, 8);
-            tableModel.setValueAt(txtSoLuong.getText(),selectedRow, 9);
-            JOptionPane.showMessageDialog(this, "Cập nhật sách thành công!");
-=======
             try {
                 // Lấy dữ liệu từ các ô nhập
                 String maSach = txtMaSach.getText();
@@ -268,7 +241,6 @@ public class BookPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         
->>>>>>> deb326ed8e4e97ee4d328469e2d8c4171bd0a348
         });
 
         btnXoa.addActionListener(e -> {
@@ -309,11 +281,8 @@ public class BookPanel extends JPanel {
             txtPhiMuon.setText("");
             txtPhiMuon.setEnabled(true);
             txtSoLuong.setText("");
-<<<<<<< HEAD
-            table.clearSelection();
-=======
             txtSoLuong.setEnabled(true);
->>>>>>> deb326ed8e4e97ee4d328469e2d8c4171bd0a348
+            table.clearSelection();
         });
 
         btnTim.addActionListener(e -> {

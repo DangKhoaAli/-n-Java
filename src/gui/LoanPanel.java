@@ -218,22 +218,6 @@ public class LoanPanel extends JPanel {
         
 
         btnSua.addActionListener(e -> {
-<<<<<<< HEAD
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng muốn lưu thay đổi");
-                return;
-            }
-            tableModel.setValueAt(txtPhieuMuon.getText(), selectedRow, 0);
-            tableModel.setValueAt(txtDocGia.getText(), selectedRow, 1);
-            tableModel.setValueAt(txtThuThu.getText(), selectedRow, 2);
-            tableModel.setValueAt(txtSoLuongSach.getText(), selectedRow, 3);
-            tableModel.setValueAt(txtNgayMuon.getText(), selectedRow, 4);
-            tableModel.setValueAt(txtNgayDuKienTra.getText(), selectedRow, 5);
-            tableModel.setValueAt(txtPhiMuon.getText(), selectedRow, 6);
-            JOptionPane.showMessageDialog(this, "Cập nhật phiếu mượn thành công!");
-        });
-=======
             try {
                 String PhieuMuon = txtPhieuMuon.getText().trim();
                 String docGia = txtDocGia.getText().trim();
@@ -263,7 +247,6 @@ public class LoanPanel extends JPanel {
         //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
         //         return;
         //     }
->>>>>>> deb326ed8e4e97ee4d328469e2d8c4171bd0a348
 
         //     try {
         //         String PhieuMuon = tableModel.getValueAt(selectedRow, 0).toString();

@@ -1,13 +1,11 @@
 package gui;
+import BLL.Book_Details_BLL;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
-import BLL.Book_Details_BLL;
-import model.Books;
 
 public class BookDetails extends JFrame {
     private BookPanel bookPanel;
@@ -136,30 +134,6 @@ public class BookDetails extends JFrame {
                 txtSoTrangHuHong.setEnabled(editable);
             }
         });
-<<<<<<< HEAD
-        
-        btnSua.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng muốn lưu thay đổi");
-                return;
-            }
-            // Lấy dữ liệu từ các textfield
-            String trangThai = txtTrangThai.getText().trim();
-            String soTrangHuHongStr = txtSoTrangHuHong.getText().trim();
-            int soTrangHuHong = 0;
-            try {
-                soTrangHuHong = Integer.parseInt(soTrangHuHongStr);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Số trang hư hỏng không hợp lệ, đặt mặc định là 0");
-                soTrangHuHong = 0;
-            }
-            // Cập nhật dữ liệu từ textfield lên bảng (cột 1: Trạng thái, cột 2: Số trang hư hỏng)
-            tableModel.setValueAt(trangThai, selectedRow, 1);
-            tableModel.setValueAt(soTrangHuHong, selectedRow, 2);
-            JOptionPane.showMessageDialog(this, "Cập nhật chi tiết sách thành công!");
-        });
-=======
 
         btnSua.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
@@ -178,7 +152,6 @@ public class BookDetails extends JFrame {
             loadBookDetails(bookCode);
         });
         
->>>>>>> deb326ed8e4e97ee4d328469e2d8c4171bd0a348
 
         btnXoa.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
@@ -196,11 +169,8 @@ public class BookDetails extends JFrame {
             txtTrangThai.setText("");
             txtTrangThai.setEnabled(true);
             txtSoTrangHuHong.setText("");
-<<<<<<< HEAD
-            table.clearSelection();
-=======
             txtSoTrangHuHong.setEnabled(true);
->>>>>>> deb326ed8e4e97ee4d328469e2d8c4171bd0a348
+            table.clearSelection();
         });
 
         try {
