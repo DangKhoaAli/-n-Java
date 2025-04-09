@@ -6,7 +6,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import BLL.Borrow_Details_BLL;
+
 public class LoanDetails extends JFrame {
+    private Borrow_Details_BLL borrowDetailsBLL;
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -20,14 +23,9 @@ public class LoanDetails extends JFrame {
     private JButton btnHuy;
     private JButton btnDong;
 
-    /**
-     * Constructor hiển thị chi tiết phiếu mượn của 1 loại sách.
-     * @param loanData    Mảng chứa thông tin cơ bản của phiếu mượn 
-     *                    (ví dụ: [Mã phiếu mượn, Tên phiếu mượn, ...])
-     * @param copyDetails Danh sách chi tiết của phiếu mượn 
-     *                    (mỗi phần tử là Object[] gồm: [Mã chi tiết phiếu mượn, Mã sách, Tên sách, Phí mượn])
-     */
-    public LoanDetails(Object[] loanData, List<Object[]> copyDetails) {
+    
+    public LoanDetails(Object[] loanData, LoanPanel loanPanel) {
+        this.borrowDetailsBLL = new Borrow_Details_BLL();
         setTitle("Chi tiết phiếu mượn - " + loanData[0]);
         setLayout(new BorderLayout(10, 10));
         getContentPane().setBackground(Color.BLUE);
@@ -35,12 +33,6 @@ public class LoanDetails extends JFrame {
         // --- Bảng chi tiết ---
         String[] columnNames = {"Mã chi tiết phiếu mượn", "Mã sách", "Tên sách", "Phí mượn"};
         tableModel = new DefaultTableModel(columnNames, 0);
-
-        if (copyDetails != null && !copyDetails.isEmpty()) {
-            for (Object[] detail : copyDetails) {
-                tableModel.addRow(detail);
-            }
-        }
 
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
@@ -134,6 +126,19 @@ public class LoanDetails extends JFrame {
             txtPhiMuon.setText("");
         });
 
+        table.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                int selectedRow = table.getSelectedRow();
+        
+        
+                // Hiển thị dữ liệu
+                txtMaSach.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                txtTenSach.setText(tableModel.getValueAt(selectedRow, 1).toString());
+                txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                
+            }
+        });
+
         btnSua.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
@@ -183,9 +188,29 @@ public class LoanDetails extends JFrame {
 
         btnDong.addActionListener(e -> dispose());
 
+        loadBorrow_Details(loanData[0].toString());
+
         setSize(800, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
+
+    public void loadBorrow_Details(String ID){
+        tableModel.setRowCount(0);
+
+        List<String> details = borrowDetailsBLL.getBorrow_Details(ID);
+
+        if(details != null) {
+            for (String detail : details) {
+                tableModel.addRow(new Object[]{
+                    detail.split(";")[0],
+                    detail.split(";")[1],
+                    detail.split(";")[2]
+                });
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Không có chi tiết nào cho phiếu mượn này.");
+        }
     }
 }

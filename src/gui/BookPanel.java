@@ -1,14 +1,28 @@
 package gui;
 
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+<<<<<<< HEAD
+=======
+import java.util.List;
+
+
+import BLL.Book_BLL;
+import model.Books;
+import model.Reader;
+import BLL.Book_Details_BLL;
+>>>>>>> deb326ed8e4e97ee4d328469e2d8c4171bd0a348
 
 public class BookPanel extends JPanel {
+    private Book_BLL book_BLL;
+    private Book_Details_BLL book_details_BLL;
+
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -33,14 +47,16 @@ public class BookPanel extends JPanel {
     private JButton btnTim;
     private JButton btnXemChiTiet;
 
-    private Map<String, java.util.List<Object[]>> bookDetailsMap = new HashMap<>();
 
     public BookPanel() {
+        book_BLL = new Book_BLL();
+        book_details_BLL = new Book_Details_BLL();
+        
         setBackground(Color.BLUE);
         setLayout(new BorderLayout(10,10));
         JPanel panelTable = new JPanel(new BorderLayout());
         panelTable.setBackground(Color.BLUE);
-        String[] columnNames = {"Mã sách", "Tên sách", "Thể loại", "Tác giá", "Nhà cung cấp","Năm xuất bản", "Số trang", "Giá", "Phí mượn","Số lượng"};
+        String[] columnNames = {"Mã sách", "Tên sách", "Thể loại", "Tác giá", "Nhà cung cấp","Năm xuất bản", "Số trang", "Giá", "Phí mượn","Số lượng", "Tồn tại"};
         tableModel = new DefaultTableModel(columnNames,0);
         tableModel.addRow(new Object[]{"1","Pháp luật","Giáo dục","Nhiều tác giả","BGD","2005","500","15000","2000","5"});
         table = new JTable(tableModel);
@@ -153,103 +169,63 @@ public class BookPanel extends JPanel {
             String phiMuon = txtPhiMuon.getText().trim();
             String soLuong = txtSoLuong.getText().trim();
 
-            if(maSach.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập mã sách!");
-                return;
-            }
+            String result = book_BLL.addBook(maSach, tenSach, tacGia, theLoai, nhaCungCap, namXuatBan, soTrang, soLuong, gia, phiMuon);
+            JOptionPane.showMessageDialog(this, result);
 
-            if(tenSach.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sách!");
-                return;
-            }
-            
-            if(theLoai.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập thể loại sách!");
-                return;
-            }
-
-            if(tacGia.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập tác giả!");
-                return;
-            }
-
-            if(nhaCungCap.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập nhà cung cấp!");
-                return;
-            }
-
-            if(namXuatBan.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập năm xuất bản của sách!");
-                return;
-            }
-
-            if(soTrang.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập số trang của sách!");
-                return;
-            }
-
-            if(gia.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập giá của sách!");
-                return;
-            }
-
-            if(phiMuon.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập phí mượn của sách!");
-                return;
-            }
-
-            if(soLuong.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng sách!");
-                return;
-            }
-
-
-            boolean isDuplicate = false;
-            for(int i = 0; i < tableModel.getRowCount(); i++){
-                String existingID = tableModel.getValueAt(i, 0).toString();
-                if( existingID.equalsIgnoreCase(maSach)) {
-                    isDuplicate = true;
-                    break;
+            if(result.equals("Da them thanh cong sach!")) {
+                int soluong = Integer.parseInt(soLuong);
+                for(int i = 1; i<=soluong; i++){
+                    String maChiTiet = maSach + "_" + i;
+                    
+                    String result1 = book_details_BLL.addBook(maChiTiet, maSach, "Hiện có", "0");
+                    JOptionPane.showMessageDialog(this, result1);
                 }
             }
 
-            if(isDuplicate) {
-                JOptionPane.showMessageDialog(this,
-                "Mã sách đã tồn tại, vui lòng nhập mã sách khác!",
-                "Lỗi trùng mã",
-                JOptionPane.ERROR_MESSAGE);
-            } else {
-                tableModel.addRow((new Object[]{maSach,tenSach,theLoai,tacGia,nhaCungCap,namXuatBan,soLuong,soTrang,gia,phiMuon}));
-                JOptionPane.showMessageDialog(this, "Thêm sách mới thành công!");
-
-                int n = 0;
-                try {
-                    n = Integer.parseInt(soLuong);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Số lượng sách không hợp lệ!");
-                    n = 0;
-                }
-                java.util.List<Object[]> detailsList = new ArrayList<>();
-                for(int i = 1; i <= n; i++) {
-                    String maChiTiet = maSach + "-" + i;
-                    String trangThai = JOptionPane.showInputDialog(this,"Nhập trại thái cho cuốn sách" +i+"(Mặc định là có thể mượn): ", "Có thể mượn");
-                    if(trangThai == null || trangThai.trim().isEmpty()) {
-                        trangThai = "Được mượn";
-                    }
-                    String soTrangHongStr = JOptionPane.showInputDialog(this,"Nhập số trang hỏng của cuốn sách" + i + "(Mặc định là 0): ", 0);
-                    int soTrangHong = 0;
-                    try {
-                        soTrangHong = Integer.parseInt(soTrangHongStr.trim());
-                    } catch (NumberFormatException ex) {
-                        soTrangHong = 0;
-                    }
-                    detailsList.add(new Object[]{maChiTiet,trangThai,soTrangHong});
-                }
-                bookDetailsMap.put(maSach,detailsList);
-            } 
+            loadBook();
         });
 
+        table.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                int selectedRow = table.getSelectedRow();
+        
+                // Lấy giá trị số lượng
+                String tontaiStr = tableModel.getValueAt(selectedRow, 10).toString();
+                int tontai = Integer.parseInt(tontaiStr);
+        
+                // Hiển thị dữ liệu
+                txtMaSach.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                txtTenSach.setText(tableModel.getValueAt(selectedRow, 1).toString());
+                txtTheLoai.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                txtTacGia.setText(tableModel.getValueAt(selectedRow, 3).toString());
+                txtNCC.setText(tableModel.getValueAt(selectedRow, 4).toString());
+                txtNXB.setText(tableModel.getValueAt(selectedRow, 5).toString());
+                txtSoTrang.setText(tableModel.getValueAt(selectedRow, 6).toString());
+                txtGia.setText(tableModel.getValueAt(selectedRow, 7).toString());
+                txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 8).toString());
+                txtSoLuong.setText(tableModel.getValueAt(selectedRow, 9).toString());
+        
+                // Nếu số lượng = 0, thì không cho chỉnh sửa
+                boolean editable = tontai > 0;
+        
+                txtTenSach.setEnabled(editable);
+                txtTheLoai.setEnabled(editable);
+                txtTacGia.setEnabled(editable);
+                txtNCC.setEnabled(editable);
+                txtNXB.setEnabled(editable);
+                txtSoTrang.setEnabled(editable);
+                txtGia.setEnabled(editable);
+                txtPhiMuon.setEnabled(editable);
+        
+                // Luôn khóa mã sách và số lượng
+                txtMaSach.setEnabled(false);
+                txtSoLuong.setEnabled(false);
+            }
+        });
+        
+        
         btnSua.addActionListener(e -> {
+<<<<<<< HEAD
             int selectedRow = table.getSelectedRow();
             if(selectedRow == -1) {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng muốn lưu thay đổi");
@@ -266,6 +242,33 @@ public class BookPanel extends JPanel {
             tableModel.setValueAt(txtPhiMuon.getText(),selectedRow, 8);
             tableModel.setValueAt(txtSoLuong.getText(),selectedRow, 9);
             JOptionPane.showMessageDialog(this, "Cập nhật sách thành công!");
+=======
+            try {
+                // Lấy dữ liệu từ các ô nhập
+                String maSach = txtMaSach.getText();
+                String tenSach = txtTenSach.getText();
+                String tacgia = txtTacGia.getText();
+                String theloai = txtTheLoai.getText(); 
+                String NCC = txtNCC.getText();
+                String NXB = txtNXB.getText();
+                String soluong = txtSoLuong.getText();
+                String sotrang = txtSoTrang.getText();
+                String gia = txtGia.getText();
+                String phimuon = txtPhiMuon.getText();
+                
+        
+                // Gọi phương thức updateReader
+                String result = book_BLL.updateBooks(maSach, tenSach, tacgia, theloai, NCC, NXB, sotrang, soluong, gia, phimuon);
+                
+                // Hiển thị thông báo từ kết quả trả về
+                JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                loadBook();
+        
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        
+>>>>>>> deb326ed8e4e97ee4d328469e2d8c4171bd0a348
         });
 
         btnXoa.addActionListener(e -> {
@@ -274,35 +277,72 @@ public class BookPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
                 return;
             }
-            String maSach = tableModel.getValueAt(selectedRow, 0).toString();
-            tableModel.removeRow(selectedRow);
-            bookDetailsMap.remove(maSach);
-            JOptionPane.showMessageDialog(this, "Xóa sách thành công!");
+            
+            try{
+                String ID = tableModel.getValueAt(selectedRow,0).toString();
+                
+                String result = book_BLL.deleteBook(ID);
+                JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                loadBook();
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, "Lỗi" + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         btnHuy.addActionListener(e -> {
             txtMaSach.setText("");
+            txtMaSach.setEnabled(true);
             txtTenSach.setText("");
+            txtTenSach.setEnabled(true);
             txtTheLoai.setText("");
+            txtTheLoai.setEnabled(true);
             txtTacGia.setText("");
+            txtTacGia.setEnabled(true);
             txtNCC.setText("");
+            txtNCC.setEnabled(true);
             txtNXB.setText("");
+            txtNXB.setEnabled(true);
             txtSoTrang.setText("");
+            txtSoTrang.setEnabled(true);
             txtGia.setText("");
+            txtGia.setEnabled(true);
             txtPhiMuon.setText("");
+            txtPhiMuon.setEnabled(true);
             txtSoLuong.setText("");
+<<<<<<< HEAD
             table.clearSelection();
+=======
+            txtSoLuong.setEnabled(true);
+>>>>>>> deb326ed8e4e97ee4d328469e2d8c4171bd0a348
         });
 
         btnTim.addActionListener(e -> {
             String keyword = txtTuKhoa.getText().trim().toLowerCase();
-            if(!keyword .isEmpty()) {
-                for(int i = 0; i < tableModel.getRowCount(); i++) {
-                    String tenSach = tableModel.getValueAt(i, 1).toString();
-                    if(tenSach.contains(keyword)) {
-                        table.setRowSelectionInterval(i, i);
-                        break;
+            if (keyword == null || keyword.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Cần nhập dữ liệu tìm kiếm!");
+                loadBook();
+            }
+            else{
+                List<Books> books = book_BLL.searchBooks(keyword);
+                if (books != null) {
+                    tableModel.setRowCount(0);
+                    for (Books book : books) {
+                        tableModel.addRow(new Object[]{
+                            book.getID(),
+                            book.getName(),
+                            book.getCategory(),
+                            book.getAuthor(),
+                            book.getSupplier(),
+                            book.getYear(),
+                            book.getPage_num(),
+                            book.getPrice(),
+                            book.getLoan_fee(),
+                            book.getQuanlity(),
+                            book.getExist()
+                        });
                     }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Không thể tải danh sách độc giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -313,14 +353,16 @@ public class BookPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xem chi tiết!");
                 return;
             }
-            Object[] bookData = new Object[tableModel.getColumnCount()];
-            for(int i = 0; i < tableModel.getColumnCount(); i++){
-                bookData[i] = tableModel.getValueAt(selectedRow, i);
-            } 
-            String maSach = bookData[0].toString();
-            java.util.List<Object[]> detailsList = bookDetailsMap.get(maSach);
-            new BookDetails(bookData,detailsList);
+            
+            Object[] bookData = new Object[table.getColumnCount()];
+            for (int i = 0; i < table.getColumnCount(); i++) {
+                bookData[i] = table.getValueAt(selectedRow, i);
+            }
+
+            new BookDetails(bookData, this);
         });
+
+        loadBook();
 
         add(panelTable, BorderLayout.CENTER);
 
@@ -330,6 +372,32 @@ public class BookPanel extends JPanel {
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
 
         add(panelBottom, BorderLayout.SOUTH);
+    }
+
+    public void loadBook(){
+        tableModel.setRowCount(0);
+        
+        List<Books> books = book_BLL.getBook();
+        // Kiểm tra danh sách có dữ liệu không
+        if (books != null) {
+            for (Books book  : books) {
+                tableModel.addRow(new Object[]{
+                    book.getID(),
+                    book.getName(),
+                    book.getCategory(),
+                    book.getAuthor(),
+                    book.getSupplier(),
+                    book.getYear(),
+                    book.getPage_num(),
+                    book.getPrice(),
+                    book.getLoan_fee(),
+                    book.getQuanlity(),
+                    book.getExist()
+                });
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Không thể tải danh sách độc giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 

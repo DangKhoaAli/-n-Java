@@ -11,12 +11,12 @@ public class Books {
     private int quanlity;
     private float price;
     private float loan_fee;
-    private String status;
+    private String exist;
 
     public Books(){
 
     }
-    public Books(String ID, String name, String author, String category, String supplier, int yaer, int page_num, int quanlity, float price, float loan_fee, String status){
+    public Books(String ID, String name, String author, String category, String supplier, int yaer, int page_num, int quanlity, float price, float loan_fee, String exist){
         this.ID = ID;
         this.name = name;
         this.author = author;
@@ -27,7 +27,7 @@ public class Books {
         this.quanlity = quanlity;
         this.price = price;
         this.loan_fee = loan_fee;
-        this.status = status;
+        this.exist = exist;
     }
 
     public String getID(){
@@ -100,10 +100,10 @@ public class Books {
         this.loan_fee = loan_fee;
     }
 
-    public String getStatus(){
-        return this.status;
+    public String getExist(){
+        return this.exist;
     }
-    public void setStatus(String status){
-        this.status = status;
+    public void setExist(String exist){
+        this.exist = exist;
     }
 }

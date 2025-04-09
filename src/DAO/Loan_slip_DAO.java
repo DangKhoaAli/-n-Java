@@ -1,10 +1,12 @@
 package DAO;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +44,8 @@ public class Loan_slip_DAO {
             ps.setInt(4, so_luong);
             ps.setDate(5, java.sql.Date.valueOf(Borrow_Date));
             ps.setDate(6, java.sql.Date.valueOf(Expected_Date));
-            float fee = Borrow_fee(conn, ID);
-            ps.setFloat(7, fee);
+            float fee = Borrow_fee(conn, ID, Borrow_Date, Expected_Date);
+            ps.setBigDecimal(7, new BigDecimal(fee));
             ps.executeUpdate();
 
         }
@@ -87,13 +89,13 @@ public class Loan_slip_DAO {
     }
 
     // Tính phí mượn
-    public static float Borrow_fee(Connection conn, String id){
+    public float Borrow_fee(Connection conn, String id, LocalDate Borrow_Date, LocalDate Expected_Date) throws SQLException{
         float totalFee = 0;
-        String sql = "SELECT SUM(b.loan_fee) AS total_borrow_fee "+
-                     "FROM Borrowed_Book_Details bd "+
-                     "JOIN Book_Details bdt ON bd.ID_Book = bdt.ID "+
-                     "JOIN Book b ON bdt.ID_Book = b.ID "+
-                     "WHERE bd.ID_Loan_slip = ?";
+        String sql = "SELECT SUM(b.loan_fee) AS total_borrow_fee " +
+                 "FROM Borrowed_Book_Details bd " +
+                 "JOIN Book_Details bdt ON bd.ID_Book = bdt.ID " +
+                 "JOIN Book b ON bdt.ID_Book = b.ID " +
+                 "WHERE bd.ID_Loan_slip = ?";
         
         try(PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, id);
@@ -104,15 +106,49 @@ public class Loan_slip_DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        totalFee = totalFee * (ChronoUnit.DAYS.between(Borrow_Date, Expected_Date) + 1);
+        if (totalFee < 0){
+            totalFee = 0;
+        }
 
         return totalFee; 
     }
 
-    public static void main(String [] args) throws SQLException{
-        Loan_slip_DAO a = new Loan_slip_DAO();
-        LocalDate Borrow_Date = LocalDate.of(2024, 3, 25); 
-        LocalDate Expected_Date = LocalDate.of(2024, 3, 30); 
-        a.deleteLoan_slip("1");
-
+    // Cập nhập phí mượn
+    public void updateLoan_fee(String ID, LocalDate Borrow, LocalDate Expected) throws SQLException{
+        String sql = "UPDATE Loan_slip SET loan_fee = ? WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            float fee = Borrow_fee(conn, ID, Borrow, Expected);
+            ps.setBigDecimal(1, new BigDecimal(fee));
+            ps.setString(2, ID);
+            ps.executeUpdate();
+        }
     }
+
+    // Kiểm tra số lượng sách trong phiếu mượn
+    public int count_Details(String ID) throws SQLException{
+        String sql = "SELECT COUNT(*) FROM Borrowed_Book_Details WHERE ID_Loan_slip = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, ID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    // Cập nhập số lượng sách trong phiếu mượn
+    public void update_Quan(String ID) throws SQLException{
+        String sql = "UPDATE Loan_slip SET so_luong = ? WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            int so_luong = count_Details(ID);
+            ps.setInt(1, so_luong);
+            ps.setString(2, ID);
+            ps.executeUpdate();
+        }
+    }
+
+
 }

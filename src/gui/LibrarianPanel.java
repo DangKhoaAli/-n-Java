@@ -144,7 +144,7 @@ public class LibrarianPanel extends JPanel {
                 String email = txtEmail.getText();
                 String Luong = txtLuong.getText();
     
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
                 LocalDate ngaysinh = LocalDate.parse(ngaySinh, formatter);
     
