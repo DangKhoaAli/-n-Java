@@ -1,11 +1,11 @@
 package gui;
+import BLL.Book_Details_BLL;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
-import BLL.Book_Details_BLL;
-import model.Books;
 
 public class BookDetails extends JFrame {
     private BookPanel bookPanel;
@@ -18,7 +18,6 @@ public class BookDetails extends JFrame {
 
     private JButton btnThem;
     private JButton btnSua;
-    private JButton btnLuu;
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnDong;
@@ -47,7 +46,25 @@ public class BookDetails extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
         add(scrollPane, BorderLayout.CENTER);
-        
+
+        // Tự động nạp dữ liệu xuống textfield khi chọn dòng
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        // Lấy trạng thái và số trang hư hỏng từ bảng
+                        String trangThai = tableModel.getValueAt(selectedRow, 1).toString();
+                        String soTrangHuHong = tableModel.getValueAt(selectedRow, 2).toString();
+                        // Đẩy xuống textfield
+                        txtTrangThai.setText(trangThai);
+                        txtSoTrangHuHong.setText(soTrangHuHong);
+                    }
+                }
+            }
+        });
+
         // Panel nhập chi tiết
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
@@ -66,14 +83,12 @@ public class BookDetails extends JFrame {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnLuu = new JButton("Lưu");
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         btnDong = new JButton("Đóng");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnLuu);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnDong);
@@ -156,7 +171,6 @@ public class BookDetails extends JFrame {
             txtSoTrangHuHong.setText("");
             txtSoTrangHuHong.setEnabled(true);
             table.clearSelection();
-
         });
 
         try {

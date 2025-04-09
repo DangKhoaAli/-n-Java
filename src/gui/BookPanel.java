@@ -1,18 +1,14 @@
 package gui;
 
-import java.awt.*;
-import java.time.LocalDate;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
-import java.util.List;
-
-
 import BLL.Book_BLL;
-import model.Books;
-import model.Reader;
 import BLL.Book_Details_BLL;
+import java.awt.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import model.Books;
 
 public class BookPanel extends JPanel {
     private Book_BLL book_BLL;
@@ -37,7 +33,6 @@ public class BookPanel extends JPanel {
 
     private JButton btnThem;
     private JButton btnSua;
-    private JButton btnLuu;
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnTim;
@@ -58,9 +53,32 @@ public class BookPanel extends JPanel {
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
         table.setSelectionBackground(Color.YELLOW);
+
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
+
+        // Tự động đẩy dữ liệu khi chọn dòng
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        txtMaSach.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                        txtTenSach.setText(tableModel.getValueAt(selectedRow, 1).toString());
+                        txtTheLoai.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                        txtTacGia.setText(tableModel.getValueAt(selectedRow, 3).toString());
+                        txtNCC.setText(tableModel.getValueAt(selectedRow, 4).toString());
+                        txtNXB.setText(tableModel.getValueAt(selectedRow, 5).toString());
+                        txtSoTrang.setText(tableModel.getValueAt(selectedRow, 6).toString());
+                        txtGia.setText(tableModel.getValueAt(selectedRow, 7).toString());
+                        txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 8).toString());
+                        txtSoLuong.setText(tableModel.getValueAt(selectedRow, 9).toString());
+                    }
+                }
+            }
+        });
 
         txtMaSach = new JTextField();
         txtMaSach.setBorder(BorderFactory.createTitledBorder("Mã sách"));
@@ -120,14 +138,12 @@ public class BookPanel extends JPanel {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnLuu = new JButton("Lưu");
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         btnXemChiTiet = new JButton("Xem chi tiết");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnLuu);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnXemChiTiet);
