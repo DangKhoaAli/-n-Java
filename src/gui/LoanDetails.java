@@ -1,5 +1,7 @@
 package gui;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -7,8 +9,11 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import BLL.Borrow_Details_BLL;
+import BLL.Loan_slip_BLL;
 
 public class LoanDetails extends JFrame {
+    private LoanPanel loanPanel;
+    private Loan_slip_BLL loanSlipBLL;
     private Borrow_Details_BLL borrowDetailsBLL;
     private JTable table;
     private DefaultTableModel tableModel;
@@ -26,12 +31,15 @@ public class LoanDetails extends JFrame {
     
     public LoanDetails(Object[] loanData, LoanPanel loanPanel) {
         this.borrowDetailsBLL = new Borrow_Details_BLL();
+        this.loanSlipBLL = new Loan_slip_BLL();
+        this.loanPanel = loanPanel;
+
         setTitle("Chi tiết phiếu mượn - " + loanData[0]);
         setLayout(new BorderLayout(10, 10));
         getContentPane().setBackground(Color.BLUE);
 
         // --- Bảng chi tiết ---
-        String[] columnNames = {"Mã chi tiết phiếu mượn", "Mã sách", "Tên sách", "Phí mượn"};
+        String[] columnNames = {"Mã sách", "Tên sách", "Phí mượn"};
         tableModel = new DefaultTableModel(columnNames, 0);
 
         table = new JTable(tableModel);
@@ -68,8 +76,10 @@ public class LoanDetails extends JFrame {
         txtMaSach.setBorder(BorderFactory.createTitledBorder("Mã sách *"));
         txtTenSach = new JTextField();
         txtTenSach.setBorder(BorderFactory.createTitledBorder("Tên sách *"));
+        txtTenSach.setEditable(false);
         txtPhiMuon = new JTextField();
         txtPhiMuon.setBorder(BorderFactory.createTitledBorder("Phí mượn"));
+        txtPhiMuon.setEditable(false);
 
         panelInput.add(txtMaSach);
         panelInput.add(txtTenSach);
@@ -100,30 +110,19 @@ public class LoanDetails extends JFrame {
         // --- Xử lý các nút ---
         btnThem.addActionListener(e -> {
             String maSach = txtMaSach.getText().trim();
-            String tenSach = txtTenSach.getText().trim();
-            if (maSach.isEmpty() || tenSach.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Mã sách và Tên sách là bắt buộc!");
-                return;
-            }
-            String phiMuonStr = txtPhiMuon.getText().trim();
-            double phiMuon = 0;
-            try {
-                if (!phiMuonStr.isEmpty()) {
-                    phiMuon = Double.parseDouble(phiMuonStr);
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Phí mượn không hợp lệ, đặt mặc định là 0");
-                phiMuon = 0;
-            }
-            String loanCode = loanData[0].toString();
-            String maChiTiet = loanCode + "-" + (tableModel.getRowCount() + 1);
             
-            tableModel.addRow(new Object[]{maChiTiet, maSach, tenSach, phiMuon});
-            JOptionPane.showMessageDialog(this, "Thêm chi tiết phiếu mượn thành công!");
+            String result = borrowDetailsBLL.addBorrow_Detail(maSach, loanData[0].toString());
+            if (result.equals("Thêm chi tiết phiếu mượn thành công!")) {
+                JOptionPane.showMessageDialog(this, result);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                loanSlipBLL.update_fee(loanData[0].toString(), LocalDate.parse(loanData[4].toString(), formatter), LocalDate.parse(loanData[5].toString(), formatter));
+                loanSlipBLL.update_Quan(loanData[0].toString());
+                loanPanel.loadLoan_slip();
+                loadBorrow_Details(loanData[0].toString());
+            } else {
+                JOptionPane.showMessageDialog(this, result);
+            }            
 
-            txtMaSach.setText("");
-            txtTenSach.setText("");
-            txtPhiMuon.setText("");
         });
 
         table.getSelectionModel().addListSelectionListener(event -> {
@@ -139,45 +138,26 @@ public class LoanDetails extends JFrame {
             }
         });
 
-        btnSua.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để lưu thay đổi");
-                return;
-            }
-            String maSach = txtMaSach.getText().trim();
-            String tenSach = txtTenSach.getText().trim();
-            if (maSach.isEmpty() || tenSach.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Mã sách và Tên sách là bắt buộc!");
-                return;
-            }
-            String phiMuonStr = txtPhiMuon.getText().trim();
-            double phiMuon = 0;
-            try {
-                if (!phiMuonStr.isEmpty()) {
-                    phiMuon = Double.parseDouble(phiMuonStr);
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Phí mượn không hợp lệ, đặt mặc định là 0");
-                phiMuon = 0;
-            }
-            tableModel.setValueAt(maSach, selectedRow, 1);
-            tableModel.setValueAt(tenSach, selectedRow, 2);
-            tableModel.setValueAt(phiMuon, selectedRow, 3);
-            JOptionPane.showMessageDialog(this, "Cập nhật chi tiết phiếu mượn thành công!");
-            txtMaSach.setText("");
-            txtTenSach.setText("");
-            txtPhiMuon.setText("");
-        });
+        // btnSua.addActionListener(e -> {
+        //     int selectedRow = table.getSelectedRow();
+        //     if (selectedRow == -1) {
+        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
+        //         return;
+        //     }
+        //     txtMaSach.setText(tableModel.getValueAt(selectedRow, 1).toString());
+        //     txtTenSach.setText(tableModel.getValueAt(selectedRow, 2).toString());
+        //     txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 3).toString());
+        // });
 
-        btnXoa.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
-                return;
-            }
-            tableModel.removeRow(selectedRow);
-        });
+        // btnXoa.addActionListener(e -> {
+        //     int selectedRow = table.getSelectedRow();
+        //     if (selectedRow == -1) {
+        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
+        //         return;
+        //     }
+        //     tableModel.removeRow(selectedRow);
+        // });
+
 
         btnHuy.addActionListener(e -> {
             txtMaSach.setText("");

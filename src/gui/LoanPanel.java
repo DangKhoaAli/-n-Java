@@ -14,7 +14,6 @@ import javax.swing.table.DefaultTableModel;
 
 import BLL.Borrow_Details_BLL;
 import BLL.Loan_slip_BLL;
-import model.Books;
 import model.Loan_slip;
 
 public class LoanPanel extends JPanel {
@@ -101,7 +100,7 @@ public class LoanPanel extends JPanel {
         txtNgayDuKienTra.setBorder(BorderFactory.createTitledBorder("Ngày dự kiến trả"));
         txtPhiMuon = new JTextField();
         txtPhiMuon.setBorder(BorderFactory.createTitledBorder("Phí mượn"));
-        txtPhiMuon.setEnabled(false); // Không cho phép sửa phí mượn trực tiếp
+        txtPhiMuon.setEditable(false); // Không cho phép sửa phí mượn trực tiếp
         txtPhiMuon.setText("0");
 
         JPanel panelInput = new JPanel();
@@ -210,9 +209,9 @@ public class LoanPanel extends JPanel {
                 txtNgayDuKienTra.setText(tableModel.getValueAt(selectedRow, 5).toString());
                 txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 6).toString());
                 
-                txtPhieuMuon.setEnabled(false);
-                txtSoLuongSach.setEnabled(false);
-                txtPhiMuon.setEnabled(false);
+                txtPhieuMuon.setEditable(false);
+                txtSoLuongSach.setEditable(false);
+                txtPhiMuon.setEditable(false);
             }
         });
         
@@ -262,11 +261,11 @@ public class LoanPanel extends JPanel {
 
         btnHuy.addActionListener(e -> {
             txtPhieuMuon.setText("");
-            txtPhieuMuon.setEnabled(true);
+            txtPhieuMuon.setEditable(true);
             txtDocGia.setText("");
             txtThuThu.setText("");
             txtSoLuongSach.setText("");
-            txtSoLuongSach.setEnabled(true);
+            txtSoLuongSach.setEditable(true);
             txtNgayMuon.setText("");
             txtNgayDuKienTra.setText("");
             txtPhiMuon.setText("");
