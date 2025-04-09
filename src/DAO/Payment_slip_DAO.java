@@ -1,5 +1,6 @@
 package DAO;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,8 +44,10 @@ public class Payment_slip_DAO {
             ps.setString(3, ID_Staff);
             ps.setInt(4, so_luong);
             ps.setDate(5, java.sql.Date.valueOf(payment_Date));
-            ps.setString(6, ID);
-            ps.setString(7, ID);
+            float late_fee = Late_fee(ID);
+            float damage_fee = damage_fee(ID);
+            ps.setBigDecimal(6, new BigDecimal(late_fee));
+            ps.setBigDecimal(7, new BigDecimal(damage_fee));
             ps.executeUpdate();
 
         } catch (SQLException e){
@@ -92,12 +95,65 @@ public class Payment_slip_DAO {
         }
     }
 
+    // Xóa tất cả phiếu trả có cùng ID_Loan_slip
+    public void deletePaymentSlipsByLoanSlipID(String ID_Loan_slip) {
+        String sql = "DELETE FROM Payment_slip WHERE ID_Loan_slip = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, ID_Loan_slip);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     // Tính phí trễ hạn
-    public float Late_fee(String ID){
-        
-        return 0;
+    public float Late_fee(String ID) {
+        float lateFee = 0;
+        String sql = "SELECT ps.payment_Date, ls.Expected_Date " +
+                    "FROM Payment_slip ps " +
+                    "JOIN Loan_slip ls ON ps.ID_Loan_slip = ls.ID " +
+                    "WHERE ps.ID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, ID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                LocalDate paymentDate = rs.getDate("payment_Date").toLocalDate();
+                LocalDate expectedDate = rs.getDate("Expected_Date").toLocalDate();
+                long daysLate = java.time.temporal.ChronoUnit.DAYS.between(expectedDate, paymentDate);
+
+                if (daysLate > 0) {
+                    lateFee = daysLate * 5000f;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return lateFee;
     }
 
     // Tính phí hư hại
+    public float damage_fee(String ID) {
+        float totalDamageFee = 0;
+        String sql = "SELECT SUM(penalty_fee) AS total_damage_fee " +
+                    "FROM Book_Details_Returned " +
+                    "WHERE ID_Payment_slip = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, ID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                totalDamageFee = rs.getFloat("total_damage_fee");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return totalDamageFee;
+    }
+
 
 }

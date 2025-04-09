@@ -69,7 +69,6 @@ public class Reader_DAO {
     }
 
     public Boolean searchReaderID(String key) throws SQLException{
-        List<Reader> Readers = new ArrayList<>();
         String sql = "SELECT * FROM Reader WHERE ID LIKE ? LIMIT 1";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, key);

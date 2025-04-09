@@ -4,7 +4,12 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import BLL.Book_Details_BLL;
+import model.Books;
+
 public class BookDetails extends JFrame {
+    private BookPanel bookPanel;
+    private Book_Details_BLL book_BLL;
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -25,7 +30,9 @@ public class BookDetails extends JFrame {
      * @param copyDetails Danh sách chi tiết của từng cuốn sách 
      *                    (mỗi phần tử là Object[] gồm: [Mã chi tiết, Trạng thái, Số trang hư hỏng])
      */
-    public BookDetails(Object[] bookData, List<Object[]> copyDetails) {
+    public BookDetails(Object[] bookData, BookPanel bookPanel) {
+        this.bookPanel = bookPanel;
+        book_BLL = new Book_Details_BLL();
         setTitle("Chi tiết các cuốn của sách - " + bookData[1]);
         setLayout(new BorderLayout(10, 10));
         getContentPane().setBackground(Color.BLUE);
@@ -33,23 +40,6 @@ public class BookDetails extends JFrame {
         // --- Bảng chi tiết ---
         String[] columnNames = {"Mã chi tiết sách", "Trạng thái", "Số trang hư hỏng"};
         tableModel = new DefaultTableModel(columnNames, 0);
-
-        if (copyDetails != null && !copyDetails.isEmpty()) {
-            for (Object[] detail : copyDetails) {
-                tableModel.addRow(detail);
-            }
-        } else {
-            int soLuong = 0;
-            try {
-                soLuong = Integer.parseInt(bookData[9].toString());
-            } catch (NumberFormatException e) {
-                soLuong = 0;
-            }
-            for (int i = 1; i <= soLuong; i++) {
-                String maChiTiet = bookData[0] + "-" + i;
-                tableModel.addRow(new Object[]{maChiTiet, "Có thể mượn", 0});
-            }
-        }
         
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
@@ -96,25 +86,38 @@ public class BookDetails extends JFrame {
         add(panelBottom, BorderLayout.SOUTH);
         
         // --- Xử lý các nút ---
+
         btnThem.addActionListener(e -> {
             String bookCode = bookData[0].toString();
-            String maChiTiet = bookCode + "-" + (tableModel.getRowCount() + 1);
-
+            String maChiTiet = bookCode + "_" + (tableModel.getRowCount() + 1);
             String trangThai = txtTrangThai.getText().trim();
-            if (trangThai.isEmpty()) {
-                trangThai = "Có thể mượn";
-            }
-            int soTrangHuHong = 0;
-            try {
-                soTrangHuHong = Integer.parseInt(txtSoTrangHuHong.getText().trim());
-            } catch (NumberFormatException ex) {
-                soTrangHuHong = 0;
-            }
+            String soTrangHuHongStr = txtSoTrangHuHong.getText().trim();
 
-            tableModel.addRow(new Object[]{maChiTiet, trangThai, soTrangHuHong});
-            JOptionPane.showMessageDialog(this, "Thêm chi tiết sách mới thành công!");
-            txtTrangThai.setText("");
-            txtSoTrangHuHong.setText("");
+            String result = book_BLL.addBook(maChiTiet, bookCode, trangThai, soTrangHuHongStr);
+            JOptionPane.showMessageDialog(this, result);
+
+            loadBookDetails(bookCode);
+            bookPanel.loadBook();
+            
+        });
+
+        
+        table.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                int selectedRow = table.getSelectedRow();
+        
+                // Lấy giá trị số lượng
+                String tontaiStr = tableModel.getValueAt(selectedRow, 1).toString();
+                
+        
+                // Hiển thị dữ liệu
+                txtTrangThai.setText(tableModel.getValueAt(selectedRow, 1).toString());
+                txtSoTrangHuHong.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                // Nếu số lượng = 0, thì không cho chỉnh sửa
+                boolean editable = !tontaiStr.equals("Đã hỏng");
+                txtTrangThai.setEnabled(editable);
+                txtSoTrangHuHong.setEnabled(editable);
+            }
         });
 
         btnSua.addActionListener(e -> {
@@ -124,34 +127,16 @@ public class BookDetails extends JFrame {
                 return;
             }
 
-            String trangThai = tableModel.getValueAt(selectedRow, 1).toString();
-            String soTrangHuHong = tableModel.getValueAt(selectedRow, 2).toString();
+            String bookCode = bookData[0].toString();
+            String maChiTiet = tableModel.getValueAt(selectedRow, 0).toString();
+            String trangThai = txtTrangThai.getText().trim();
+            String soTrangHuHong = txtSoTrangHuHong.getText().trim();
 
-            txtTrangThai.setText(trangThai);
-            txtSoTrangHuHong.setText(soTrangHuHong);
+            String result = book_BLL.updateBook(maChiTiet, bookCode, trangThai, soTrangHuHong);
+            JOptionPane.showMessageDialog(this, result);
+            loadBookDetails(bookCode);
         });
         
-        btnLuu.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng muốn lưu thay đổi");
-                return;
-            }
-            // Lấy dữ liệu từ các textfield
-            String trangThai = txtTrangThai.getText().trim();
-            String soTrangHuHongStr = txtSoTrangHuHong.getText().trim();
-            int soTrangHuHong = 0;
-            try {
-                soTrangHuHong = Integer.parseInt(soTrangHuHongStr);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Số trang hư hỏng không hợp lệ, đặt mặc định là 0");
-                soTrangHuHong = 0;
-            }
-            // Cập nhật dữ liệu từ textfield lên bảng (cột 1: Trạng thái, cột 2: Số trang hư hỏng)
-            tableModel.setValueAt(trangThai, selectedRow, 1);
-            tableModel.setValueAt(soTrangHuHong, selectedRow, 2);
-            JOptionPane.showMessageDialog(this, "Cập nhật chi tiết sách thành công!");
-        });
 
         btnXoa.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
@@ -159,19 +144,52 @@ public class BookDetails extends JFrame {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
                 return;
             }
-            tableModel.removeRow(selectedRow);
+        
+            String result = book_BLL.deleteBook(tableModel.getValueAt(selectedRow, 0).toString(), bookData[0].toString());
+            JOptionPane.showMessageDialog(this, result);
+            loadBookDetails(bookData[0].toString());
         });
         
         btnHuy.addActionListener(e -> {
             txtTrangThai.setText("");
+            txtTrangThai.setEnabled(true);
             txtSoTrangHuHong.setText("");
+            txtSoTrangHuHong.setEnabled(true);
         });
+
+        try {
+            loadBookDetails(bookData[0].toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi load chi tiết sách: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
         
-        btnDong.addActionListener(e -> dispose());
+        btnDong.addActionListener(e -> {
+            dispose();
+            bookPanel.loadBook();
+        });
         
         setSize(600, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
+
+    public void loadBookDetails(String ID) {
+        tableModel.setRowCount(0);
+        
+        List<String> books = book_BLL.getBook(ID);
+        // Kiểm tra danh sách có dữ liệu không
+        if (books != null) {
+            for (String book  : books) {
+                tableModel.addRow(new Object[]{
+                    book.split(";")[0], // Mã chi tiết sách
+                    book.split(";")[1], // Trạng thái
+                    book.split(";")[2]  // Số trang hư hỏng
+                });
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Không thể tải danh sách sách!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

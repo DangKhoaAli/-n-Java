@@ -40,13 +40,17 @@ public class Reader_BLL {
 
     public String addReader(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, LocalDate registrationDate) {
         try {
-            if (ID == null || ID.isEmpty() || name == null || name.isEmpty()) {
-                return "ID và Tên không được để trống!";
+            if (ID == null || ID.isEmpty() ) {
+                return "ID không được để trống!";
             }
 
-            List<Reader> existingReaders = searchReader(ID);
-            if (!existingReaders.isEmpty()) {
-                return "ID đã tồn tại.";
+            if (name == null || name.isEmpty()){
+                return "Tên không được để trống!";
+            }
+
+            Boolean existingReaders = reader_DAO.searchReaderID(ID);
+            if (existingReaders) {
+                return "Độc giả này đã tồn tại!";
             }
 
             if (birth.isAfter(LocalDate.now().minusYears(10))) {
