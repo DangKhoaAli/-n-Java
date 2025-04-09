@@ -1,18 +1,16 @@
 package gui;
 
+import BLL.Reader_BLL;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
-import java.util.ArrayList;
 import java.util.List;
-
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import model.Reader;
-import BLL.Reader_BLL;
 
 public class ReaderPanel extends JPanel {
     private Reader_BLL reader_BLL;
@@ -33,7 +31,6 @@ public class ReaderPanel extends JPanel {
 
     private JButton btnThem;
     private JButton btnSua;
-    private JButton btnLuu;
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnTim;
@@ -57,6 +54,26 @@ public class ReaderPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
+
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                // Tránh xử lý hai lần (khi bắt đầu và khi kết thúc)
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        txtMaDocGia.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                        txtTenDocGia.setText(tableModel.getValueAt(selectedRow, 1).toString());
+                        txtGioiTinh.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                        txtNgaySinh.setText(tableModel.getValueAt(selectedRow, 3).toString());
+                        txtSoDienThoai.setText(tableModel.getValueAt(selectedRow, 4).toString());
+                        txtDiaChi.setText(tableModel.getValueAt(selectedRow, 5).toString());
+                        txtEmail.setText(tableModel.getValueAt(selectedRow, 6).toString());
+                        txtNgayDangKy.setText(tableModel.getValueAt(selectedRow, 7).toString());
+                    }
+                }
+            }
+        });
 
         txtMaDocGia = new JTextField();
         txtMaDocGia.setBorder(BorderFactory.createTitledBorder("Mã độc giả"));
@@ -108,13 +125,11 @@ public class ReaderPanel extends JPanel {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnLuu = new JButton("Lưu");
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnLuu);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         
@@ -147,23 +162,6 @@ public class ReaderPanel extends JPanel {
         });
 
         btnSua.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
-                return;
-            }
-            txtMaDocGia.setText(tableModel.getValueAt(selectedRow,0).toString());
-            txtMaDocGia.setEditable(false);
-            txtTenDocGia.setText(tableModel.getValueAt(selectedRow,1).toString());
-            txtGioiTinh.setText(tableModel.getValueAt(selectedRow, 2).toString());
-            txtNgaySinh.setText(tableModel.getValueAt(selectedRow, 3).toString());
-            txtSoDienThoai.setText(tableModel.getValueAt(selectedRow, 4).toString());
-            txtDiaChi.setText(tableModel.getValueAt(selectedRow, 5).toString());
-            txtEmail.setText(tableModel.getValueAt(selectedRow, 6).toString());
-            txtNgayDangKy.setText(tableModel.getValueAt(selectedRow, 7).toString());
-        });
-
-        btnLuu.addActionListener(e -> {
             try {
                 // Lấy dữ liệu từ các ô nhập
                 String maDocGia = txtMaDocGia.getText();
@@ -219,6 +217,7 @@ public class ReaderPanel extends JPanel {
             txtDiaChi.setText("");
             txtEmail.setText("");
             txtNgayDangKy.setText("");
+            table.clearSelection();
         });
 
         btnTim.addActionListener(e -> {

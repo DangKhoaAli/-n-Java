@@ -3,6 +3,8 @@ package gui;
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class LoanPanel extends JPanel {
@@ -21,7 +23,6 @@ public class LoanPanel extends JPanel {
 
     private JButton btnThem;
     private JButton btnSua;
-    private JButton btnLuu;
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnTim;
@@ -49,6 +50,25 @@ public class LoanPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
+
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                // Tránh xử lý hai lần (khi bắt đầu và khi kết thúc)
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        txtPhieuMuon.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                        txtDocGia.setText(tableModel.getValueAt(selectedRow, 1).toString());
+                        txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                        txtSoLuongSach.setText(tableModel.getValueAt(selectedRow, 3).toString());
+                        txtNgayMuon.setText(tableModel.getValueAt(selectedRow, 4).toString());
+                        txtNgayDuKienTra.setText(tableModel.getValueAt(selectedRow, 5).toString());
+                        txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 6).toString());
+                    }
+                }
+            }
+        });
 
         // --- Panel nhập thông tin phiếu mượn ---
         txtPhieuMuon = new JTextField();
@@ -91,14 +111,12 @@ public class LoanPanel extends JPanel {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnLuu = new JButton("Lưu");
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         btnXemChiTiet = new JButton("Xem chi tiết");
 
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnLuu);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnXemChiTiet);
@@ -213,21 +231,6 @@ public class LoanPanel extends JPanel {
         btnSua.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
-                return;
-            }
-            txtPhieuMuon.setText(tableModel.getValueAt(selectedRow, 0).toString());
-            txtDocGia.setText(tableModel.getValueAt(selectedRow, 1).toString());
-            txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString());
-            txtSoLuongSach.setText(tableModel.getValueAt(selectedRow, 3).toString());
-            txtNgayMuon.setText(tableModel.getValueAt(selectedRow, 4).toString());
-            txtNgayDuKienTra.setText(tableModel.getValueAt(selectedRow, 5).toString());
-            txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 6).toString());
-        });
-
-        btnLuu.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng muốn lưu thay đổi");
                 return;
             }
@@ -259,6 +262,7 @@ public class LoanPanel extends JPanel {
             txtNgayMuon.setText("");
             txtNgayDuKienTra.setText("");
             txtPhiMuon.setText("");
+            table.clearSelection();
         });
 
         btnTim.addActionListener(e -> {
