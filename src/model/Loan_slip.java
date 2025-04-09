@@ -18,7 +18,7 @@ public class Loan_slip {
         this.ID = ID;
         this.ID_Reader = ID_Reader;
         this.ID_Staff = ID_Staff;
-
+        this.so_luong = so_luong;
         this.Borrow_Date = Borrow_Date;
         this.Expected_Date =Expected_Date;
         this.fee = fee;
@@ -56,7 +56,7 @@ public class Loan_slip {
         this.Borrow_Date = Borrow_Date;
     }
 
-    public LocalDate getEXpected_Date(){
+    public LocalDate getExpected_Date(){
         return this.Expected_Date;
     }
     public void setExpected_Date(LocalDate Expected_Date){

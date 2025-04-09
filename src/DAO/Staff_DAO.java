@@ -74,7 +74,6 @@ public class Staff_DAO {
     }
 
     public Boolean searchStaffID(String key) throws SQLException{
-    List<Staff> staffs = new ArrayList<>();
     String sql = "SELECT * FROM Staff WHERE ID LIKE ? LIMIT 1";
     try (PreparedStatement ps = conn.prepareStatement(sql)){
         ps.setString(1, key);

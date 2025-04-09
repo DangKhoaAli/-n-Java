@@ -21,36 +21,33 @@ public class Borrow_Details_DAO {
         List<String> List_Borrow = new ArrayList<>();
         String sql = "SELECT bd.ID AS Book_ID, b.name AS Name, b.loan_fee AS Loan_fee "+
                      "FROM Borrowed_Book_Details bbd "+
-                     "JOIN Book_Details bd ON bbd.ID_Book = bd,ID "+
-                     "JOIN Book b ON bd.ID_Book = b. ID "+
+                     "JOIN Book_Details bd ON bbd.ID_Book = bd.ID "+
+                     "JOIN Book b ON bd.ID_Book = b.ID "+
                      "WHERE bbd.ID_Loan_slip = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
-                List_Borrow.add(rs.getString("Book_ID") + "-" + rs.getString("Name")
-                                + "-" + rs.getFloat("Loan_fee"));
+                List_Borrow.add(rs.getString("Book_ID") + ";" + rs.getString("Name")
+                                + ";" + rs.getFloat("Loan_fee"));
+
             }
-        } catch(SQLException e){
-            e.printStackTrace();
-        }
+        } 
         return List_Borrow;
     }
 
     // Thêm 1 chi tiết phiếu mượn
-    public void addBorrow_Detail(String ID_Book, String ID_Loan_slip){
+    public void addBorrow_Detail(String ID_Book, String ID_Loan_slip) throws SQLException{
         String sql = "INSERT INTO borrowed_book_details (ID_Book, ID_Loan_slip) VALUES (?, ?)";
         try(PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(2, ID_Loan_slip);
             ps.setString(1, ID_Book);
             ps.executeUpdate();
-        } catch (SQLException e){
-            e.printStackTrace();
         }
     }
 
     // Cập nhập 1 chi tiết phiếu mượn
-    public void updateBorrow_Details(String ID_Book_f, String ID_Loan_slip_f, String ID_Book, String ID_Loan_slip){
+    public void updateBorrow_Details(String ID_Book_f, String ID_Loan_slip_f, String ID_Book, String ID_Loan_slip) throws SQLException{
         String sql = "UPDATE borrowed_book_details SET ID_Loan_slip = ?, ID_Book = ? WHERE ID_Loan_slip = ? AND ID_Book = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID_Loan_slip);
@@ -58,8 +55,6 @@ public class Borrow_Details_DAO {
             ps.setString(3, ID_Loan_slip_f);
             ps.setString(4, ID_Book_f);
             ps.executeUpdate();
-        } catch (SQLException e){
-            e.printStackTrace();
         }
     }
 
@@ -70,13 +65,26 @@ public class Borrow_Details_DAO {
             ps.setString(1, ID_Loan_slip);
             ps.setString(2, ID_Book);
             ps.executeUpdate();
-        } catch(SQLException e){
-            e.printStackTrace();
         }
     }
 
+    public Boolean check_quan(String ID_Loan){
+        String sql = "SELECT COUNT(*) AS count FROM borrowed_book_details WHERE ID_Loan_slip = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, ID_Loan);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                return rs.getInt("count") <= 5;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+
     public static void main(String [] args){
         Borrow_Details_DAO a = new Borrow_Details_DAO();
-        a.addBorrow_Detail("1", "1");
+        // a.addBorrow_Detail("1", "1");
     }
 }
