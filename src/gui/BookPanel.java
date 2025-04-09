@@ -266,6 +266,7 @@ public class BookPanel extends JPanel {
             txtPhiMuon.setEnabled(true);
             txtSoLuong.setText("");
             txtSoLuong.setEnabled(true);
+            table.clearSelection();
         });
 
         btnTim.addActionListener(e -> {

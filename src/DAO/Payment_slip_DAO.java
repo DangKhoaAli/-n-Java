@@ -56,7 +56,7 @@ public class Payment_slip_DAO {
     }
 
     // Tìm kiếm phiếu mượn
-    public Payment_slip searchPayment_slip(String ID){
+    public Payment_slip searchPayment_slip(String ID) throws SQLException{
         String sql = "SELECT * FROM Payment_slip WHERE ID LIKE ? LIMIT 1";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID);
@@ -65,8 +65,6 @@ public class Payment_slip_DAO {
                 return new Payment_slip(rs.getString("ID"), rs.getString("ID_Loan_slip"), rs.getString("ID_Staff"), rs.getInt("so_luong"), 
                            rs.getDate("payment_Date").toLocalDate(), rs.getFloat("late_fee"), rs.getFloat("damage_fee"));
             }
-        } catch (SQLException e){
-            e.printStackTrace();
         }
         return null;
     }

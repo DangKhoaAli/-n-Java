@@ -155,6 +155,8 @@ public class BookDetails extends JFrame {
             txtTrangThai.setEnabled(true);
             txtSoTrangHuHong.setText("");
             txtSoTrangHuHong.setEnabled(true);
+            table.clearSelection();
+
         });
 
         try {
