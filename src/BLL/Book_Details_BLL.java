@@ -129,5 +129,17 @@ public class Book_Details_BLL {
             return "Lỗi không xác định: " + e.getMessage();
         }
     }
+
+    public String updateStatus_Book(String ID){
+        try {
+            book_Details_DAO.updateStatus_Book(ID, "Đã hỏng");
+            return "Cập nhật trạng thái sách thành công!";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Lỗi SQL: " + e.getMessage();
+        } catch (Exception e) {
+            return "Lỗi không xác định: " + e.getMessage();
+        }
+    }
     
 }

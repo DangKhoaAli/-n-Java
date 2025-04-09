@@ -150,5 +150,19 @@ public class Loan_slip_DAO {
         }
     }
 
+    // Trả về ngày mượn của một phiếu mượn theo ID
+    public LocalDate getBorrowDate(String ID) throws SQLException {
+        String sql = "SELECT Borrow_Date FROM Loan_slip WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, ID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getDate("Borrow_Date").toLocalDate();
+            }
+        }
+        return null;
+    }
+
+
 
 }

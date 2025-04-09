@@ -83,13 +83,11 @@ public class Payment_slip_DAO {
     }
 
     // Xóa 1 phiếu mượn trong danh sách
-    public void deletePayment_slip(String ID){
+    public void deletePayment_slip(String ID) throws SQLException{
         String sql = "DELETE FROM Payment_slip WHERE ID = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, ID);
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 

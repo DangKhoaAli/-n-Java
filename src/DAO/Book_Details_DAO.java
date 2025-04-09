@@ -114,4 +114,13 @@ public class Book_Details_DAO {
         }
         return false;
     }
+
+    public void updateStatus_Book(String ID, String status) throws SQLException{
+        String sql = "UPDATE Book_Details SET status = ? WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, status);
+            ps.setString(2, ID);
+            ps.executeUpdate();
+        }
+    }
 }
