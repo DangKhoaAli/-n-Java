@@ -1,14 +1,13 @@
 package gui;
+
 import BLL.Book_Details_BLL;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class BookDetails extends JFrame {
-    private BookPanel bookPanel;
+public class BookDetails extends JDialog {
+    private BookPanel bookPanel;             // để reload bảng khi cần
     private Book_Details_BLL book_BLL;
     private JTable table;
     private DefaultTableModel tableModel;
@@ -21,25 +20,29 @@ public class BookDetails extends JFrame {
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnDong;
-    
-    /**
-     * Constructor hiển thị chi tiết các cuốn sách của 1 loại sách.
-     * @param bookData    Mảng chứa thông tin cơ bản của sách 
-     *                    (ví dụ: [Mã sách, Tên sách, Thể loại, Tác giả, …, Số lượng])
-     * @param copyDetails Danh sách chi tiết của từng cuốn sách 
-     *                    (mỗi phần tử là Object[] gồm: [Mã chi tiết, Trạng thái, Số trang hư hỏng])
-     */
-    public BookDetails(Object[] bookData, BookPanel bookPanel) {
+
+    // Constructor dành cho BookPanel / LoanPanel (Frame parent)
+    public BookDetails(Object[] bookData, Frame owner, BookPanel bookPanel) {
+        super(owner, "Chi tiết các cuốn của sách - " + bookData[1], true);
         this.bookPanel = bookPanel;
+        initUI(bookData);
+    }
+
+    // Constructor dành cho BookSelection (Dialog parent)
+    public BookDetails(Object[] bookData, Dialog owner, BookPanel bookPanel) {
+        super(owner, "Chi tiết các cuốn của sách - " + bookData[1], true);
+        this.bookPanel = bookPanel;
+        initUI(bookData);
+    }
+
+    private void initUI(Object[] bookData) {
         book_BLL = new Book_Details_BLL();
-        setTitle("Chi tiết các cuốn của sách - " + bookData[1]);
         setLayout(new BorderLayout(10, 10));
         getContentPane().setBackground(Color.BLUE);
-        
+
         // --- Bảng chi tiết ---
         String[] columnNames = {"Mã chi tiết sách", "Trạng thái", "Số trang hư hỏng"};
         tableModel = new DefaultTableModel(columnNames, 0);
-        
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
         table.setSelectionBackground(Color.YELLOW);
@@ -47,38 +50,30 @@ public class BookDetails extends JFrame {
         scrollPane.getViewport().setBackground(Color.WHITE);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Tự động nạp dữ liệu xuống textfield khi chọn dòng
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int selectedRow = table.getSelectedRow();
-                    if (selectedRow != -1) {
-                        // Lấy trạng thái và số trang hư hỏng từ bảng
-                        String trangThai = tableModel.getValueAt(selectedRow, 1).toString();
-                        String soTrangHuHong = tableModel.getValueAt(selectedRow, 2).toString();
-                        // Đẩy xuống textfield
-                        txtTrangThai.setText(trangThai);
-                        txtSoTrangHuHong.setText(soTrangHuHong);
-                    }
-                }
+        // Khi chọn dòng, đẩy dữ liệu xuống textfield
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                int r = table.getSelectedRow();
+                txtTrangThai.setText(tableModel.getValueAt(r, 1).toString());
+                txtSoTrangHuHong.setText(tableModel.getValueAt(r, 2).toString());
+                boolean editable = !"Đã hỏng".equals(tableModel.getValueAt(r, 1));
+                txtTrangThai.setEnabled(editable);
+                txtSoTrangHuHong.setEnabled(editable);
             }
         });
 
-        // Panel nhập chi tiết
+        // --- Panel nhập ---
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
         panelInput.setBackground(Color.BLUE);
-        
         txtTrangThai = new JTextField();
         txtTrangThai.setBorder(BorderFactory.createTitledBorder("Trạng thái"));
         txtSoTrangHuHong = new JTextField();
         txtSoTrangHuHong.setBorder(BorderFactory.createTitledBorder("Số trang hư hỏng"));
-        
         panelInput.add(txtTrangThai);
         panelInput.add(txtSoTrangHuHong);
-        
-        // Panel chứa các nút chức năng
+
+        // --- Panel nút ---
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
@@ -86,85 +81,64 @@ public class BookDetails extends JFrame {
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         btnDong = new JButton("Đóng");
-        
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnDong);
-        
-        // Gộp các panel dưới thành một panel chính
-        JPanel panelBottom = new JPanel(new BorderLayout(10, 10));
+
+        JPanel panelBottom = new JPanel(new BorderLayout(10,10));
         panelBottom.setBackground(Color.BLUE);
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
         add(panelBottom, BorderLayout.SOUTH);
-        
-        // --- Xử lý các nút ---
 
+        // --- ActionListeners ---
+
+        // Thêm bản sao mới
         btnThem.addActionListener(e -> {
             String bookCode = bookData[0].toString();
             String maChiTiet = bookCode + "_" + (tableModel.getRowCount() + 1);
             String trangThai = txtTrangThai.getText().trim();
             String soTrangHuHongStr = txtSoTrangHuHong.getText().trim();
-
             String result = book_BLL.addBook(maChiTiet, bookCode, trangThai, soTrangHuHongStr);
             JOptionPane.showMessageDialog(this, result);
-
             loadBookDetails(bookCode);
-            bookPanel.loadBook();
-            
+            if (bookPanel != null) bookPanel.loadBook();
         });
 
-        
-        table.getSelectionModel().addListSelectionListener(event -> {
-            if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
-                int selectedRow = table.getSelectedRow();
-        
-                // Lấy giá trị số lượng
-                String tontaiStr = tableModel.getValueAt(selectedRow, 1).toString();
-                
-        
-                // Hiển thị dữ liệu
-                txtTrangThai.setText(tableModel.getValueAt(selectedRow, 1).toString());
-                txtSoTrangHuHong.setText(tableModel.getValueAt(selectedRow, 2).toString());
-                // Nếu số lượng = 0, thì không cho chỉnh sửa
-                boolean editable = !tontaiStr.equals("Đã hỏng");
-                txtTrangThai.setEnabled(editable);
-                txtSoTrangHuHong.setEnabled(editable);
-            }
-        });
-
+        // Sửa bản sao đã chọn
         btnSua.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
+            int r = table.getSelectedRow();
+            if (r == -1) {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
                 return;
             }
-
             String bookCode = bookData[0].toString();
-            String maChiTiet = tableModel.getValueAt(selectedRow, 0).toString();
+            String maChiTiet = tableModel.getValueAt(r, 0).toString();
             String trangThai = txtTrangThai.getText().trim();
             String soTrangHuHong = txtSoTrangHuHong.getText().trim();
-
             String result = book_BLL.updateBook(maChiTiet, bookCode, trangThai, soTrangHuHong);
             JOptionPane.showMessageDialog(this, result);
             loadBookDetails(bookCode);
+            if (bookPanel != null) bookPanel.loadBook();
         });
-        
 
+        // Xóa bản sao đã chọn
         btnXoa.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
+            int r = table.getSelectedRow();
+            if (r == -1) {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
                 return;
             }
-        
-            String result = book_BLL.deleteBook(tableModel.getValueAt(selectedRow, 0).toString(), bookData[0].toString());
+            String bookCode = bookData[0].toString();
+            String result = book_BLL.deleteBook(tableModel.getValueAt(r, 0).toString(), bookCode);
             JOptionPane.showMessageDialog(this, result);
-            loadBookDetails(bookData[0].toString());
+            loadBookDetails(bookCode);
+            if (bookPanel != null) bookPanel.loadBook();
         });
-        
+
+        // Hủy input
         btnHuy.addActionListener(e -> {
             txtTrangThai.setText("");
             txtTrangThai.setEnabled(true);
@@ -173,36 +147,28 @@ public class BookDetails extends JFrame {
             table.clearSelection();
         });
 
-        try {
-            loadBookDetails(bookData[0].toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi load chi tiết sách: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-        
+        // Đóng dialog
         btnDong.addActionListener(e -> {
             dispose();
-            bookPanel.loadBook();
+            if (bookPanel != null) bookPanel.loadBook();
         });
-        
+
+        // Load chi tiết lần đầu
+        loadBookDetails(bookData[0].toString());
+
         setSize(600, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(getOwner());
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setVisible(true);
     }
 
     public void loadBookDetails(String ID) {
         tableModel.setRowCount(0);
-        
-        List<String> books = book_BLL.getBook(ID);
-        // Kiểm tra danh sách có dữ liệu không
-        if (books != null) {
-            for (String book  : books) {
-                tableModel.addRow(new Object[]{
-                    book.split(";")[0], // Mã chi tiết sách
-                    book.split(";")[1], // Trạng thái
-                    book.split(";")[2]  // Số trang hư hỏng
-                });
+        List<String> details = book_BLL.getBook(ID);
+        if (details != null) {
+            for (String line : details) {
+                String[] parts = line.split(";");
+                tableModel.addRow(new Object[]{parts[0], parts[1], parts[2]});
             }
         } else {
             JOptionPane.showMessageDialog(this, "Không thể tải danh sách sách!", "Lỗi", JOptionPane.ERROR_MESSAGE);

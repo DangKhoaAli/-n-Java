@@ -1,22 +1,21 @@
 package gui;
 
+import BLL.Borrow_Details_BLL;
+import BLL.Loan_slip_BLL;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.List;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
-import BLL.Borrow_Details_BLL;
-import BLL.Loan_slip_BLL;
 import model.Loan_slip;
 
 public class LoanPanel extends JPanel {
+    private BookPanel bookPanel;
     private Loan_slip_BLL loan_slip_BLL;
     private Borrow_Details_BLL borrow_details_BLL;
 
@@ -43,7 +42,8 @@ public class LoanPanel extends JPanel {
     // Map lưu chi tiết phiếu mượn (key: mã phiếu mượn, value: danh sách chi tiết)
     private Map<String, java.util.List<Object[]>> loanDetailsMap = new HashMap<>();
 
-    public LoanPanel() {
+    public LoanPanel(BookPanel bookPanel) {
+        this.bookPanel = bookPanel;
         loan_slip_BLL = new Loan_slip_BLL();
         borrow_details_BLL = new Borrow_Details_BLL();
 
@@ -169,26 +169,38 @@ public class LoanPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, result);
 
                 // Nhập chi tiết phiếu mượn bắt buộc nhập cho từng cuốn sách
-                if (result.equals("Đã thêm thành công 1 phiếu mượn")){
-                    int i = 0;
-                    while (i < Integer.parseInt(soLuong)){
-                        String maSach = JOptionPane.showInputDialog(this, "Nhập mã sách thứ " + (i + 1) + ":");
+                // Nếu thêm phiếu mượn thành công thì mở dialog chọn sách
+                if (result.equals("Đã thêm thành công 1 phiếu mượn")) {
+                    // Tạo và hiển thị dialog
+                    Frame owner = (Frame) SwingUtilities.getWindowAncestor(this);
+                    BookSelection dlg = new BookSelection (owner,this);
+                    List<String> selectedBooks = dlg.showDialog();
 
-                        String result1 = borrow_details_BLL.addBorrow_Detail(maSach, PhieuMuon);
-                        if (result1.equals("Thêm chi tiết phiếu mượn thành công!")) {
-                            JOptionPane.showMessageDialog(this, result1);
-                            i++;
-                        } else {
-                            JOptionPane.showMessageDialog(this, result1, "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    if (selectedBooks.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, 
+                            "Bạn chưa chọn cuốn sách nào. Đã hủy thêm chi tiết.", 
+                            "Thông báo", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        // Duyệt qua danh sách sách đã chọn
+                        for (String maSach : selectedBooks) {
+                            String result1 = borrow_details_BLL.addBorrow_Detail(maSach, PhieuMuon);
+                            if (result1.equals("Thêm chi tiết phiếu mượn thành công!")) {
+                                // Bạn có thể hiển thị thông báo thành công cho từng cuốn hoặc gom chung
+                                System.out.println("Đã thêm chi tiết cho sách " + maSach);
+                            } else {
+                                JOptionPane.showMessageDialog(this, result1, "Lỗi", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
+                        // Cập nhật lại phí mượn (dựa trên số sách thực tế)
+                        loan_slip_BLL.update_fee(PhieuMuon, ngaymuon, ngaytra);
                     }
-                    loan_slip_BLL.update_fee(PhieuMuon, ngaymuon, ngaytra);
                 }
+
 
                 loadLoan_slip();
 
             } catch (DateTimeParseException ex ){
-                JOptionPane.showMessageDialog(null, "Lỗi định dạng ngày. Vui lòng nhập ngày theo định dạng yyyy-MM-dd!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày. Vui lòng nhập ngày theo định dạng yyyy-MM-dd!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
@@ -335,6 +347,7 @@ public class LoanPanel extends JPanel {
     
         // Gọi BLL để lấy danh sách độc giả từ CSDL
         List<Loan_slip> Loan = loan_slip_BLL.getLoan_slip();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         
         // Kiểm tra danh sách có dữ liệu không
         if (Loan != null) {

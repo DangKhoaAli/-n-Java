@@ -11,6 +11,7 @@ public class Main extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
+        BookPanel bookPanel = new BookPanel();
         tabbedPane.addTab("Quản lý sách", new BookPanel());
 
         tabbedPane.addTab("Quản lý độc giả", new ReaderPanel());
@@ -19,7 +20,7 @@ public class Main extends JFrame {
             tabbedPane.addTab("Quản lý thủ thư", new LibrarianPanel());
         }
 
-        tabbedPane.addTab("Quản lý phiếu mượn", new LoanPanel());
+        tabbedPane.addTab("Quản lý phiếu mượn", new LoanPanel(bookPanel));
 
         tabbedPane.addTab("Quản lý phiếu trả", new PayPanel());
         

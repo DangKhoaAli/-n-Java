@@ -49,7 +49,6 @@ public class BookPanel extends JPanel {
         panelTable.setBackground(Color.BLUE);
         String[] columnNames = {"Mã sách", "Tên sách", "Thể loại", "Tác giá", "Nhà cung cấp","Năm xuất bản", "Số trang", "Giá", "Phí mượn","Số lượng", "Tồn tại"};
         tableModel = new DefaultTableModel(columnNames,0);
-        tableModel.addRow(new Object[]{"1","Pháp luật","Giáo dục","Nhiều tác giả","BGD","2005","500","15000","2000","5"});
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
         table.setSelectionBackground(Color.YELLOW);
@@ -327,8 +326,8 @@ public class BookPanel extends JPanel {
             for (int i = 0; i < table.getColumnCount(); i++) {
                 bookData[i] = table.getValueAt(selectedRow, i);
             }
-
-            new BookDetails(bookData, this);
+            Frame ownerFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+            new BookDetails(bookData,ownerFrame,this).setVisible(true);
         });
 
         loadBook();
