@@ -28,7 +28,7 @@ public class Staff_DAO {
                 while(rs.next()){
                     Staffs.add(new Staff(rs.getString("ID"), rs.getString("name"), rs.getString("gender"), 
                                 rs.getDate("birth").toLocalDate(), rs.getString("address"), rs.getString("phone"), 
-                                rs.getString("email"), rs.getBigDecimal("wage").floatValue()));
+                                rs.getString("email"), rs.getString("exist"), rs.getBigDecimal("wage").floatValue()));
                 }
         } catch (SQLException e){
             e.printStackTrace();
@@ -38,7 +38,7 @@ public class Staff_DAO {
 
     // Thêm 1 độc giả
     public void addStaff(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, float wage) throws SQLException{
-        String sql = "INSERT INTO Staff (ID, name, gender, birth, address, phone, email, wage) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Staff (ID, name, gender, birth, address, phone, email, wage, exist) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID);
             ps.setString(2, name);
@@ -48,10 +48,9 @@ public class Staff_DAO {
             ps.setString(6, phone);
             ps.setString(7, email);
             ps.setBigDecimal(8, new BigDecimal(wage));
+            ps.setString(9, "1");
             ps.executeUpdate();
             
-        } catch (SQLException e){
-            e.printStackTrace();
         }
     }
 
@@ -65,10 +64,8 @@ public class Staff_DAO {
             while(rs.next()){
                 Staffs.add(new Staff(rs.getString("ID"), rs.getString("name"), rs.getString("gender"), 
                             rs.getDate("birth").toLocalDate(), rs.getString("address"), rs.getString("phone"), 
-                            rs.getString("email"), rs.getBigDecimal("wage").floatValue()));
+                            rs.getString("email"), rs.getString("exist"), rs.getBigDecimal("wage").floatValue()));
             }
-        } catch (SQLException e){
-            e.printStackTrace();
         }
         return Staffs;
     }
@@ -106,12 +103,11 @@ public class Staff_DAO {
 
     // Xóa thông tin độc giả
     public void deleteStaff(String ID) throws SQLException{
-        String sql = "DELETE FROM Staff WHERE ID = ?";
+        String sql = "UPDATE Staff SET exist = ? WHERE ID = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setString(1, ID);
+            ps.setString(1, "0");
+            ps.setString(2, ID);
             ps.executeUpdate();
-        } catch(SQLException e){
-            e.printStackTrace();
         }
     }
 }

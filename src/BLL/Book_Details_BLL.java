@@ -28,7 +28,7 @@ public class Book_Details_BLL {
         }
     }
 
-    public String addBook(String ID, String ID_Book, String status, String page_num_dame){
+    public String addBook(String ID, String ID_Book, String supplier, String year, String page_num, String status, String page_num_dame){
     try {
         if (status == null || status.isEmpty()){
             return "Status không được để trống!";
@@ -36,6 +36,27 @@ public class Book_Details_BLL {
 
         if (page_num_dame == null || page_num_dame.isEmpty()){
             return "Số trang hỏng không được để trống!";
+        }
+
+        
+        if (supplier == null || supplier.isEmpty()){
+            return "Nha cung cap khong duoc de trong!";
+        }
+
+        if (year == null){
+            return "Nam xuat ban khong duoc de trong!";
+        }
+
+        if (Integer.parseInt(year) <=0){
+            return "Nam xuat ban khong the nho hon 0!";
+        }
+
+        if (page_num == null){
+            return "So trang khong duoc de trong!";
+        }
+
+        if (Integer.parseInt(page_num) <=0){
+            return "So trang khong the nho hon 0!";
         }
 
         if (!status.equalsIgnoreCase("Hiện có") && !status.equalsIgnoreCase("Đang được mượn")){
@@ -50,7 +71,7 @@ public class Book_Details_BLL {
         // String[] temp = ID.split("_");
         // String bookID = temp[0];
 
-        book_Details_DAO.addBook_Details(ID, ID_Book, status, Integer.parseInt(page_num_dame));
+        book_Details_DAO.addBook_Details(ID, ID_Book, supplier, Integer.parseInt(year), Integer.parseInt(page_num), status, Integer.parseInt(page_num_dame));
         book_DAO.updateBook_quan(book_Details_DAO.count_Details(ID_Book), ID_Book);
         return "Da them thanh cong 1 chi tiet sach!";
 
@@ -63,7 +84,7 @@ public class Book_Details_BLL {
 }
 
 
-    public String updateBook(String ID, String ID_Book, String status, String page_num_dame){
+    public String updateBook(String ID, String ID_Book, String supplier, String year, String page_num, String status, String page_num_dame){
         try {
             
             if (status == null || status.isEmpty()){
@@ -72,6 +93,26 @@ public class Book_Details_BLL {
 
             if (page_num_dame == null || page_num_dame.isEmpty()){
                 return "Số trang hỏng không được để trống!";
+            }
+            
+            if (supplier == null || supplier.isEmpty()){
+                return "Nha cung cap khong duoc de trong!";
+            }
+
+            if (year == null){
+                return "Nam xuat ban khong duoc de trong!";
+            }
+
+            if (Integer.parseInt(year) <=0){
+                return "Nam xuat ban khong the nho hon 0!";
+            }
+
+            if (page_num == null){
+                return "So trang khong duoc de trong!";
+            }
+
+            if (Integer.parseInt(page_num) <=0){
+                return "So trang khong the nho hon 0!";
             }
 
             if (!status.equalsIgnoreCase("Hiện có") && !status.equalsIgnoreCase("Đang được mượn")){
@@ -82,7 +123,7 @@ public class Book_Details_BLL {
                 return "Số trang hỏng không hợp lệ! Vui lòng nhập số nguyên dương.";
             }
 
-            book_Details_DAO.updateBook_Detail(ID, ID_Book, status, Integer.parseInt(page_num_dame));
+            book_Details_DAO.updateBook_Detail(ID, ID_Book, supplier, Integer.parseInt(year), Integer.parseInt(page_num), status, Integer.parseInt(page_num_dame));
             return "Da cap nhap thanh cong 1 chi tiet sach!";
 
         } catch (SQLException e){
@@ -122,6 +163,18 @@ public class Book_Details_BLL {
             }
     
             return "Đã xóa thành công 1 chi tiết sách!";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Lỗi SQL: " + e.getMessage();
+        } catch (Exception e) {
+            return "Lỗi không xác định: " + e.getMessage();
+        }
+    }
+
+    public String updateStatus_Book(String ID){
+        try {
+            book_Details_DAO.updateStatus_Book(ID, "Đã hỏng");
+            return "Cập nhật trạng thái sách thành công!";
         } catch (SQLException e) {
             e.printStackTrace();
             return "Lỗi SQL: " + e.getMessage();

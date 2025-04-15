@@ -7,7 +7,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import BLL.Pay_slip_BLL;
+
 public class PayPanel extends JPanel {
+    private Pay_slip_BLL paySlipBLL;
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -31,6 +34,8 @@ public class PayPanel extends JPanel {
     private Map<String, java.util.List<Object[]>> payDetailsMap = new HashMap<>();
 
     public PayPanel() {
+        paySlipBLL = new Pay_slip_BLL();
+
         setBackground(Color.BLUE);
         setLayout(new BorderLayout(10,10));
 
@@ -138,144 +143,163 @@ public class PayPanel extends JPanel {
         add(panelTable, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
         
-        btnThem.addActionListener(e -> {
-            String PhieuTra = txtPhieuTra.getText();
-            String NgayTra = txtNgayTra.getText();
-            String PhieuMuon = txtPhieuMuon.getText();
-            String thuThu = txtThuThu.getText();
-            String soLuongSach = txtSoLuongSach.getText();
-            String PhiTreHan = txtPhiTreHan.getText();
-            String PhiHuHai = txtPhiHuHai.getText();
+        // btnThem.addActionListener(e -> {
+        //     String PhieuTra = txtPhieuTra.getText();
+        //     String NgayTra = txtNgayTra.getText();
+        //     String PhieuMuon = txtPhieuMuon.getText();
+        //     String thuThu = txtThuThu.getText();
+        //     String soLuongSach = txtSoLuongSach.getText();
+        //     String PhiTreHan = txtPhiTreHan.getText();
+        //     String PhiHuHai = txtPhiHuHai.getText();
 
-            boolean isDuplicate = false;
-            for(int i = 0; i < tableModel.getRowCount(); i++) {
-                String existingID = tableModel.getValueAt(i, 0).toString();
-                if(existingID.equalsIgnoreCase(PhieuTra)) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-            if(isDuplicate) {
-                JOptionPane.showMessageDialog(this,
-                "Mã phiếu trả đã tồn tại, vui lòng nhập mã khác!",
-                "Lỗi trùng mã",
-                JOptionPane.ERROR_MESSAGE);
-            } else {
-                tableModel.addRow((new Object[]{PhieuTra,PhieuMuon,thuThu,soLuongSach,NgayTra,PhiTreHan,PhiHuHai}));
-                JOptionPane.showMessageDialog(this, "Thêm phiếu trả mới thành công!");
+        //     boolean isDuplicate = false;
+        //     for(int i = 0; i < tableModel.getRowCount(); i++) {
+        //         String existingID = tableModel.getValueAt(i, 0).toString();
+        //         if(existingID.equalsIgnoreCase(PhieuTra)) {
+        //             isDuplicate = true;
+        //             break;
+        //         }
+        //     }
+        //     if(isDuplicate) {
+        //         JOptionPane.showMessageDialog(this,
+        //         "Mã phiếu trả đã tồn tại, vui lòng nhập mã khác!",
+        //         "Lỗi trùng mã",
+        //         JOptionPane.ERROR_MESSAGE);
+        //     } else {
+        //         tableModel.addRow((new Object[]{PhieuTra,PhieuMuon,thuThu,soLuongSach,NgayTra,PhiTreHan,PhiHuHai}));
+        //         JOptionPane.showMessageDialog(this, "Thêm phiếu trả mới thành công!");
 
-                int n = 0;
-                try {
-                    n = Integer.parseInt(soLuongSach);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Số lượng sách không hợp lệ!");
-                    return;
-                }
-                java.util.List<Object[]> detailsList = new ArrayList<>();
-                for(int i = 1; i <=n; i++) {
-                    String maChiTiet = PhieuTra + "-" + i;
-                    String maSachDetail = "";
-                    while (true) { 
-                        maSachDetail = JOptionPane.showInputDialog(this, "Nhập mã sách cho cuốn thứ " + i +":");
-                        if(maSachDetail == null || maSachDetail.trim().isEmpty()) {
-                            JOptionPane.showMessageDialog(this, "Mã sách không được để trống. Vui lòng nhập lại!");
-                        } else {
-                            break;
-                        }
-                    }
-                    String tenSachDetail = "";
-                    while (true) { 
-                        tenSachDetail = JOptionPane.showInputDialog(this,"Nhập tên sách cho cuốn thứ " + i + ":");
-                        if(tenSachDetail == null || tenSachDetail.trim().isEmpty()) {
-                            JOptionPane.showInputDialog(this, "Tên sách không được để trống. Vui lòng nhập lại!");
-                        } else {
-                            break;
-                        }
-                    }
-                    String tinhTrangHuHongStr = JOptionPane.showInputDialog(this, "Nhập tình trạng hư hỏng của cuốn sách thứ " + i + "(mặc định là 0):");
-                    int tinhTrangHuHong = 0;
-                    try {
-                        tinhTrangHuHong = Integer.parseInt(tinhTrangHuHongStr.trim());
-                    } catch (NumberFormatException ex) {
-                        tinhTrangHuHong = 0;
-                    }
-                    String phiPhatStr = JOptionPane.showInputDialog(this, "Nhập phí phạt của cuốn sách thứ " + i + "(mặc định là 0):");
-                    double phiPhat = 0;
-                    try {
-                        phiPhat = Double.parseDouble(phiPhatStr);
-                    } catch (NumberFormatException ex) {
-                        phiPhat = 0;
-                    }
-                    detailsList.add(new Object[]{maChiTiet,maSachDetail,tenSachDetail,tinhTrangHuHong,phiPhat});
-                }
-                payDetailsMap.put(PhieuTra, detailsList);
-            }
-        });
+        //         int n = 0;
+        //         try {
+        //             n = Integer.parseInt(soLuongSach);
+        //         } catch (NumberFormatException ex) {
+        //             JOptionPane.showMessageDialog(this, "Số lượng sách không hợp lệ!");
+        //             return;
+        //         }
+        //         java.util.List<Object[]> detailsList = new ArrayList<>();
+        //         for(int i = 1; i <=n; i++) {
+        //             String maChiTiet = PhieuTra + "-" + i;
+        //             String maSachDetail = "";
+        //             while (true) { 
+        //                 maSachDetail = JOptionPane.showInputDialog(this, "Nhập mã sách cho cuốn thứ " + i +":");
+        //                 if(maSachDetail == null || maSachDetail.trim().isEmpty()) {
+        //                     JOptionPane.showMessageDialog(this, "Mã sách không được để trống. Vui lòng nhập lại!");
+        //                 } else {
+        //                     break;
+        //                 }
+        //             }
+        //             String tenSachDetail = "";
+        //             while (true) { 
+        //                 tenSachDetail = JOptionPane.showInputDialog(this,"Nhập tên sách cho cuốn thứ " + i + ":");
+        //                 if(tenSachDetail == null || tenSachDetail.trim().isEmpty()) {
+        //                     JOptionPane.showInputDialog(this, "Tên sách không được để trống. Vui lòng nhập lại!");
+        //                 } else {
+        //                     break;
+        //                 }
+        //             }
+        //             String tinhTrangHuHongStr = JOptionPane.showInputDialog(this, "Nhập tình trạng hư hỏng của cuốn sách thứ " + i + "(mặc định là 0):");
+        //             int tinhTrangHuHong = 0;
+        //             try {
+        //                 tinhTrangHuHong = Integer.parseInt(tinhTrangHuHongStr.trim());
+        //             } catch (NumberFormatException ex) {
+        //                 tinhTrangHuHong = 0;
+        //             }
+        //             String phiPhatStr = JOptionPane.showInputDialog(this, "Nhập phí phạt của cuốn sách thứ " + i + "(mặc định là 0):");
+        //             double phiPhat = 0;
+        //             try {
+        //                 phiPhat = Double.parseDouble(phiPhatStr);
+        //             } catch (NumberFormatException ex) {
+        //                 phiPhat = 0;
+        //             }
+        //             detailsList.add(new Object[]{maChiTiet,maSachDetail,tenSachDetail,tinhTrangHuHong,phiPhat});
+        //         }
+        //         payDetailsMap.put(PhieuTra, detailsList);
+        //     }
+        // });
 
-        btnSua.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng muốn lưu thay đổi");
-                return;
-            }
-            tableModel.setValueAt(txtPhieuTra.getText(),selectedRow, 0);
-            tableModel.setValueAt(txtPhieuMuon.getText(), selectedRow, 1);
-            tableModel.setValueAt(txtThuThu.getText(), selectedRow, 2);
-            tableModel.setValueAt(txtSoLuongSach.getText(), selectedRow, 3);
-            tableModel.setValueAt(txtNgayTra.getText(),selectedRow,4);
-            tableModel.setValueAt(txtPhiTreHan.getText(), selectedRow, 5);
-            tableModel.setValueAt(txtPhiHuHai.getText(),selectedRow, 6);
-            JOptionPane.showMessageDialog(this, "Cập nhật phiếu trả thành công!");
-        });
+        table.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                int selectedRow = table.getSelectedRow();
+        
+        
+                // Hiển thị dữ liệu
+                txtPhieuTra.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                txtPhieuMuon.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                txtSoLuongSach.setText(tableModel.getValueAt(selectedRow, 3).toString());
+                txtNgayTra.setText(tableModel.getValueAt(selectedRow, 4).toString());
+                txtPhiTreHan.setText(tableModel.getValueAt(selectedRow, 5).toString());
+                txtPhiHuHai.setText(tableModel.getValueAt(selectedRow, 6).toString());
 
-        btnXoa.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
-                return;
-            }
-            tableModel.removeRow(selectedRow);
-            JOptionPane.showMessageDialog(this, "Xóa phiếu trả thành công!");
-        });
-
-        btnHuy.addActionListener(e -> {
-            txtPhieuTra.setText("");
-            txtPhieuMuon.setText("");
-            txtThuThu.setText("");
-            txtSoLuongSach.setText("");
-            txtNgayTra.setText("");
-            txtPhiTreHan.setText("");
-            txtPhiHuHai.setText("");
-            table.clearSelection();
-        });
-
-        btnTim.addActionListener(e -> {
-            String keyword = txtTuKhoa.getText().trim().toLowerCase();
-            if(!keyword .isEmpty()) {
-                for(int i = 0; i < tableModel.getRowCount(); i++) {
-                    String maPhieuTra = tableModel.getValueAt(i, 0).toString();
-                    if(maPhieuTra.contains(keyword)) {
-                        table.setRowSelectionInterval(i, i);
-                        break;
-                    }
-                }
+                txtPhieuMuon.setEditable(false);
+                txtSoLuongSach.setEditable(false);
+                txtPhiTreHan.setEditable(false);
+                txtPhiHuHai.setEditable(false);
             }
         });
 
-        btnXemChiTiet.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xem chi tiết!");
-                return;
-            }
-            Object[] payData = new Object[tableModel.getColumnCount()];
-            for(int i = 0; i < tableModel.getColumnCount(); i++) {
-                payData[i] = tableModel.getValueAt(selectedRow, i);
-            }
-            String phieuTra = payData[0].toString();
-            java.util.List<Object[]> detailsList = payDetailsMap.get(phieuTra);
-            new PayDetails(payData, detailsList);
-        });
+        // btnSua.addActionListener(e -> {
+        //     int selectedRow = table.getSelectedRow();
+        //     if(selectedRow == -1) {
+        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
+        //         return;
+        //     }
+        //     txtPhieuTra.setText(tableModel.getValueAt(selectedRow,0).toString());
+        //     txtPhieuMuon.setText(tableModel.getValueAt(selectedRow, 1).toString());
+        //     txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString());
+        //     txtSoLuongSach.setText(tableModel.getValueAt(selectedRow, 3).toString());
+        //     txtNgayTra.setText(tableModel.getValueAt(selectedRow,4).toString());
+        //     txtPhiTreHan.setText(tableModel.getValueAt(selectedRow, 5).toString());
+        //     txtPhiHuHai.setText(tableModel.getValueAt(selectedRow, 6).toString());
+        // });
+
+        // btnXoa.addActionListener(e -> {
+        //     int selectedRow = table.getSelectedRow();
+        //     if(selectedRow == -1) {
+        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
+        //         return;
+        //     }
+        //     tableModel.removeRow(selectedRow);
+        //     JOptionPane.showMessageDialog(this, "Xóa phiếu trả thành công!");
+        // });
+
+        // btnHuy.addActionListener(e -> {
+        //     txtPhieuTra.setText("");
+        //     txtPhieuMuon.setText("");
+        //     txtThuThu.setText("");
+        //     txtSoLuongSach.setText("");
+        //     txtNgayTra.setText("");
+        //     txtPhiTreHan.setText("");
+        //     txtPhiHuHai.setText("");
+        // });
+
+        // btnTim.addActionListener(e -> {
+        //     String keyword = txtTuKhoa.getText().trim().toLowerCase();
+        //     if(!keyword .isEmpty()) {
+        //         for(int i = 0; i < tableModel.getRowCount(); i++) {
+        //             String maPhieuTra = tableModel.getValueAt(i, 0).toString();
+        //             if(maPhieuTra.contains(keyword)) {
+        //                 table.setRowSelectionInterval(i, i);
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // });
+
+        // btnXemChiTiet.addActionListener(e -> {
+        //     int selectedRow = table.getSelectedRow();
+        //     if(selectedRow == -1) {
+        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xem chi tiết!");
+        //         return;
+        //     }
+        //     Object[] payData = new Object[tableModel.getColumnCount()];
+        //     for(int i = 0; i < tableModel.getColumnCount(); i++) {
+        //         payData[i] = tableModel.getValueAt(selectedRow, i);
+        //     }
+        //     String phieuTra = payData[0].toString();
+        //     java.util.List<Object[]> detailsList = payDetailsMap.get(phieuTra);
+        //     new PayDetails(payData, detailsList);
+        // });
 
         add(panelTable, BorderLayout.CENTER);
 

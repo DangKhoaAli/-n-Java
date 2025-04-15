@@ -10,11 +10,12 @@ public class person{
     private String address;
     private String phone;
     private String email;
+    private String exist;
     
     public person(){
 
     }
-    public person(String ID, String name, String gender, LocalDate birth, String address, String phone, String email){
+    public person(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, String exist){
         this.ID = ID;
         this.name = name;
         this.gender = gender;
@@ -22,6 +23,7 @@ public class person{
         this.address = address;
         this.phone = phone;
         this.email = email;
+        this.exist = exist;
     }
 
 // ------Các phương thức Get/Set--------//
@@ -70,6 +72,13 @@ public class person{
     }
     public void setEmail(String email){
         this.email = email;
+    }
+
+    public String getExist(){
+        return this.exist;
+    }
+    public void setExist(String exist){
+        this.exist = exist;
     }
     
 }

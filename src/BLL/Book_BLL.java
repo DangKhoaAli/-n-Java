@@ -38,7 +38,7 @@ public class Book_BLL {
         }
     }
 
-    public String addBook(String ID, String name, String author, String categoty, String supplier, String year, String page_num, String quanlity, String price, String loan_fee){
+    public String addBook(String ID, String name, String author, String categoty, String quanlity, String price, String loan_fee){
         try {
             if (ID == null || ID.isEmpty() ) {
                 return "ID không được để trống!";
@@ -61,26 +61,6 @@ public class Book_BLL {
                 return "The loai khong duoc de trong!";
             }
 
-            if (supplier == null || supplier.isEmpty()){
-                return "Nha cung cap khong duoc de trong!";
-            }
-
-            if (year == null){
-                return "Nam xuat ban khong duoc de trong!";
-            }
-
-            if (Integer.parseInt(year) <=0){
-                return "Nam xuat ban khong the nho hon 0!";
-            }
-
-            if (page_num == null){
-                return "So trang khong duoc de trong!";
-            }
-
-            if (Integer.parseInt(page_num) <=0){
-                return "So trang khong the nho hon 0!";
-            }
-
             if (quanlity == null){
                 return "So luong khong duoc de trong!";
             }
@@ -105,7 +85,7 @@ public class Book_BLL {
                 return "Gia muon sach khong the nho hon 0!";
             }
 
-            book_DAO.addBook(ID, name, author, categoty, supplier, Integer.parseInt(year), Integer.parseInt(page_num), Integer.parseInt(quanlity), Float.parseFloat(price), Float.parseFloat(loan_fee));
+            book_DAO.addBook(ID, name, author, categoty, Integer.parseInt(quanlity), Float.parseFloat(price), Float.parseFloat(loan_fee));
             return "Da them thanh cong sach!";
 
         } catch (SQLException e){
@@ -116,7 +96,7 @@ public class Book_BLL {
         }
     }
 
-    public String updateBooks(String ID, String name, String author, String categoty, String supplier, String year, String page_num, String quanlity, String price, String loan_fee){
+    public String updateBooks(String ID, String name, String author, String categoty, String quanlity, String price, String loan_fee){
         try {
             if (ID == null || ID.isEmpty() ) {
                 return "ID không được để trống!";
@@ -139,26 +119,6 @@ public class Book_BLL {
                 return "The loai khong duoc de trong!";
             }
 
-            if (supplier == null || supplier.isEmpty()){
-                return "Nha cung cap khong duoc de trong!";
-            }
-
-            if (year == null){
-                return "Nam xuat ban khong duoc de trong!";
-            }
-
-            if (Integer.parseInt(year) <=0){
-                return "Nam xuat ban khong the nho hon 0!";
-            }
-
-            if (page_num == null){
-                return "So trang khong duoc de trong!";
-            }
-
-            if (Integer.parseInt(page_num) <=0){
-                return "So trang khong the nho hon 0!";
-            }
-
             if (quanlity == null){
                 return "So luong khong duoc de trong!";
             }
@@ -183,7 +143,7 @@ public class Book_BLL {
                 return "Gia muon sach khong the nho hon 0!";
             }
 
-            book_DAO.updateBooks(ID, name, author, categoty, supplier, Integer.parseInt(year), Integer.parseInt(page_num), Integer.parseInt(quanlity), Float.parseFloat(price), Float.parseFloat(loan_fee));
+            book_DAO.updateBooks(ID, name, author, categoty, Integer.parseInt(quanlity), Float.parseFloat(price), Float.parseFloat(loan_fee));
             return "Da cap nhap thanh cong sach!";
 
         } catch (SQLException e){
