@@ -5,9 +5,6 @@ public class Books {
     private String name;
     private String author;
     private String category;
-    private String supplier;
-    private int year;
-    private int page_num;
     private int quanlity;
     private float price;
     private float loan_fee;
@@ -16,14 +13,11 @@ public class Books {
     public Books(){
 
     }
-    public Books(String ID, String name, String author, String category, String supplier, int yaer, int page_num, int quanlity, float price, float loan_fee, String exist){
+    public Books(String ID, String name, String author, String category, int quanlity, float price, float loan_fee, String exist){
         this.ID = ID;
         this.name = name;
         this.author = author;
         this.category = category;
-        this.supplier = supplier;
-        this.year = yaer;
-        this.page_num = page_num;
         this.quanlity = quanlity;
         this.price = price;
         this.loan_fee = loan_fee;
@@ -58,31 +52,11 @@ public class Books {
         this.category = category;
     }
 
-    public String getSupplier(){
-        return this.supplier;
-    }
-    public void setSupplier(String supplier){
-        this.supplier = supplier;
-    }
-
-    public int getYear(){
-        return this.year;
-    }
-    public void setYear(int year){
-        this.year = year;
-    }
-
-    public int getPage_num(){
-        return this.page_num;
-    }
-    public void setPage_num(int page_num){
-        this.page_num = page_num;
-    }
-
-    public int getQuanlity(){
+    public int getQuanlity() {
         return this.quanlity;
     }
-    public void setQuanlity(int quanlity){
+
+    public void setQuanlity(int quanlity) {
         this.quanlity = quanlity;
     }
 

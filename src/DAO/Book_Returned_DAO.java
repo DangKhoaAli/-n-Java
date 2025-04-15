@@ -71,4 +71,16 @@ public class Book_Returned_DAO {
         }
     }
 
+    public int getStatus_Book(String ID_Book) throws SQLException {
+        String sql = "SELECT status FROM Book_Details_Returned WHERE ID_Book = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, ID_Book);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("status");
+            }
+        }
+        return 0;
+
+    }
 }

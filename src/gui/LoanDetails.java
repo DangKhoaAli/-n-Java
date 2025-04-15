@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import BLL.Borrow_Details_BLL;
@@ -22,7 +24,6 @@ public class LoanDetails extends JFrame {
 
     private JButton btnThem;
     private JButton btnSua;
-    private JButton btnLuu;
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnDong;
@@ -52,6 +53,25 @@ public class LoanDetails extends JFrame {
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
         panelInput.setBackground(Color.BLUE);
 
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        // Lấy trạng thái và số trang hư hỏng từ bảng
+                        String maSach = tableModel.getValueAt(selectedRow, 1).toString();
+                        String tenSach = tableModel.getValueAt(selectedRow, 2).toString();
+                        String phiMuon = tableModel.getValueAt(selectedRow, 3).toString();
+                        // Đẩy xuống textfield
+                        txtMaSach.setText(maSach);
+                        txtTenSach.setText(tenSach);
+                        txtPhiMuon.setText(phiMuon);
+                    }
+                }
+            }
+        });
+
         txtMaSach = new JTextField();
         txtMaSach.setBorder(BorderFactory.createTitledBorder("Mã sách *"));
         txtTenSach = new JTextField();
@@ -70,14 +90,12 @@ public class LoanDetails extends JFrame {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnLuu = new JButton("Lưu");
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         btnDong = new JButton("Đóng");
 
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnLuu);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnDong);
@@ -139,6 +157,7 @@ public class LoanDetails extends JFrame {
         //     }
         //     tableModel.removeRow(selectedRow);
         // });
+
 
         btnHuy.addActionListener(e -> {
             txtMaSach.setText("");

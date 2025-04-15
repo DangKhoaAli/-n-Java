@@ -3,15 +3,21 @@ package model;
 public class Book_Details {
     private String ID_Details;
     private String ID_Book;
+    private String supplier;
+    private int year;
+    private int page_num;
     private String status;
     private int page_num_dama;
 
     public Book_Details(){
 
     }
-    public Book_Details(String ID_Details, String ID_Book, String status, int page_num_dama){
+    public Book_Details(String ID_Details, String ID_Book, String supplier, int year, int page_num, String status, int page_num_dama){
         this.ID_Details = ID_Details;
         this.ID_Book = ID_Book;
+        this.supplier = supplier;
+        this.year = year;
+        this.page_num = page_num;
         this.status = status;
         this.page_num_dama = page_num_dama;
     }
@@ -28,6 +34,27 @@ public class Book_Details {
     }
     public void setID_Book(String ID_Book) {
         this.ID_Book = ID_Book;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public int getYear() {
+        return year;
+    }
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getPage_num() {
+        return page_num;
+    }
+    public void setPage_num(int page_num) {
+        this.page_num = page_num;
     }
 
     public String getStatus() {

@@ -3,6 +3,8 @@ package gui;
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import BLL.Pay_slip_BLL;
@@ -24,7 +26,6 @@ public class PayPanel extends JPanel {
 
     private JButton btnThem;
     private JButton btnSua;
-    private JButton btnLuu;
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnTim;
@@ -52,6 +53,25 @@ public class PayPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
+        
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                // Tránh xử lý hai lần (khi bắt đầu và khi kết thúc)
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        txtPhieuTra.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                        txtPhieuMuon.setText(tableModel.getValueAt(selectedRow, 1).toString());
+                        txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                        txtSoLuongSach.setText(tableModel.getValueAt(selectedRow, 3).toString());
+                        txtNgayTra.setText(tableModel.getValueAt(selectedRow, 4).toString());
+                        txtPhiTreHan.setText(tableModel.getValueAt(selectedRow, 5).toString());
+                        txtPhiHuHai.setText(tableModel.getValueAt(selectedRow, 6).toString());
+                    }
+                }
+            }
+        });
 
         txtPhieuTra = new JTextField();
         txtPhieuTra.setBorder(BorderFactory.createTitledBorder("Mã phiếu trả"));
@@ -70,9 +90,13 @@ public class PayPanel extends JPanel {
 
         txtPhiTreHan = new JTextField();
         txtPhiTreHan.setBorder(BorderFactory.createTitledBorder("Phí trễ hạn"));
+        txtPhiTreHan.setEditable(false);
+        txtPhiTreHan.setText("0");
 
         txtPhiHuHai = new JTextField();
         txtPhiHuHai.setBorder(BorderFactory.createTitledBorder("Phí hư hại"));
+        txtPhiHuHai.setEditable(false);
+        txtPhiHuHai.setText("0");
 
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
@@ -99,14 +123,12 @@ public class PayPanel extends JPanel {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnLuu = new JButton("Lưu");
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         btnXemChiTiet = new JButton("Xem chi tiết");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnLuu);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnXemChiTiet);

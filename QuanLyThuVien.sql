@@ -1,4 +1,4 @@
-    create database quanlythuvien;
+create database QLTV;
 
     create table Reader(
         ID varchar(20) primary key,
@@ -18,26 +18,25 @@
         name varchar(255),
         author varchar(50),
         category varchar(50),
-        supplier varchar(255),
-        year int,
-        page_num int,
         quanlity int,
         price decimal(10,2),
         loan_fee decimal(10,2),
-        exist enum ('0', '1') not null,
-        constraint chk_fee check (loan_fee>=0 and price>0 and price>loan_fee)
+        exist enum ('0', '1') not null
     );
 
     create table Book_Details(
         ID varchar(20),
         ID_Book varchar(20),
+        supplier varchar(255),
+        year int,
+        page_num int,
         status varchar(50),
         num_page_dama int,
         primary key (ID, ID_Book),
         foreign key (ID_Book) references Book(ID)
     );
 
-    create table Staff(
+create table Staff(
         ID varchar(20) primary key,
         name varchar(30) not null,
         gender enum ('Nam','Nu') not null,
@@ -47,6 +46,7 @@
         email varchar(100),
         wage decimal(10,2),
         exist enum('0', '1') not null,
+        matkhau varchar(20),
         check(wage >= 0)
     );
 

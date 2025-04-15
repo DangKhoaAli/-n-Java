@@ -1,18 +1,14 @@
 package gui;
 
-import java.awt.*;
-import java.time.LocalDate;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
-import java.util.List;
-
-
 import BLL.Book_BLL;
-import model.Books;
-import model.Reader;
 import BLL.Book_Details_BLL;
+import java.awt.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import model.Books;
 
 public class BookPanel extends JPanel {
     private Book_BLL book_BLL;
@@ -25,9 +21,6 @@ public class BookPanel extends JPanel {
     private JTextField txtTenSach;
     private JTextField txtTheLoai;
     private JTextField txtTacGia;
-    private JTextField txtNCC;
-    private JTextField txtNXB;
-    private JTextField txtSoTrang;
     private JTextField txtGia;
     private JTextField txtPhiMuon;
     private JTextField txtSoLuong;
@@ -37,7 +30,6 @@ public class BookPanel extends JPanel {
 
     private JButton btnThem;
     private JButton btnSua;
-    private JButton btnLuu;
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnTim;
@@ -52,15 +44,34 @@ public class BookPanel extends JPanel {
         setLayout(new BorderLayout(10,10));
         JPanel panelTable = new JPanel(new BorderLayout());
         panelTable.setBackground(Color.BLUE);
-        String[] columnNames = {"Mã sách", "Tên sách", "Thể loại", "Tác giá", "Nhà cung cấp","Năm xuất bản", "Số trang", "Giá", "Phí mượn","Số lượng", "Tồn tại"};
+        String[] columnNames = {"Mã sách", "Tên sách", "Thể loại", "Tác giá", "Giá", "Phí mượn","Số lượng", "Tồn tại"};
         tableModel = new DefaultTableModel(columnNames,0);
-        tableModel.addRow(new Object[]{"1","Pháp luật","Giáo dục","Nhiều tác giả","BGD","2005","500","15000","2000","5"});
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
         table.setSelectionBackground(Color.YELLOW);
+
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
+
+        // // Tự động đẩy dữ liệu khi chọn dòng
+        // table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        //     @Override
+        //     public void valueChanged(ListSelectionEvent e) {
+        //         if (!e.getValueIsAdjusting()) {
+        //             int selectedRow = table.getSelectedRow();
+        //             if (selectedRow != -1) {
+        //                 txtMaSach.setText(tableModel.getValueAt(selectedRow, 0).toString());
+        //                 txtTenSach.setText(tableModel.getValueAt(selectedRow, 1).toString());
+        //                 txtTheLoai.setText(tableModel.getValueAt(selectedRow, 2).toString());
+        //                 txtTacGia.setText(tableModel.getValueAt(selectedRow, 3).toString());
+        //                 txtGia.setText(tableModel.getValueAt(selectedRow, 4).toString());
+        //                 txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 5).toString());
+        //                 txtSoLuong.setText(tableModel.getValueAt(selectedRow, 6).toString());
+        //             }
+        //         }
+        //     }
+        // });
 
         txtMaSach = new JTextField();
         txtMaSach.setBorder(BorderFactory.createTitledBorder("Mã sách"));
@@ -73,15 +84,6 @@ public class BookPanel extends JPanel {
 
         txtTacGia = new JTextField();
         txtTacGia.setBorder(BorderFactory.createTitledBorder("Tác giả"));
-
-        txtNCC = new JTextField();
-        txtNCC.setBorder(BorderFactory.createTitledBorder("Nhà cung cấp"));
-
-        txtNXB = new JTextField();
-        txtNXB.setBorder(BorderFactory.createTitledBorder("Năm xuất bản"));
-
-        txtSoTrang = new JTextField();
-        txtSoTrang.setBorder(BorderFactory.createTitledBorder("Số trang"));
 
         txtGia = new JTextField();
         txtGia.setBorder(BorderFactory.createTitledBorder("Giá"));
@@ -99,9 +101,6 @@ public class BookPanel extends JPanel {
         panelInput.add(txtTenSach);
         panelInput.add(txtTheLoai);
         panelInput.add(txtTacGia);
-        panelInput.add(txtNCC);
-        panelInput.add(txtNXB);
-        panelInput.add(txtSoTrang);
         panelInput.add(txtGia);
         panelInput.add(txtPhiMuon);
         panelInput.add(txtSoLuong);
@@ -120,14 +119,12 @@ public class BookPanel extends JPanel {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnLuu = new JButton("Lưu");
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         btnXemChiTiet = new JButton("Xem chi tiết");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnLuu);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnXemChiTiet);
@@ -137,22 +134,22 @@ public class BookPanel extends JPanel {
             String tenSach = txtTenSach.getText().trim();
             String theLoai = txtTheLoai.getText().trim();
             String tacGia = txtTacGia.getText().trim();
-            String nhaCungCap = txtNCC.getText().trim();
-            String namXuatBan = txtNXB.getText().trim();
-            String soTrang = txtSoTrang.getText().trim();
             String gia = txtGia.getText().trim();
             String phiMuon = txtPhiMuon.getText().trim();
             String soLuong = txtSoLuong.getText().trim();
 
-            String result = book_BLL.addBook(maSach, tenSach, tacGia, theLoai, nhaCungCap, namXuatBan, soTrang, soLuong, gia, phiMuon);
+            String result = book_BLL.addBook(maSach, tenSach, tacGia, theLoai, soLuong, gia, phiMuon);
             JOptionPane.showMessageDialog(this, result);
 
             if(result.equals("Da them thanh cong sach!")) {
                 int soluong = Integer.parseInt(soLuong);
+                String nhaCungCap = JOptionPane.showInputDialog(this, "Nhà cung cấp:");
+                String namXuatBan = JOptionPane.showInputDialog(this, "Năm xuất bản:");
+                String soTrang = JOptionPane.showInputDialog(this, "Số trang:");
                 for(int i = 1; i<=soluong; i++){
                     String maChiTiet = maSach + "_" + i;
                     
-                    String result1 = book_details_BLL.addBook(maChiTiet, maSach, "Hiện có", "0");
+                    String result1 = book_details_BLL.addBook(maChiTiet, maSach, nhaCungCap, namXuatBan, soTrang, "Hiện có", "0");
                     JOptionPane.showMessageDialog(this, result1);
                 }
             }
@@ -165,7 +162,7 @@ public class BookPanel extends JPanel {
                 int selectedRow = table.getSelectedRow();
         
                 // Lấy giá trị số lượng
-                String tontaiStr = tableModel.getValueAt(selectedRow, 10).toString();
+                String tontaiStr = tableModel.getValueAt(selectedRow, 7).toString();
                 int tontai = Integer.parseInt(tontaiStr);
         
                 // Hiển thị dữ liệu
@@ -173,12 +170,9 @@ public class BookPanel extends JPanel {
                 txtTenSach.setText(tableModel.getValueAt(selectedRow, 1).toString());
                 txtTheLoai.setText(tableModel.getValueAt(selectedRow, 2).toString());
                 txtTacGia.setText(tableModel.getValueAt(selectedRow, 3).toString());
-                txtNCC.setText(tableModel.getValueAt(selectedRow, 4).toString());
-                txtNXB.setText(tableModel.getValueAt(selectedRow, 5).toString());
-                txtSoTrang.setText(tableModel.getValueAt(selectedRow, 6).toString());
-                txtGia.setText(tableModel.getValueAt(selectedRow, 7).toString());
-                txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 8).toString());
-                txtSoLuong.setText(tableModel.getValueAt(selectedRow, 9).toString());
+                txtGia.setText(tableModel.getValueAt(selectedRow, 4).toString());
+                txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 5).toString());
+                txtSoLuong.setText(tableModel.getValueAt(selectedRow, 6).toString());
         
                 // Nếu số lượng = 0, thì không cho chỉnh sửa
                 boolean editable = tontai > 0;
@@ -186,9 +180,6 @@ public class BookPanel extends JPanel {
                 txtTenSach.setEnabled(editable);
                 txtTheLoai.setEnabled(editable);
                 txtTacGia.setEnabled(editable);
-                txtNCC.setEnabled(editable);
-                txtNXB.setEnabled(editable);
-                txtSoTrang.setEnabled(editable);
                 txtGia.setEnabled(editable);
                 txtPhiMuon.setEnabled(editable);
         
@@ -206,16 +197,13 @@ public class BookPanel extends JPanel {
                 String tenSach = txtTenSach.getText();
                 String tacgia = txtTacGia.getText();
                 String theloai = txtTheLoai.getText(); 
-                String NCC = txtNCC.getText();
-                String NXB = txtNXB.getText();
                 String soluong = txtSoLuong.getText();
-                String sotrang = txtSoTrang.getText();
                 String gia = txtGia.getText();
                 String phimuon = txtPhiMuon.getText();
                 
         
                 // Gọi phương thức updateReader
-                String result = book_BLL.updateBooks(maSach, tenSach, tacgia, theloai, NCC, NXB, sotrang, soluong, gia, phimuon);
+                String result = book_BLL.updateBooks(maSach, tenSach, tacgia, theloai, soluong, gia, phimuon);
                 
                 // Hiển thị thông báo từ kết quả trả về
                 JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -254,12 +242,6 @@ public class BookPanel extends JPanel {
             txtTheLoai.setEnabled(true);
             txtTacGia.setText("");
             txtTacGia.setEnabled(true);
-            txtNCC.setText("");
-            txtNCC.setEnabled(true);
-            txtNXB.setText("");
-            txtNXB.setEnabled(true);
-            txtSoTrang.setText("");
-            txtSoTrang.setEnabled(true);
             txtGia.setText("");
             txtGia.setEnabled(true);
             txtPhiMuon.setText("");
@@ -285,9 +267,6 @@ public class BookPanel extends JPanel {
                             book.getName(),
                             book.getCategory(),
                             book.getAuthor(),
-                            book.getSupplier(),
-                            book.getYear(),
-                            book.getPage_num(),
                             book.getPrice(),
                             book.getLoan_fee(),
                             book.getQuanlity(),
@@ -339,9 +318,6 @@ public class BookPanel extends JPanel {
                     book.getName(),
                     book.getCategory(),
                     book.getAuthor(),
-                    book.getSupplier(),
-                    book.getYear(),
-                    book.getPage_num(),
                     book.getPrice(),
                     book.getLoan_fee(),
                     book.getQuanlity(),

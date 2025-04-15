@@ -18,14 +18,15 @@ public class Book_Details_DAO {
 
     // Lấy danh sách chi tiết sách
     public List<String> getALL_Book_Details(String ID) throws SQLException{
-        String sql = "SELECT ID, status, num_page_dama FROM Book_Details "+
+        String sql = "SELECT ID, supplier, year, page_num, status, num_page_dama FROM Book_Details "+
                       "WHERE ID_Book = ?";
         List<String> Book_Details = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Book_Details.add(rs.getString("ID") + ";" + rs.getString("status") + ";" + rs.getInt("num_page_dama"));
+                Book_Details.add(rs.getString("ID") + ";" + rs.getString("supplier") + ";" + rs.getInt("year") + ";" + 
+                                 rs.getInt("page_num") + ";" + rs.getString("status") + ";" + rs.getInt("num_page_dama"));
 
             }
         }
@@ -46,26 +47,33 @@ public class Book_Details_DAO {
     }
 
     // Thêm 1 chi tiết sách
-    public void addBook_Details(String ID, String ID_Book, String status, int num_page_dama) throws SQLException{
-        String sql = "INSERT INTO Book_Details (ID, ID_Book, status, num_page_dama) VALUES (?, ?, ?, ?)";
+    public void addBook_Details(String ID, String ID_Book, String supplier, int year, int page_num, String status, int num_page_dama) throws SQLException{
+        String sql = "INSERT INTO Book_Details (ID, ID_Book, supplier, year, page_num, status, num_page_dama) VALUES (?, ?, ?, ?, ?, ?, ?)";
+         // Kiểm tra ID có tồn tại trong bảng Book_Details không
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID);
             ps.setString(2, ID_Book);
-            ps.setString(3, status);
-            ps.setInt(4, num_page_dama);
+            ps.setString(3, supplier);
+            ps.setInt(4, year); 
+            ps.setInt(5, page_num);
+            ps.setString(6, status);
+            ps.setInt(7, num_page_dama);
             ps.executeUpdate();
 
         }
     }
 
     // Cập nhập 1 chi tiết sách
-    public void updateBook_Detail(String ID, String ID_Book, String status, int num_page_dama) throws SQLException{
-        String sql = "UPDATE Book_Details SET status = ?, num_page_dama = ? WHERE ID = ? AND ID_Book = ?";
+    public void updateBook_Detail(String ID, String ID_Book, String supplier, int year, int page_num, String status, int num_page_dama) throws SQLException{
+        String sql = "UPDATE Book_Details SET supplier = ?, year = ?, page_num = ?, status = ?, num_page_dama = ? WHERE ID = ? AND ID_Book = ?";
         try(PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setString(1, status);
-            ps.setInt(2, num_page_dama);
-            ps.setString(3, ID);
-            ps.setString(4, ID_Book);
+            ps.setString(1, supplier);
+            ps.setInt(2, year);
+            ps.setInt(3, page_num);
+            ps.setString(4, status);
+            ps.setInt(5, num_page_dama);
+            ps.setString(6, ID);
+            ps.setString(7, ID_Book);
             ps.executeUpdate();
         }
     }
@@ -122,5 +130,17 @@ public class Book_Details_DAO {
             ps.setString(2, ID);
             ps.executeUpdate();
         }
+    }
+
+    public int getStatus_Book(String ID) throws SQLException{
+        String sql = "SELECT status FROM Book_Details WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, ID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                return rs.getInt("status");
+            }
+        }
+        return 0;
     }
 }

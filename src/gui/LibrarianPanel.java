@@ -1,15 +1,15 @@
 package gui;
 
+import BLL.Staff_BLL;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
-import BLL.Staff_BLL;
 import model.Staff;
 
 public class LibrarianPanel extends JPanel {
@@ -31,7 +31,6 @@ public class LibrarianPanel extends JPanel {
 
     private JButton btnThem;
     private JButton btnSua;
-    private JButton btnLuu;
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnTim;
@@ -53,6 +52,28 @@ public class LibrarianPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
+
+        // Tự động đẩy dữ liệu khi chọn dòng
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                // Tránh xử lý hai lần (khi bắt đầu và khi kết thúc)
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        txtMaThuThu.setText(tableModel.getValueAt(selectedRow, 0).toString());
+                        txtTenThuThu.setText(tableModel.getValueAt(selectedRow, 1).toString());
+                        txtGioiTinh.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                        txtNgaySinh.setText(tableModel.getValueAt(selectedRow, 3).toString());
+                        txtSoDienThoai.setText(tableModel.getValueAt(selectedRow, 4).toString());
+                        txtDiaChi.setText(tableModel.getValueAt(selectedRow, 5).toString());
+                        txtEmail.setText(tableModel.getValueAt(selectedRow, 6).toString());
+                        txtLuong.setText(tableModel.getValueAt(selectedRow, 7).toString());
+                    }
+                }
+            }
+        });     
+
 
         txtMaThuThu = new JTextField();
         txtMaThuThu.setBorder(BorderFactory.createTitledBorder("Mã thủ thư"));
@@ -104,13 +125,11 @@ public class LibrarianPanel extends JPanel {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnLuu = new JButton("Lưu");
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnLuu);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         
@@ -139,22 +158,6 @@ public class LibrarianPanel extends JPanel {
         });
 
         btnSua.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
-                return;
-            }
-            txtMaThuThu.setText(tableModel.getValueAt(selectedRow,0).toString());
-            txtTenThuThu.setText(tableModel.getValueAt(selectedRow,1).toString());
-            txtGioiTinh.setText(tableModel.getValueAt(selectedRow, 2).toString());
-            txtNgaySinh.setText(tableModel.getValueAt(selectedRow, 3).toString());
-            txtSoDienThoai.setText(tableModel.getValueAt(selectedRow, 4).toString());
-            txtDiaChi.setText(tableModel.getValueAt(selectedRow, 5).toString());
-            txtEmail.setText(tableModel.getValueAt(selectedRow, 6).toString());
-            txtLuong.setText(tableModel.getValueAt(selectedRow, 7).toString());
-        });
-
-        btnLuu.addActionListener(e -> {
             try{
                 // Lấy dữ liệu từ các ô nhập
                 String maThuthu = txtMaThuThu.getText();
@@ -203,6 +206,7 @@ public class LibrarianPanel extends JPanel {
             txtDiaChi.setText("");
             txtEmail.setText("");
             txtLuong.setText("");
+            table.clearSelection();
         });
 
         btnTim.addActionListener(e -> {

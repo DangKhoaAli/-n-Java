@@ -1,11 +1,11 @@
 package gui;
+import BLL.Book_Details_BLL;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
-import BLL.Book_Details_BLL;
-import model.Books;
 
 public class BookDetails extends JFrame {
     private BookPanel bookPanel;
@@ -13,12 +13,14 @@ public class BookDetails extends JFrame {
     private JTable table;
     private DefaultTableModel tableModel;
 
+    private JTextField txtNhaCungCap;
+    private JTextField txtNamXuatBan;
+    private JTextField txtSoTrang;
     private JTextField txtTrangThai;
     private JTextField txtSoTrangHuHong;
 
     private JButton btnThem;
     private JButton btnSua;
-    private JButton btnLuu;
     private JButton btnXoa;
     private JButton btnHuy;
     private JButton btnDong;
@@ -38,7 +40,7 @@ public class BookDetails extends JFrame {
         getContentPane().setBackground(Color.BLUE);
         
         // --- Bảng chi tiết ---
-        String[] columnNames = {"Mã chi tiết sách", "Trạng thái", "Số trang hư hỏng"};
+        String[] columnNames = {"Mã chi tiết sách", "Nhà cung câp", "Năm xuất bản", "Số trang", "Trạng thái", "Số trang hư hỏng"};
         tableModel = new DefaultTableModel(columnNames, 0);
         
         table = new JTable(tableModel);
@@ -47,17 +49,44 @@ public class BookDetails extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
         add(scrollPane, BorderLayout.CENTER);
-        
+
+        // Tự động nạp dữ liệu xuống textfield khi chọn dòng
+        // table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        //     @Override
+        //     public void valueChanged(ListSelectionEvent e) {
+        //         if (!e.getValueIsAdjusting()) {
+        //             int selectedRow = table.getSelectedRow();
+        //             if (selectedRow != -1) {
+        //                 // Lấy trạng thái và số trang hư hỏng từ bảng
+        //                 String trangThai = tableModel.getValueAt(selectedRow, 1).toString();
+        //                 String soTrangHuHong = tableModel.getValueAt(selectedRow, 2).toString();
+        //                 // Đẩy xuống textfield
+        //                 txtTrangThai.setText(trangThai);
+        //                 txtSoTrangHuHong.setText(soTrangHuHong);
+        //             }
+        //         }
+        //     }
+        // });
+
         // Panel nhập chi tiết
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
         panelInput.setBackground(Color.BLUE);
         
+        txtNhaCungCap = new JTextField();
+        txtNhaCungCap.setBorder(BorderFactory.createTitledBorder("Nhà cung cấp"));
+        txtNamXuatBan = new JTextField();
+        txtNamXuatBan.setBorder(BorderFactory.createTitledBorder("Năm xuất bản"));
+        txtSoTrang = new JTextField();
+        txtSoTrang.setBorder(BorderFactory.createTitledBorder("Số trang"));
         txtTrangThai = new JTextField();
         txtTrangThai.setBorder(BorderFactory.createTitledBorder("Trạng thái"));
         txtSoTrangHuHong = new JTextField();
         txtSoTrangHuHong.setBorder(BorderFactory.createTitledBorder("Số trang hư hỏng"));
         
+        panelInput.add(txtNhaCungCap);
+        panelInput.add(txtNamXuatBan);
+        panelInput.add(txtSoTrang);
         panelInput.add(txtTrangThai);
         panelInput.add(txtSoTrangHuHong);
         
@@ -66,14 +95,12 @@ public class BookDetails extends JFrame {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnLuu = new JButton("Lưu");
         btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
         btnDong = new JButton("Đóng");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnLuu);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnDong);
@@ -90,10 +117,13 @@ public class BookDetails extends JFrame {
         btnThem.addActionListener(e -> {
             String bookCode = bookData[0].toString();
             String maChiTiet = bookCode + "_" + (tableModel.getRowCount() + 1);
+            String nhaCungCap = txtNhaCungCap.getText().trim();
+            String namXuatBan = txtNamXuatBan.getText().trim();
+            String soTrang = txtSoTrang.getText().trim();
             String trangThai = txtTrangThai.getText().trim();
             String soTrangHuHongStr = txtSoTrangHuHong.getText().trim();
 
-            String result = book_BLL.addBook(maChiTiet, bookCode, trangThai, soTrangHuHongStr);
+            String result = book_BLL.addBook(maChiTiet, bookCode, nhaCungCap, namXuatBan, soTrang, trangThai, soTrangHuHongStr);
             JOptionPane.showMessageDialog(this, result);
 
             loadBookDetails(bookCode);
@@ -129,10 +159,13 @@ public class BookDetails extends JFrame {
 
             String bookCode = bookData[0].toString();
             String maChiTiet = tableModel.getValueAt(selectedRow, 0).toString();
+            String nhaCungCap = txtNhaCungCap.getText().trim();
+            String namXuatBan = txtNamXuatBan.getText().trim();
+            String soTrang = txtSoTrang.getText().trim();
             String trangThai = txtTrangThai.getText().trim();
             String soTrangHuHong = txtSoTrangHuHong.getText().trim();
 
-            String result = book_BLL.updateBook(maChiTiet, bookCode, trangThai, soTrangHuHong);
+            String result = book_BLL.updateBook(maChiTiet, bookCode, nhaCungCap, namXuatBan, soTrang, trangThai, soTrangHuHong);
             JOptionPane.showMessageDialog(this, result);
             loadBookDetails(bookCode);
         });
@@ -156,7 +189,6 @@ public class BookDetails extends JFrame {
             txtSoTrangHuHong.setText("");
             txtSoTrangHuHong.setEnabled(true);
             table.clearSelection();
-
         });
 
         try {
@@ -171,7 +203,7 @@ public class BookDetails extends JFrame {
             bookPanel.loadBook();
         });
         
-        setSize(600, 600);
+        setSize(800, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
@@ -186,8 +218,12 @@ public class BookDetails extends JFrame {
             for (String book  : books) {
                 tableModel.addRow(new Object[]{
                     book.split(";")[0], // Mã chi tiết sách
-                    book.split(";")[1], // Trạng thái
-                    book.split(";")[2]  // Số trang hư hỏng
+                    book.split(";")[1], // Nhà cung cấp
+                    book.split(";")[2], // Năm xuất bản
+                    book.split(";")[3], // Số trang
+                    book.split(";")[4], // Trạng thái
+                    book.split(";")[5]  // Số trang hư hỏng
+                    
                 });
             }
         } else {
