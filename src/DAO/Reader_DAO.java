@@ -27,7 +27,7 @@ public class Reader_DAO {
                 while(rs.next()){
                     Readers.add(new Reader(rs.getString("ID"), rs.getString("name"), rs.getString("gender"), 
                                 rs.getDate("birth").toLocalDate(), rs.getString("address"), rs.getString("phone"), 
-                                rs.getString("email"), rs.getDate("registrationDate").toLocalDate()));
+                                rs.getString("email"), rs.getString("exist"), rs.getDate("registrationDate").toLocalDate()));
                 }
         }
 
@@ -36,7 +36,7 @@ public class Reader_DAO {
 
     // Thêm 1 độc giả
     public void addReader(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, LocalDate registrationDate) throws SQLException{
-        String sql = "INSERT INTO Reader (ID, name, gender, birth, address, phone, email, registrationDate) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Reader (ID, name, gender, birth, address, phone, email, registrationDate, exist) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID);
             ps.setString(2, name);
@@ -46,6 +46,7 @@ public class Reader_DAO {
             ps.setString(6, phone);
             ps.setString(7, email);
             ps.setDate(8, java.sql.Date.valueOf(registrationDate));
+            ps.setString(9, "1");
             ps.executeUpdate();
             
         }
@@ -61,7 +62,7 @@ public class Reader_DAO {
             while(rs.next()){
                 Readers.add(new Reader(rs.getString("ID"), rs.getString("name"), rs.getString("gender"), 
                             rs.getDate("birth").toLocalDate(), rs.getString("address"), rs.getString("phone"), 
-                            rs.getString("email"), rs.getDate("registrationDate").toLocalDate()));
+                            rs.getString("email"), rs.getString("exist"), rs.getDate("registrationDate").toLocalDate()));
             }
         }
 
@@ -99,9 +100,10 @@ public class Reader_DAO {
 
     // Xóa thông tin độc giả
     public void deleteReader(String ID) throws SQLException{
-        String sql = "DELETE FROM Reader WHERE ID = ?";
+        String sql = "UPDATE Reader SET exist = ? WHERE ID = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setString(1, ID);
+            ps.setString(1, "0");
+            ps.setString(2, ID);
             ps.executeUpdate();
         }
     }

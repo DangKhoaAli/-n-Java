@@ -9,8 +9,8 @@ public class Reader extends person{
     public Reader(){
 
     }
-    public Reader(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, LocalDate registrationDate){
-        super(ID, name, gender, birth, address, phone, email);
+    public Reader(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, String exist, LocalDate registrationDate){
+        super(ID, name, gender, birth, address, phone, email, exist);
         this.registrationDate = registrationDate;
     }
 

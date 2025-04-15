@@ -8,8 +8,8 @@ public class Staff extends person{
     public Staff(){
 
     }
-    public Staff(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, double wage){
-        super(ID, name, gender, birth, address, phone, email);
+    public Staff(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, String exist, double wage){
+        super(ID, name, gender, birth, address, phone, email, exist);
         this.wage = wage;
     }
 

@@ -28,8 +28,8 @@ public class Book_Returned_DAO {
             ps.setString(1, ID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                List_Returned.add(rs.getString("Book_ID") + "-" + rs.getString("name") + "-"
-                                  + rs.getString("Status") + "-" + rs.getString("fee"));
+                List_Returned.add(rs.getString("Book_ID") + ";" + rs.getString("name") + ";"
+                                  + rs.getString("Status") + ";" + rs.getString("fee"));
             }
         }
         return List_Returned;
@@ -49,7 +49,7 @@ public class Book_Returned_DAO {
     }
 
     // Cập nhập 1 chi tiết phiếu trả
-    public void updateBook_Returned(String ID_) throws SQLException{
+    public void updateBook_Returned(String ID) throws SQLException{
         
     }
 
@@ -61,5 +61,26 @@ public class Book_Returned_DAO {
             ps.setString(2, ID_Book);
             ps.executeUpdate();
         }
+    }
+
+    public void deleteAll_Book(String ID_Pay_slip) throws SQLException{
+        String sql = "DELETE FROM Book_Details_Returned WHERE ID_Payment_slip = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, ID_Pay_slip);
+            ps.executeUpdate();
+        }
+    }
+
+    public int getStatus_Book(String ID_Book) throws SQLException {
+        String sql = "SELECT status FROM Book_Details_Returned WHERE ID_Book = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, ID_Book);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("status");
+            }
+        }
+        return 0;
+
     }
 }
