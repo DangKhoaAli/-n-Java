@@ -5,8 +5,6 @@ import BLL.Book_Details_BLL;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import model.Books;
 
@@ -40,10 +38,11 @@ public class BookPanel extends JPanel {
         book_BLL = new Book_BLL();
         book_details_BLL = new Book_Details_BLL();
         
-        setBackground(Color.BLUE);
-        setLayout(new BorderLayout(10,10));
+        setBackground(new Color(230, 236, 243));
+        setOpaque(true);
+        setLayout(new BorderLayout(0,0));
         JPanel panelTable = new JPanel(new BorderLayout());
-        panelTable.setBackground(Color.BLUE);
+        panelTable.setBackground(new Color(230, 236, 243));
         String[] columnNames = {"Mã sách", "Tên sách", "Thể loại", "Tác giá", "Giá", "Phí mượn","Số lượng", "Tồn tại"};
         tableModel = new DefaultTableModel(columnNames,0);
         table = new JTable(tableModel);
@@ -53,25 +52,6 @@ public class BookPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
-
-        // // Tự động đẩy dữ liệu khi chọn dòng
-        // table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-        //     @Override
-        //     public void valueChanged(ListSelectionEvent e) {
-        //         if (!e.getValueIsAdjusting()) {
-        //             int selectedRow = table.getSelectedRow();
-        //             if (selectedRow != -1) {
-        //                 txtMaSach.setText(tableModel.getValueAt(selectedRow, 0).toString());
-        //                 txtTenSach.setText(tableModel.getValueAt(selectedRow, 1).toString());
-        //                 txtTheLoai.setText(tableModel.getValueAt(selectedRow, 2).toString());
-        //                 txtTacGia.setText(tableModel.getValueAt(selectedRow, 3).toString());
-        //                 txtGia.setText(tableModel.getValueAt(selectedRow, 4).toString());
-        //                 txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 5).toString());
-        //                 txtSoLuong.setText(tableModel.getValueAt(selectedRow, 6).toString());
-        //             }
-        //         }
-        //     }
-        // });
 
         txtMaSach = new JTextField();
         txtMaSach.setBorder(BorderFactory.createTitledBorder("Mã sách"));
@@ -96,7 +76,7 @@ public class BookPanel extends JPanel {
 
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
         panelInput.add(txtMaSach);
         panelInput.add(txtTenSach);
         panelInput.add(txtTheLoai);
@@ -107,21 +87,25 @@ public class BookPanel extends JPanel {
 
         // Panel tìm kiếm
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.BLUE);
+        panelSearch.setBackground(new Color(230, 236, 243));
         panelSearch.add(new JLabel("Từ khóa:"));
-        txtTuKhoa = new JTextField(20);
+        txtTuKhoa = new RoundedTxtField(20, 16);
+        txtTuKhoa.setBackground(Color.WHITE);
+ 
+
         panelSearch.add(txtTuKhoa);
-        btnTim = new JButton("Tìm");
+        btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
         
         // Panel chứa các nút
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.BLUE);
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnHuy = new JButton("Hủy");
-        btnXemChiTiet = new JButton("Xem chi tiết");
+        panelButtons.setBackground(new Color(230, 236, 243));
+        panelButtons.setBorder(BorderFactory.createEmptyBorder());
+        btnThem = new RoundedButton("Thêm");
+        btnSua = new RoundedButton("Sửa");
+        btnXoa = new RoundedButton("Xóa");
+        btnHuy = new RoundedButton("Hủy");
+        btnXemChiTiet = new RoundedButton("Xem chi tiết");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
@@ -298,7 +282,13 @@ public class BookPanel extends JPanel {
 
         add(panelTable, BorderLayout.CENTER);
 
-        JPanel panelBottom = new JPanel(new BorderLayout(10,10));
+        JPanel panelBottom = new JPanel(new BorderLayout(0,0));
+        panelBottom.setBackground(new Color(230,236,243));
+        panelBottom.setBorder(BorderFactory.createEmptyBorder()); 
+        panelSearch.setBackground(new Color(230,236,243));
+        panelInput.setBackground(new Color(230,236,243));
+        panelButtons.setBackground(new Color(230,236,243));
+        
         panelBottom.add(panelSearch, BorderLayout.NORTH);
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);

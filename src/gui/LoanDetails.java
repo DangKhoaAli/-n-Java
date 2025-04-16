@@ -1,4 +1,6 @@
 package gui;
+import BLL.Borrow_Details_BLL;
+import BLL.Loan_slip_BLL;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,9 +9,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
-import BLL.Borrow_Details_BLL;
-import BLL.Loan_slip_BLL;
 
 public class LoanDetails extends JFrame {
     private LoanPanel loanPanel;
@@ -35,8 +34,8 @@ public class LoanDetails extends JFrame {
         this.loanPanel = loanPanel;
 
         setTitle("Chi tiết phiếu mượn - " + loanData[0]);
-        setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(Color.BLUE);
+        setLayout(new BorderLayout(0, 0));
+        getContentPane().setBackground(new Color(230, 236, 243));
 
         // --- Bảng chi tiết ---
         String[] columnNames = {"Mã sách", "Tên sách", "Phí mượn"};
@@ -51,7 +50,7 @@ public class LoanDetails extends JFrame {
 
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
 
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -87,12 +86,12 @@ public class LoanDetails extends JFrame {
 
         // --- Panel chứa các nút chức năng ---
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.BLUE);
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnHuy = new JButton("Hủy");
-        btnDong = new JButton("Đóng");
+        panelButtons.setBackground(new Color(230, 236, 243));
+        btnThem = new RoundedButton("Thêm");
+        btnSua = new RoundedButton("Sửa");
+        btnXoa = new RoundedButton("Xóa");
+        btnHuy = new RoundedButton("Hủy");
+        btnDong = new RoundedButton("Đóng");
 
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
@@ -101,8 +100,8 @@ public class LoanDetails extends JFrame {
         panelButtons.add(btnDong);
 
         // Gộp panel nhập và panel nút vào panel bottom
-        JPanel panelBottom = new JPanel(new BorderLayout(10, 10));
-        panelBottom.setBackground(Color.BLUE);
+        JPanel panelBottom = new JPanel(new BorderLayout(0, 0));
+        panelBottom.setBackground(new Color(230, 236, 243));
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
         add(panelBottom, BorderLayout.SOUTH);

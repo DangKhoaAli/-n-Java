@@ -1,4 +1,5 @@
 package gui;
+import BLL.Book_Return_BLL;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
@@ -37,8 +38,8 @@ public class PayDetails extends JFrame {
         // this.setIconImage(new ImageIcon("src/icon/logo.png").getImage());
         this.payPanel = payPanel;
         setTitle("Chi tiết phiếu mượn - " + payData[0]);
-        setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(Color.BLUE);
+        setLayout(new BorderLayout(0, 0));
+        getContentPane().setBackground(new Color(230, 236, 243));
 
         // --- Bảng chi tiết ---
         String[] columnNames = {"Mã sách", "Tên sách","Tình trạng hư hỏng", "Phí phạt"};
@@ -54,7 +55,7 @@ public class PayDetails extends JFrame {
 
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
 
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -96,12 +97,12 @@ public class PayDetails extends JFrame {
 
         // --- Panel chứa các nút chức năng ---
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.BLUE);
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnHuy = new JButton("Hủy");
-        btnDong = new JButton("Đóng");
+        panelButtons.setBackground(new Color(230, 236, 243));
+        btnThem = new RoundedButton("Thêm");
+        btnSua = new RoundedButton("Sửa");
+        btnXoa = new RoundedButton("Xóa");
+        btnHuy = new RoundedButton("Hủy");
+        btnDong = new RoundedButton("Đóng");
 
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
@@ -110,8 +111,8 @@ public class PayDetails extends JFrame {
         panelButtons.add(btnDong);
 
         // Gộp panel nhập và panel nút vào panel bottom
-        JPanel panelBottom = new JPanel(new BorderLayout(10, 10));
-        panelBottom.setBackground(Color.BLUE);
+        JPanel panelBottom = new JPanel(new BorderLayout(0, 0));
+        panelBottom.setBackground(new Color(230, 236, 243));
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
         add(panelBottom, BorderLayout.SOUTH);

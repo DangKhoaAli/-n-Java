@@ -3,7 +3,6 @@ package gui;
 import BLL.Borrow_Details_BLL;
 import BLL.Loan_slip_BLL;
 import DAO.Book_Details_DAO;
-
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -49,12 +48,12 @@ public class LoanPanel extends JPanel {
         borrow_details_BLL = new Borrow_Details_BLL();
         book_details_DAO = new Book_Details_DAO();
 
-        setBackground(Color.BLUE);
-        setLayout(new BorderLayout(10, 10));
+        setBackground(new Color(230, 236, 243));
+        setLayout(new BorderLayout(0, 0));
 
         // --- Panel bảng hiển thị phiếu mượn ---
         JPanel panelTable = new JPanel(new BorderLayout());
-        panelTable.setBackground(Color.BLUE);
+        panelTable.setBackground(new Color(230, 236, 243));
 
         String[] columnNames = {"Mã Phiếu Mượn", "Mã độc giả", "Mã thủ thư", "Số lượng sách", "Ngày Mượn", "Ngày Dự Kiến Trả", "Phí Mượn"};
         tableModel = new DefaultTableModel(columnNames, 0);
@@ -107,7 +106,7 @@ public class LoanPanel extends JPanel {
 
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
         panelInput.add(txtPhieuMuon);
         panelInput.add(txtDocGia);
         panelInput.add(txtThuThu);
@@ -118,21 +117,22 @@ public class LoanPanel extends JPanel {
 
         // --- Panel tìm kiếm ---
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.BLUE);
+        panelSearch.setBackground(new Color(230, 236, 243));
         panelSearch.add(new JLabel("Từ khóa:"));
-        txtTuKhoa = new JTextField(20);
+        txtTuKhoa = new RoundedTxtField(20, 16);
+        txtTuKhoa.setBackground(Color.WHITE);
         panelSearch.add(txtTuKhoa);
-        btnTim = new JButton("Tìm");
+        btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
 
         // --- Panel chứa các nút chức năng ---
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.BLUE);
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnHuy = new JButton("Hủy");
-        btnXemChiTiet = new JButton("Xem chi tiết");
+        panelButtons.setBackground(new Color(230, 236, 243));
+        btnThem = new RoundedButton("Thêm");
+        btnSua = new RoundedButton("Sửa");
+        btnXoa = new RoundedButton("Xóa");
+        btnHuy = new RoundedButton("Hủy");
+        btnXemChiTiet = new RoundedButton("Xem chi tiết");
 
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
@@ -141,12 +141,17 @@ public class LoanPanel extends JPanel {
         panelButtons.add(btnXemChiTiet);
 
         // --- Gộp các panel nhập, tìm kiếm và nút ---
-        JPanel panelBottom = new JPanel(new BorderLayout(10, 10));
-        panelBottom.setBackground(Color.BLUE);
+        JPanel panelBottom = new JPanel(new BorderLayout(0, 0));
+        panelBottom.setBackground(new Color(230, 236, 243));
+        panelBottom.setBorder(BorderFactory.createEmptyBorder());
+        panelSearch.setBackground(new Color(230,236,243));
+        panelInput.setBackground(new Color(230,236,243));
+        panelButtons.setBackground(new Color(230,236,243));
+
         panelBottom.add(panelSearch, BorderLayout.NORTH);
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
-
+ 
         // --- Giao diện chính ---
         add(panelTable, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
@@ -326,11 +331,9 @@ public class LoanPanel extends JPanel {
         setPreferredSize(new Dimension(900, 600));
         setLayout(new BorderLayout());
         add(panelTable, BorderLayout.CENTER);
-        JPanel panelOuterBottom = new JPanel(new BorderLayout(10,10));
-        panelOuterBottom.setBackground(Color.BLUE);
-        panelOuterBottom.add(new JPanel(), BorderLayout.NORTH); // khoảng cách cho phần tìm kiếm
-        panelOuterBottom.add(panelBottom, BorderLayout.CENTER);
-        add(panelOuterBottom, BorderLayout.SOUTH);
+        add(panelBottom, BorderLayout.SOUTH);
+
+        
     }
 
     public void loadLoan_slip(){

@@ -28,16 +28,21 @@ public class Main extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            LoginPanel login = new LoginPanel(null);
+            LoginPanel login = new LoginPanel();
             login.setVisible(true);
-
-            if(login.isSucceeded()) {
-                String role = login.getUserRole();
-                new Main(role).setVisible(true);
-            } else {
-                System.exit(0);
-            }
-
+    
+            login.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    if (login.isSucceeded()) {
+                        String role = login.getUserRole();
+                        new Main(role).setVisible(true);
+                    } else {
+                        System.exit(0);
+                    }
+                }
+            });
         });
     }
+    
 }

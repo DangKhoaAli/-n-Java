@@ -5,10 +5,6 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -41,11 +37,11 @@ public class ReaderPanel extends JPanel {
 
     public ReaderPanel() {
         reader_BLL = new Reader_BLL();
-        setBackground(Color.BLUE);
-        setLayout(new BorderLayout(10,10));
+        setBackground(new Color(230, 236, 243));
+        setLayout(new BorderLayout(0,0));
 
         JPanel panelTable = new JPanel(new BorderLayout());
-        panelTable.setBackground(Color.BLUE);
+        panelTable.setBackground(new Color(230, 236, 243));
 
         String[] columnNames = {"Mã Độc Giả", "Họ Tên","Giới tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ","Email", "Ngày Đăng Ký"};
         tableModel = new DefaultTableModel(columnNames,0);
@@ -105,7 +101,7 @@ public class ReaderPanel extends JPanel {
 
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
         panelInput.add(txtMaDocGia);
         panelInput.add(txtTenDocGia);
         panelInput.add(txtGioiTinh);
@@ -117,20 +113,21 @@ public class ReaderPanel extends JPanel {
 
         // Panel tìm kiếm
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.BLUE);
+        panelSearch.setBackground(new Color(230, 236, 243));
         panelSearch.add(new JLabel("Từ khóa:"));
-        txtTuKhoa = new JTextField(20);
+        txtTuKhoa = new RoundedTxtField(20, 16);
+        txtTuKhoa.setBackground(Color.WHITE);
         panelSearch.add(txtTuKhoa);
-        btnTim = new JButton("Tìm");
+        btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
         
         // Panel chứa các nút
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.BLUE);
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnHuy = new JButton("Hủy");
+        panelButtons.setBackground(new Color(230, 236, 243));
+        btnThem = new RoundedButton("Thêm");
+        btnSua = new RoundedButton("Sửa");
+        btnXoa = new RoundedButton("Xóa");
+        btnHuy = new RoundedButton("Hủy");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
@@ -255,7 +252,7 @@ public class ReaderPanel extends JPanel {
         loadReaderTable();
         add(panelTable, BorderLayout.CENTER);
 
-        JPanel panelBottom = new JPanel(new BorderLayout(10,10));
+        JPanel panelBottom = new JPanel(new BorderLayout(0,0));
         panelBottom.add(panelSearch, BorderLayout.NORTH);
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);

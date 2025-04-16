@@ -1,5 +1,6 @@
 package DAO;
 
+import config.DatabaseConnection;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +9,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import config.DatabaseConnection;
 import model.Staff;
 
 public class Staff_DAO {
@@ -110,4 +109,24 @@ public class Staff_DAO {
             ps.executeUpdate();
         }
     }
+
+    // Tạo tài khoản đăng nhập cho thủ thư với user là ID và pass là số điện thoại
+    public String[] generateAccountByStaffID(String staffID) throws SQLException {
+        String sql = "SELECT phone FROM Staff WHERE ID = ? AND exist = '1'";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, staffID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String username = staffID;
+                String password = rs.getString("phone");
+                return new String[] { username, password };
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; 
+    }
+
+    
 }
+

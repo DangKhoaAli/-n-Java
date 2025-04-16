@@ -89,6 +89,9 @@ public class Pay_slip_BLL {
             if(paymentDate.isBefore(loan_slip_dao.getBorrowDate(ID_Loan_slip))){
                 return "Ngày trả không thể trước ngày mượn!";
             }
+            if(paymentDate.isAfter(LocalDate.now())) {
+                return "Ngày trả không thể là một ngày trong tương lai!";
+            }
 
             payment_slip_dao.addPayment_slip(ID, ID_Loan_slip, ID_Staff, So_luong, paymentDate);
             return "Thêm phiếu trả thành công!";

@@ -37,11 +37,11 @@ public class LibrarianPanel extends JPanel {
 
     public LibrarianPanel() {
         staff_BLL = new Staff_BLL();
-        setBackground(Color.BLUE);
-        setLayout(new BorderLayout(10,10));
+        setBackground(new Color(230, 236, 243));
+        setLayout(new BorderLayout(0,0));
 
         JPanel panelTable = new JPanel(new BorderLayout());
-        panelTable.setBackground(Color.BLUE);
+        panelTable.setBackground(new Color(230, 236, 243));
 
         String[] columnNames = {"Mã Thủ Thư", "Họ  và Tên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ", "Email", "Lương"};
         tableModel = new DefaultTableModel(columnNames,0);
@@ -101,7 +101,7 @@ public class LibrarianPanel extends JPanel {
 
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
         panelInput.add(txtMaThuThu);
         panelInput.add(txtTenThuThu);
         panelInput.add(txtGioiTinh);
@@ -113,20 +113,21 @@ public class LibrarianPanel extends JPanel {
 
         // Panel tìm kiếm
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.BLUE);
+        panelSearch.setBackground(new Color(230, 236, 243));
         panelSearch.add(new JLabel("Từ khóa:"));
-        txtTuKhoa = new JTextField(20);
+        txtTuKhoa = new RoundedTxtField(20, 16);
+        txtTuKhoa.setBackground(Color.WHITE);
         panelSearch.add(txtTuKhoa);
-        btnTim = new JButton("Tìm");
+        btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
         
         // Panel chứa các nút
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.BLUE);
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnHuy = new JButton("Hủy");
+        panelButtons.setBackground(new Color(230, 236, 243));
+        btnThem = new RoundedButton("Thêm");
+        btnSua = new RoundedButton("Sửa");
+        btnXoa = new RoundedButton("Xóa");
+        btnHuy = new RoundedButton("Hủy");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
@@ -240,7 +241,7 @@ public class LibrarianPanel extends JPanel {
         add(panelTable, BorderLayout.CENTER);
         loadStaffTable();
 
-        JPanel panelBottom = new JPanel(new BorderLayout(10,10));
+        JPanel panelBottom = new JPanel(new BorderLayout(0,0));
         panelBottom.add(panelSearch, BorderLayout.NORTH);
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
