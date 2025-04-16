@@ -29,7 +29,7 @@ public class Pay_slip_BLL {
         loan_slip_dao = new Loan_slip_DAO();
     }
 
-    public List<Payment_slip> getPaymentSlip(String ID) {
+    public List<Payment_slip> getPaymentSlip() {
         try {
             List<Payment_slip> paymentSlip = payment_slip_dao.getAllPayment_slips();
             if (paymentSlip == null || paymentSlip.isEmpty()) {

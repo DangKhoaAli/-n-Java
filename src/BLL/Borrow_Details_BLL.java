@@ -6,8 +6,6 @@ import java.util.List;
 
 import DAO.Book_Details_DAO;
 import DAO.Borrow_Details_DAO;
-import DAO.Loan_slip_DAO;
-import model.Loan_slip;
 
 public class Borrow_Details_BLL {
     private Borrow_Details_DAO borrow_details_dao;

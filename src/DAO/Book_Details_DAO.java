@@ -143,4 +143,13 @@ public class Book_Details_DAO {
         }
         return 0;
     }
+
+    public void updateNum_page(int num_page_dama, String ID) throws SQLException{
+        String sql = "UPDATE Book_Details SET num_page_dama = ? WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, num_page_dama);
+            ps.setString(2, ID);
+            ps.executeUpdate();
+        }
+    }
 }

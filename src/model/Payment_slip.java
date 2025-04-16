@@ -28,7 +28,7 @@ public class Payment_slip {
         return this.ID;
     }
 
-    public String ID_Loan_slip(){
+    public String getID_Loan_slip(){
         return this.ID_Loan_slip;
     }
     public void setID_Loan_slip(String ID_Loan_slip){

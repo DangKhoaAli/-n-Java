@@ -1,16 +1,26 @@
 package gui;
 
 import java.awt.*;
+import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import BLL.Book_Return_BLL;
 import BLL.Pay_slip_BLL;
+import DAO.Book_Details_DAO;
+import DAO.Book_Returned_DAO;
+import DAO.Payment_slip_DAO;
+import model.Payment_slip;
 
 public class PayPanel extends JPanel {
     private Pay_slip_BLL paySlipBLL;
+    private Book_Details_DAO book_details_DAO;
+    private Book_Return_BLL book_return_BLL;
+    private Payment_slip_DAO payment_slip_DAO;
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -35,6 +45,9 @@ public class PayPanel extends JPanel {
 
     public PayPanel() {
         paySlipBLL = new Pay_slip_BLL();
+        book_details_DAO = new Book_Details_DAO();
+        book_return_BLL = new Book_Return_BLL();
+        payment_slip_DAO = new Payment_slip_DAO();
 
         setBackground(Color.BLUE);
         setLayout(new BorderLayout(10,10));
@@ -45,7 +58,6 @@ public class PayPanel extends JPanel {
         String[] columnNames = {"Mã Phiếu Trả","Mã phiếu mượn","Mã thủ thư","Số lượng sách", "Ngày Trả", "Phí Trễ Hạn", "Phí Hư Hại"};
         tableModel = new DefaultTableModel(columnNames,0);
 
-        tableModel.addRow(new Object[]{"P001","L001","TT001","2","03/25/2025", "100000", "2000"});
 
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
@@ -54,24 +66,6 @@ public class PayPanel extends JPanel {
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
         
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                // Tránh xử lý hai lần (khi bắt đầu và khi kết thúc)
-                if (!e.getValueIsAdjusting()) {
-                    int selectedRow = table.getSelectedRow();
-                    if (selectedRow != -1) {
-                        txtPhieuTra.setText(tableModel.getValueAt(selectedRow, 0).toString());
-                        txtPhieuMuon.setText(tableModel.getValueAt(selectedRow, 1).toString());
-                        txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString());
-                        txtSoLuongSach.setText(tableModel.getValueAt(selectedRow, 3).toString());
-                        txtNgayTra.setText(tableModel.getValueAt(selectedRow, 4).toString());
-                        txtPhiTreHan.setText(tableModel.getValueAt(selectedRow, 5).toString());
-                        txtPhiHuHai.setText(tableModel.getValueAt(selectedRow, 6).toString());
-                    }
-                }
-            }
-        });
 
         txtPhieuTra = new JTextField();
         txtPhieuTra.setBorder(BorderFactory.createTitledBorder("Mã phiếu trả"));
@@ -123,14 +117,14 @@ public class PayPanel extends JPanel {
         panelButtons.setBackground(Color.BLUE);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Hủy");
+        btnXoa = new JButton("Xóa");
         btnXemChiTiet = new JButton("Xem chi tiết");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
-        panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
+        panelButtons.add(btnXoa);
         panelButtons.add(btnXemChiTiet);
 
         JPanel panelBottom = new JPanel(new BorderLayout(10, 10));
@@ -143,14 +137,54 @@ public class PayPanel extends JPanel {
         add(panelTable, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
         
-        // btnThem.addActionListener(e -> {
-        //     String PhieuTra = txtPhieuTra.getText();
-        //     String NgayTra = txtNgayTra.getText();
-        //     String PhieuMuon = txtPhieuMuon.getText();
-        //     String thuThu = txtThuThu.getText();
-        //     String soLuongSach = txtSoLuongSach.getText();
-        //     String PhiTreHan = txtPhiTreHan.getText();
-        //     String PhiHuHai = txtPhiHuHai.getText();
+        btnThem.addActionListener(e -> {
+            try {
+                String PhieuTra = txtPhieuTra.getText();
+                String PhieuMuon = txtPhieuMuon.getText();
+                String thuThu = txtThuThu.getText();
+                String soLuongSach = txtSoLuongSach.getText();
+                String NgayTra = txtNgayTra.getText();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                LocalDate ngaymuon = LocalDate.parse(NgayTra, formatter);
+                
+                String result = paySlipBLL.add_Pay(PhieuTra, PhieuMuon, thuThu, soLuongSach, NgayTra);
+                JOptionPane.showMessageDialog(this, result);
+                if (result.equals("Thêm phiếu trả thành công!")) {
+                    for (int i = 1; i <= Integer.parseInt(soLuongSach); i++) {
+                        String[] selectedBookID = new String[1];
+                            Select dialog = new Select(PhieuMuon, selectedBookID, "pay");
+                            dialog.setVisible(true);
+            
+                            if (selectedBookID[0] != null && !selectedBookID[0].isEmpty()) {
+                                String maSach = selectedBookID[0];
+                                String sotranghong = JOptionPane.showInputDialog(this, "Số trang hiện đang hỏng:");
+
+
+                                String result1 = book_return_BLL.addBookReturned(PhieuTra, maSach, sotranghong);
+                                if (result1.equals("Đã thêm chi tiết phiếu trả mới thành công!")) {
+                                    if(Integer.parseInt(sotranghong) < 100){
+                                        book_details_DAO.updateStatus_Book(maSach, "Hiện có");
+                                    } else {
+                                        book_details_DAO.updateStatus_Book(maSach, "Đã hỏng");
+                                    }
+                                    book_details_DAO.updateNum_page(Integer.parseInt(sotranghong), maSach);
+                                }
+                            }
+                    }
+                }
+
+                // Cập nhật phí trễ hạn và phí hư hại
+                payment_slip_DAO.updateLateFee(PhieuTra);
+                payment_slip_DAO.updateDamageFee(PhieuTra);
+                loadPayDetails();
+
+            } catch (DateTimeParseException ex ){
+                JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày. Vui lòng nhập ngày theo định dạng dd/MM/yyyy!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
 
         //     boolean isDuplicate = false;
         //     for(int i = 0; i < tableModel.getRowCount(); i++) {
@@ -215,7 +249,7 @@ public class PayPanel extends JPanel {
         //         }
         //         payDetailsMap.put(PhieuTra, detailsList);
         //     }
-        // });
+        });
 
         table.getSelectionModel().addListSelectionListener(event -> {
             if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
@@ -263,15 +297,17 @@ public class PayPanel extends JPanel {
         //     JOptionPane.showMessageDialog(this, "Xóa phiếu trả thành công!");
         // });
 
-        // btnHuy.addActionListener(e -> {
-        //     txtPhieuTra.setText("");
-        //     txtPhieuMuon.setText("");
-        //     txtThuThu.setText("");
-        //     txtSoLuongSach.setText("");
-        //     txtNgayTra.setText("");
-        //     txtPhiTreHan.setText("");
-        //     txtPhiHuHai.setText("");
-        // });
+        btnHuy.addActionListener(e -> {
+            txtPhieuTra.setText("");
+            txtPhieuMuon.setText("");
+            txtPhieuMuon.setEditable(true);
+            txtThuThu.setText("");
+            txtSoLuongSach.setText("");
+            txtSoLuongSach.setEditable(true);
+            txtNgayTra.setText("");
+            txtPhiTreHan.setText("");
+            txtPhiHuHai.setText("");
+        });
 
         // btnTim.addActionListener(e -> {
         //     String keyword = txtTuKhoa.getText().trim().toLowerCase();
@@ -286,21 +322,20 @@ public class PayPanel extends JPanel {
         //     }
         // });
 
-        // btnXemChiTiet.addActionListener(e -> {
-        //     int selectedRow = table.getSelectedRow();
-        //     if(selectedRow == -1) {
-        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xem chi tiết!");
-        //         return;
-        //     }
-        //     Object[] payData = new Object[tableModel.getColumnCount()];
-        //     for(int i = 0; i < tableModel.getColumnCount(); i++) {
-        //         payData[i] = tableModel.getValueAt(selectedRow, i);
-        //     }
-        //     String phieuTra = payData[0].toString();
-        //     java.util.List<Object[]> detailsList = payDetailsMap.get(phieuTra);
-        //     new PayDetails(payData, detailsList);
-        // });
+        btnXemChiTiet.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if(selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xem chi tiết!");
+                return;
+            }
+            Object[] payData = new Object[tableModel.getColumnCount()];
+            for(int i = 0; i < tableModel.getColumnCount(); i++) {
+                payData[i] = tableModel.getValueAt(selectedRow, i);
+            }
 
+            new PayDetails(payData, this);
+        });
+        loadPayDetails();
         add(panelTable, BorderLayout.CENTER);
 
         // JPanel panelBottom = new JPanel(new BorderLayout(10,10));
@@ -311,5 +346,25 @@ public class PayPanel extends JPanel {
         add(panelBottom, BorderLayout.SOUTH);
     }
 
+    public void loadPayDetails() {
+        tableModel.setRowCount(0);
+        List<Payment_slip> paymentSlips = paySlipBLL.getPaymentSlip();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        if(paymentSlips != null) {
+            for (Payment_slip paymentSlip : paymentSlips) {
+                tableModel.addRow(new Object[]{
+                    paymentSlip.getID(),
+                    paymentSlip.getID_Loan_slip(),
+                    paymentSlip.getID_Staff(),
+                    paymentSlip.getSo_luong(),
+                    paymentSlip.getPayment_Date().format(formatter),
+                    paymentSlip.getLate_fee(),
+                    paymentSlip.getDamage_fee()
+                });
+            }
+        }
+
+    }
 
 }

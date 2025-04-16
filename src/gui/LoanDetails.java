@@ -60,9 +60,9 @@ public class LoanDetails extends JFrame {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
                         // Lấy trạng thái và số trang hư hỏng từ bảng
-                        String maSach = tableModel.getValueAt(selectedRow, 1).toString();
-                        String tenSach = tableModel.getValueAt(selectedRow, 2).toString();
-                        String phiMuon = tableModel.getValueAt(selectedRow, 3).toString();
+                        String maSach = tableModel.getValueAt(selectedRow, 0).toString();
+                        String tenSach = tableModel.getValueAt(selectedRow, 1).toString();
+                        String phiMuon = tableModel.getValueAt(selectedRow, 2).toString();
                         // Đẩy xuống textfield
                         txtMaSach.setText(maSach);
                         txtTenSach.setText(tenSach);
@@ -106,6 +106,20 @@ public class LoanDetails extends JFrame {
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
         add(panelBottom, BorderLayout.SOUTH);
+
+        txtMaSach.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                String[] selectedBookID = new String[1];
+                new Select("", selectedBookID, "loan").setVisible(true);
+        
+                if (selectedBookID[0] != null) {
+                    txtMaSach.setText(selectedBookID[0]);
+                    
+                }
+            }
+        });
+        
 
         // --- Xử lý các nút ---
         btnThem.addActionListener(e -> {

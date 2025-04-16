@@ -131,6 +131,16 @@ public class Payment_slip_DAO {
         return lateFee;
     }
 
+    public void updateLateFee(String ID) throws SQLException {
+        String sql = "UPDATE Payment_slip SET late_fee = ? WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            float lateFee = Late_fee(ID);
+            ps.setBigDecimal(1, BigDecimal.valueOf(lateFee));
+            ps.setString(2, ID);
+            ps.executeUpdate();
+        }
+    }
+
     // Tính phí hư hại
     public float damage_fee(String ID) {
         float totalDamageFee = 0;
@@ -149,6 +159,16 @@ public class Payment_slip_DAO {
         }
 
         return totalDamageFee;
+    }
+
+    public void updateDamageFee(String ID) throws SQLException {
+        String sql = "UPDATE Payment_slip SET damage_fee = ? WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            float damageFee = damage_fee(ID);
+            ps.setBigDecimal(1, BigDecimal.valueOf(damageFee));
+            ps.setString(2, ID);
+            ps.executeUpdate();
+        }
     }
 
 
