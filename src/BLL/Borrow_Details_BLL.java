@@ -5,15 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DAO.Book_Details_DAO;
+import DAO.Book_Returned_DAO;
 import DAO.Borrow_Details_DAO;
+import gui.BookDetails;
 
 public class Borrow_Details_BLL {
     private Borrow_Details_DAO borrow_details_dao;
     private Book_Details_DAO book_details_dao;
+    private Book_Returned_DAO book_return_dao;
     
     public Borrow_Details_BLL() {
         borrow_details_dao = new Borrow_Details_DAO();
         book_details_dao = new Book_Details_DAO();
+        book_return_dao = new Book_Returned_DAO();
     }
     
     //Lấy danh sách chi tiết phiếu của phiếu mượn
@@ -72,9 +76,19 @@ public class Borrow_Details_BLL {
             if(!book_details_dao.check_Status_Book(ID_Book)){
                 return "Sách hiện không thể mượn! Vui lòng kiểm tra lại!";
             }
-            
-            borrow_details_dao.addBorrow_Detail(ID_Book, ID_Loan_slip);
-            return "Thêm chi tiết phiếu mượn thành công!";
+
+            List<String> details = borrow_details_dao.getPay_IdByLoan_Id(ID_Loan_slip);
+            for (String detail : details) {
+                List<String> bookDetails = book_return_dao.getAllBook_Return(ID_Loan_slip);
+                for (String bookDetail : bookDetails) {
+                    String[] bookData = bookDetail.split(";");
+                    if (bookData[0].equals(ID_Book_f)) {
+                        
+                    }
+                }
+            }
+            borrow_details_dao.updateBorrow_Details(ID_Book_f, ID_Book, ID_Loan_slip);
+            return "Cập nhập phiếu mượn thành công!";
         } catch (SQLException e) {
             return "Lỗi thêm chi tiết phiếu mượn: " + e.getMessage();
         } catch (Exception e) {

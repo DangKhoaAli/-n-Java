@@ -1,16 +1,17 @@
 package BLL;
 
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+
 import DAO.Book_Details_DAO;
 import DAO.Book_Returned_DAO;
 import DAO.Loan_slip_DAO;
 import DAO.Payment_slip_DAO;
 import DAO.Staff_DAO;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import model.Loan_slip;
 import model.Payment_slip;
 
 public class Pay_slip_BLL {
@@ -96,44 +97,23 @@ public class Pay_slip_BLL {
             return "Thêm phiếu trả thành công!";
         } catch (SQLException e) {
             return "Lỗi thêm phiếu trả: " + e.getMessage();
+        } catch (DateTimeParseException e){
+            return "Lỗi định dạng ngày: " + e.getMessage();
         } catch (Exception e) {
             return "Lỗi không xác định: " + e.getMessage();
         }
     }
     
-    public String update_Pay(String ID, String ID_Loan_slip, String ID_Staff, String payment_Date) {
+    public String update_Pay(String ID, String payment_Date) {
         try {
             if (ID == null || ID.isEmpty()) {
                 return "ID không được để trống!";
             }
-
-            Payment_slip paymentSlip = search_Pay(ID);
-            if (paymentSlip == null) {
-                return "ID không tồn tại!";
-            }
-
-            if (ID_Loan_slip == null || ID_Loan_slip.isEmpty()) {
-                return "ID phiếu mượn không được để trống!";
-            }
-
-            Loan_slip loanSlip = loan_slip_dao.searchLoan_slip(ID_Loan_slip);
-            if (loanSlip == null) {
-                return "ID phiếu mượn không tồn tại!";
-            }
-
-            if (ID_Staff == null || ID_Staff.isEmpty()) {
-                return "ID nhân viên không được để trống!";
-            }
-
-            Boolean existingStaff = staff.searchStaffID(ID_Staff);
-            if (existingStaff == null) {
-                return "ID nhân viên không tồn tại!";
-            }
-
+            
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate paymentDate = LocalDate.parse(payment_Date, formatter);
 
-            payment_slip_dao.updatePayment_slip(ID, ID_Loan_slip, ID_Staff, paymentDate);
+            payment_slip_dao.updatePayment_slip(ID, paymentDate);
             return "Cập nhật phiếu trả thành công!";
         } catch (SQLException e) {
             return "Lỗi cập nhật phiếu trả: " + e.getMessage();
@@ -156,6 +136,9 @@ public class Pay_slip_BLL {
 
             int so_luong = Integer.parseInt(So_luong);
             List<String> bookDetails = book_return_dao.getAllBook_Return(ID);
+            if (bookDetails == null || bookDetails.isEmpty()) {
+                return "Không có sách nào để xóa!";
+            }
             for (int i=0; i<so_luong; i++){
                 String [] temp = bookDetails.get(i).split(";");
                 book_return_dao.deleteBook_Returned(ID, temp[0]);

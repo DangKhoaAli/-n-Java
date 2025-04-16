@@ -47,13 +47,12 @@ public class Borrow_Details_DAO {
     }
 
     // Cập nhập 1 chi tiết phiếu mượn
-    public void updateBorrow_Details(String ID_Book_f, String ID_Loan_slip_f, String ID_Book, String ID_Loan_slip) throws SQLException{
-        String sql = "UPDATE borrowed_book_details SET ID_Loan_slip = ?, ID_Book = ? WHERE ID_Loan_slip = ? AND ID_Book = ?";
+    public void updateBorrow_Details(String ID_Book_f, String ID_Book, String ID_Loan_slip) throws SQLException{
+        String sql = "UPDATE borrowed_book_details SET ID_Book = ? WHERE ID_Loan_slip = ? AND ID_Book = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setString(1, ID_Loan_slip);
-            ps.setString(2, ID_Book);
-            ps.setString(3, ID_Loan_slip_f);
-            ps.setString(4, ID_Book_f);
+            ps.setString(1, ID_Book);
+            ps.setString(2, ID_Loan_slip);
+            ps.setString(3, ID_Book_f);
             ps.executeUpdate();
         }
     }
@@ -81,10 +80,25 @@ public class Borrow_Details_DAO {
         }
         return false;
     }
-    
 
-    public static void main(String [] args){
-        Borrow_Details_DAO a = new Borrow_Details_DAO();
-        // a.addBorrow_Detail("1", "1");
+    public List<String> getPay_IdByLoan_Id(String ID) throws SQLException{
+        String sql = """
+                    SELECT p.ID 
+                    FROM 
+                        Payment_slip p
+                    JOIN
+                        Loan_slip l ON p.ID_Loan_slip = l.ID
+                    WHERE
+                        l.ID = ?
+                    """;
+        List<String> Pay_ID = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, ID);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Pay_ID.add(rs.getString("ID"));
+            }
+            return Pay_ID;
+        }
     }
 }

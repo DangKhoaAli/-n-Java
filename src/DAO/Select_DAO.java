@@ -100,13 +100,14 @@ public class Select_DAO {
                     b.category AS The_Loai,
                     bd.supplier AS Nha_Cung_Cap,
                     bd.year AS Nam_Xuat_Ban,
-                    bd.page_num AS So_Trang
+                    bd.page_num AS So_Trang,
+                    bd.num_page_dama AS Trang_Hu
                 FROM 
                     Borrowed_Book_Details bbd
                 JOIN 
                     Book_Details bd ON bbd.ID_Book = bd.ID
                 JOIN 
-                        Book b ON bd.ID_Book = b.ID
+                    Book b ON bd.ID_Book = b.ID
                 WHERE 
                     bbd.ID_Loan_slip = ? AND bd.status = 'Đang được mượn'
                 """;
@@ -120,7 +121,9 @@ public class Select_DAO {
                         rs.getString("The_Loai") + ";" +
                         rs.getString("Nha_Cung_Cap") + ";" +
                         rs.getString("Nam_Xuat_Ban") + ";" +
-                        rs.getString("So_Trang"));
+                        rs.getString("So_Trang") + ";" +
+                        rs.getString("Trang_Hu"));
+
             }
         }
         return paymentDetails;
