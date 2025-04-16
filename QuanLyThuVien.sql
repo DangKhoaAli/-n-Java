@@ -25,14 +25,13 @@ create database QLTV;
     );
 
     create table Book_Details(
-        ID varchar(20),
+        ID varchar(20) primary key,
         ID_Book varchar(20),
         supplier varchar(255),
         year int,
         page_num int,
         status varchar(50),
         num_page_dama int,
-        primary key (ID, ID_Book),
         foreign key (ID_Book) references Book(ID)
     );
 
