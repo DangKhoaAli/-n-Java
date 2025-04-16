@@ -152,16 +152,18 @@ public class LoanDetails extends JFrame {
             }
         });
 
-        // btnSua.addActionListener(e -> {
-        //     int selectedRow = table.getSelectedRow();
-        //     if (selectedRow == -1) {
-        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
-        //         return;
-        //     }
-        //     txtMaSach.setText(tableModel.getValueAt(selectedRow, 1).toString());
-        //     txtTenSach.setText(tableModel.getValueAt(selectedRow, 2).toString());
-        //     txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 3).toString());
-        // });
+        btnSua.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
+                return;
+            }
+            String maSach = txtMaSach.getText().trim();
+            String maSachCu = tableModel.getValueAt(selectedRow, 0).toString();
+            String result = borrowDetailsBLL.updateBorrow_Details(maSachCu, loanData[0].toString(), maSach, loanData[0].toString());
+            
+
+        });
 
         // btnXoa.addActionListener(e -> {
         //     int selectedRow = table.getSelectedRow();

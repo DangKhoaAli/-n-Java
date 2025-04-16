@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 
 import config.DatabaseConnection;
 
@@ -40,14 +39,14 @@ public class Book_Returned_DAO {
     }
 
     // Thêm 1 chi tiết phiếu trả
-    public void addBook_Returned(String ID_Pay_slip, String ID_Book, String status) throws SQLException{
+    public void addBook_Returned(String ID_Pay_slip, String ID_Book, int status) throws SQLException{
         String sql = "INSERT INTO Book_Details_Returned (ID_Payment_slip, ID_Book, status, penalty_fee) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, ID_Pay_slip);
             ps.setString(2, ID_Book);
-            ps.setString(3, status);
+            ps.setInt(3, status);
             int damagedPage = getDamagedPage(ID_Book);
-            float pen_fee = (float) (Integer.parseInt(status) - damagedPage) * 3000;
+            float pen_fee = (float) (status - damagedPage) * 1000 > 0 ? (float) (status - damagedPage) * 1000 : 0;
             ps.setBigDecimal(4, BigDecimal.valueOf(pen_fee));
             ps.executeUpdate();
         }
@@ -55,8 +54,14 @@ public class Book_Returned_DAO {
     }
 
     // Cập nhập 1 chi tiết phiếu trả
-    public void updateBook_Returned(String ID) throws SQLException{
-        
+    public void updateBook_Returned(String ID, String ID_Book, int status) throws SQLException{
+        String sql = "UPDATE Book_Details_Returned SET status = ? WHERE ID_Payment_slip = ? AND ID_Book = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, status);
+            ps.setString(2, ID);
+            ps.setString(3, ID_Book);
+            ps.executeUpdate();
+        }
     }
 
     // Xóa chi tiết phiếu trả
@@ -91,10 +96,11 @@ public class Book_Returned_DAO {
         return 0;
     }
 
-    public int getStatus_Book(String ID_Book) throws SQLException {
-        String sql = "SELECT status FROM Book_Details_Returned WHERE ID_Book = ?";
+    public int getStatus_Book(String ID, String ID_Book) throws SQLException {
+        String sql = "SELECT status FROM Book_Details_Returned WHERE ID_Payment_slip = ? AND ID_Book = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setString(1, ID_Book);
+            ps.setString(1, ID);
+            ps.setString(2, ID_Book);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt("status");
@@ -103,10 +109,35 @@ public class Book_Returned_DAO {
         return 0;
     }
 
-    public float updatePen_fee(String ID_Book) throws SQLException {
+    public float Pen_fee(String ID, String ID_Book) throws SQLException {
         int damagedPage = getDamagedPage(ID_Book);
-        int status = getStatus_Book(ID_Book);
-        return (float) (status - damagedPage) * 3000;
+        int status = getStatus_Book(ID, ID_Book);
+        return (float) (status - damagedPage) * 1000 > 0 ? (float) (status - damagedPage) * 1000 : 0;
     }
 
+    public void updatePen_fee(String ID, String ID_Book) throws SQLException{
+        String sql = "UPDATE Book_Details_Returned SET penalty_fee = ? WHERE ID_Payment_slip = ? AND ID_Book = ?";
+        float penFee = Pen_fee(ID, ID_Book);
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setFloat(1, penFee);
+            ps.setString(2, ID);
+            ps.setString(3, ID_Book);
+            ps.executeUpdate();
+        }
+    }
+
+    public boolean check(String ID, String ID_Book) throws SQLException{
+        String sql = "SELECT * FROM Book_Details_Returned WHERE ID_Payment_slip = ? AND ID_Book = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, ID);
+            ps.setString(2, ID_Book);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public 
 }

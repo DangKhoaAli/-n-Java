@@ -70,15 +70,12 @@ public class Payment_slip_DAO {
     }
 
     // Cập nhập thông tin 1 phiếu mượn
-    public void updatePayment_slip(String ID, String ID_Loan_slip, String ID_Staff, LocalDate payment_Date){
-        String sql = "UPDATE Payment_slip SET ID_Loan_slip = ?, ID_Staff = ?, payment_Date = ? WHERE ID = ?";
+    public void updatePayment_slip(String ID, LocalDate payment_Date) throws SQLException{
+        String sql = "UPDATE Payment_slip SET payment_Date = ? WHERE ID = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, ID_Loan_slip);
-            ps.setString(2, ID_Staff);
-            ps.setDate(3, java.sql.Date.valueOf(payment_Date));
-            ps.setString(4, ID);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            ps.setDate(1, java.sql.Date.valueOf(payment_Date));
+            ps.setString(2, ID);
+            ps.executeUpdate();
         }
     }
 
@@ -121,7 +118,7 @@ public class Payment_slip_DAO {
                 long daysLate = java.time.temporal.ChronoUnit.DAYS.between(expectedDate, paymentDate);
 
                 if (daysLate > 0) {
-                    lateFee = daysLate * 5000f;
+                    lateFee = daysLate * 1000f;
                 }
             }
         } catch (SQLException e) {
@@ -166,6 +163,15 @@ public class Payment_slip_DAO {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             float damageFee = damage_fee(ID);
             ps.setBigDecimal(1, BigDecimal.valueOf(damageFee));
+            ps.setString(2, ID);
+            ps.executeUpdate();
+        }
+    }
+
+    public void update_Quan(String ID, int quanlity) throws SQLException {
+        String sql = "UPDATE Payment_slip SET so_luong = ? WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, quanlity);
             ps.setString(2, ID);
             ps.executeUpdate();
         }

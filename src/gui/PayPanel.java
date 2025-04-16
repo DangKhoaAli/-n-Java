@@ -185,70 +185,6 @@ public class PayPanel extends JPanel {
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
-
-        //     boolean isDuplicate = false;
-        //     for(int i = 0; i < tableModel.getRowCount(); i++) {
-        //         String existingID = tableModel.getValueAt(i, 0).toString();
-        //         if(existingID.equalsIgnoreCase(PhieuTra)) {
-        //             isDuplicate = true;
-        //             break;
-        //         }
-        //     }
-        //     if(isDuplicate) {
-        //         JOptionPane.showMessageDialog(this,
-        //         "Mã phiếu trả đã tồn tại, vui lòng nhập mã khác!",
-        //         "Lỗi trùng mã",
-        //         JOptionPane.ERROR_MESSAGE);
-        //     } else {
-        //         tableModel.addRow((new Object[]{PhieuTra,PhieuMuon,thuThu,soLuongSach,NgayTra,PhiTreHan,PhiHuHai}));
-        //         JOptionPane.showMessageDialog(this, "Thêm phiếu trả mới thành công!");
-
-        //         int n = 0;
-        //         try {
-        //             n = Integer.parseInt(soLuongSach);
-        //         } catch (NumberFormatException ex) {
-        //             JOptionPane.showMessageDialog(this, "Số lượng sách không hợp lệ!");
-        //             return;
-        //         }
-        //         java.util.List<Object[]> detailsList = new ArrayList<>();
-        //         for(int i = 1; i <=n; i++) {
-        //             String maChiTiet = PhieuTra + "-" + i;
-        //             String maSachDetail = "";
-        //             while (true) { 
-        //                 maSachDetail = JOptionPane.showInputDialog(this, "Nhập mã sách cho cuốn thứ " + i +":");
-        //                 if(maSachDetail == null || maSachDetail.trim().isEmpty()) {
-        //                     JOptionPane.showMessageDialog(this, "Mã sách không được để trống. Vui lòng nhập lại!");
-        //                 } else {
-        //                     break;
-        //                 }
-        //             }
-        //             String tenSachDetail = "";
-        //             while (true) { 
-        //                 tenSachDetail = JOptionPane.showInputDialog(this,"Nhập tên sách cho cuốn thứ " + i + ":");
-        //                 if(tenSachDetail == null || tenSachDetail.trim().isEmpty()) {
-        //                     JOptionPane.showInputDialog(this, "Tên sách không được để trống. Vui lòng nhập lại!");
-        //                 } else {
-        //                     break;
-        //                 }
-        //             }
-        //             String tinhTrangHuHongStr = JOptionPane.showInputDialog(this, "Nhập tình trạng hư hỏng của cuốn sách thứ " + i + "(mặc định là 0):");
-        //             int tinhTrangHuHong = 0;
-        //             try {
-        //                 tinhTrangHuHong = Integer.parseInt(tinhTrangHuHongStr.trim());
-        //             } catch (NumberFormatException ex) {
-        //                 tinhTrangHuHong = 0;
-        //             }
-        //             String phiPhatStr = JOptionPane.showInputDialog(this, "Nhập phí phạt của cuốn sách thứ " + i + "(mặc định là 0):");
-        //             double phiPhat = 0;
-        //             try {
-        //                 phiPhat = Double.parseDouble(phiPhatStr);
-        //             } catch (NumberFormatException ex) {
-        //                 phiPhat = 0;
-        //             }
-        //             detailsList.add(new Object[]{maChiTiet,maSachDetail,tenSachDetail,tinhTrangHuHong,phiPhat});
-        //         }
-        //         payDetailsMap.put(PhieuTra, detailsList);
-        //     }
         });
 
         table.getSelectionModel().addListSelectionListener(event -> {
@@ -272,30 +208,45 @@ public class PayPanel extends JPanel {
             }
         });
 
-        // btnSua.addActionListener(e -> {
-        //     int selectedRow = table.getSelectedRow();
-        //     if(selectedRow == -1) {
-        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
-        //         return;
-        //     }
-        //     txtPhieuTra.setText(tableModel.getValueAt(selectedRow,0).toString());
-        //     txtPhieuMuon.setText(tableModel.getValueAt(selectedRow, 1).toString());
-        //     txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString());
-        //     txtSoLuongSach.setText(tableModel.getValueAt(selectedRow, 3).toString());
-        //     txtNgayTra.setText(tableModel.getValueAt(selectedRow,4).toString());
-        //     txtPhiTreHan.setText(tableModel.getValueAt(selectedRow, 5).toString());
-        //     txtPhiHuHai.setText(tableModel.getValueAt(selectedRow, 6).toString());
-        // });
+        btnSua.addActionListener(e -> {
+            try{
+                int selectedRow = table.getSelectedRow();
+                if(selectedRow == -1) {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để sửa");
+                    return;
+                }
 
-        // btnXoa.addActionListener(e -> {
-        //     int selectedRow = table.getSelectedRow();
-        //     if(selectedRow == -1) {
-        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
-        //         return;
-        //     }
-        //     tableModel.removeRow(selectedRow);
-        //     JOptionPane.showMessageDialog(this, "Xóa phiếu trả thành công!");
-        // });
+                String PhieuTra = txtPhieuTra.getText();
+                String NgayTra = txtNgayTra.getText();
+
+                String result = paySlipBLL.update_Pay(PhieuTra, NgayTra);
+                JOptionPane.showMessageDialog(this, result);
+                if (result.equals("Cập nhật phiếu trả thành công!")) {
+                    payment_slip_DAO.updateLateFee(PhieuTra);
+                    loadPayDetails();
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
+
+        btnXoa.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if(selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
+                return;
+            }
+            String PhieuTra = tableModel.getValueAt(selectedRow, 0).toString();
+            String PhieuMuon = tableModel.getValueAt(selectedRow, 1).toString();
+            String soLuongSach = tableModel.getValueAt(selectedRow, 3).toString();
+            
+            String result = paySlipBLL.delete_Pay(PhieuTra, PhieuMuon, soLuongSach);
+            JOptionPane.showMessageDialog(this, result);
+            if (result.equals("Xóa phiếu trả thành công!")) {
+                loadPayDetails();
+            }   
+        });
 
         btnHuy.addActionListener(e -> {
             txtPhieuTra.setText("");
@@ -309,18 +260,29 @@ public class PayPanel extends JPanel {
             txtPhiHuHai.setText("");
         });
 
-        // btnTim.addActionListener(e -> {
-        //     String keyword = txtTuKhoa.getText().trim().toLowerCase();
-        //     if(!keyword .isEmpty()) {
-        //         for(int i = 0; i < tableModel.getRowCount(); i++) {
-        //             String maPhieuTra = tableModel.getValueAt(i, 0).toString();
-        //             if(maPhieuTra.contains(keyword)) {
-        //                 table.setRowSelectionInterval(i, i);
-        //                 break;
-        //             }
-        //         }
-        //     }
-        // });
+        btnTim.addActionListener(e -> {
+            String keyword = txtTuKhoa.getText().trim().toLowerCase();
+            if(keyword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập từ khóa tìm kiếm!");
+                loadPayDetails();
+            }
+
+            Payment_slip paymentSlip = paySlipBLL.search_Pay(keyword);
+            if (paymentSlip != null) {
+                tableModel.setRowCount(0);
+                tableModel.addRow(new Object[]{
+                    paymentSlip.getID(),
+                    paymentSlip.getID_Loan_slip(),
+                    paymentSlip.getID_Staff(),
+                    paymentSlip.getSo_luong(),
+                    paymentSlip.getPayment_Date().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    paymentSlip.getLate_fee(),
+                    paymentSlip.getDamage_fee()
+                });
+            } else {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy phiếu trả nào với từ khóa: " + keyword);
+            }
+        });
 
         btnXemChiTiet.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();

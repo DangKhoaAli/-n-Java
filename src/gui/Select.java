@@ -16,18 +16,18 @@ public class Select extends JDialog {           // để reload bảng khi cần
     private JButton btnChon;
     private JButton btnTim;
 
-    public Select(String ID, String[] bookID, String className) {
+    public Select(String ID, String[] book, String className) {
         if(className.equals("loan")){
-            LoanBook(bookID);
+            LoanBook(book);
             setModal(true);
         }
         else if(className.equals("pay")){
-            PayBook(ID, bookID);
+            PayBook(ID, book);
             setModal(true);
         }
     }
 
-    private void LoanBook(String[] bookID){
+    private void LoanBook(String[] book){
         book_BLL = new Select_BLL();
         setModal(true);
         setTitle("Chọn sách để mượn");
@@ -84,7 +84,7 @@ public class Select extends JDialog {           // để reload bảng khi cần
         btnChon.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow != -1) {
-                bookID[0] = tableModel.getValueAt(selectedRow, 0).toString();
+                book[0] = tableModel.getValueAt(selectedRow, 0).toString();
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn một cuốn sách!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -105,7 +105,7 @@ public class Select extends JDialog {           // để reload bảng khi cần
     }
 
     // Phương thức load các sách có mã phiếu mượn là ID
-    private void PayBook(String ID, String[] bookID){
+    private void PayBook(String ID, String[] book){
         book_BLL = new Select_BLL();
         setModal(true);
         setTitle("Chọn sách để trả");
@@ -114,7 +114,7 @@ public class Select extends JDialog {           // để reload bảng khi cần
         getContentPane().setBackground(Color.BLUE);
 
         // --- Bảng chi tiết ---
-        String[] columnNames = {"Mã chi tiết sách", "Tên sách", "Thể loại", "Nhà cung câp", "Năm xuất bản", "Số trang"};
+        String[] columnNames = {"Mã chi tiết sách", "Tên sách", "Thể loại", "Nhà cung câp", "Năm xuất bản", "Số trang", "Số trang hư hỏng"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
@@ -150,7 +150,13 @@ public class Select extends JDialog {           // để reload bảng khi cần
         btnChon.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow != -1) {
-                bookID[0] = tableModel.getValueAt(selectedRow, 0).toString();
+                book[0] = tableModel.getValueAt(selectedRow, 0).toString();
+                book[1] = tableModel.getValueAt(selectedRow, 1).toString();
+                book[2] = tableModel.getValueAt(selectedRow, 2).toString();
+                book[3] = tableModel.getValueAt(selectedRow, 3).toString();
+                book[4] = tableModel.getValueAt(selectedRow, 4).toString();
+                book[5] = tableModel.getValueAt(selectedRow, 5).toString();
+                book[6] = tableModel.getValueAt(selectedRow, 6).toString();
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn một cuốn sách!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -214,7 +220,7 @@ public class Select extends JDialog {           // để reload bảng khi cần
             for (String book : books) {
                 String[] data = book.split(";");
                 tableModel.addRow(new Object[]{
-                    data[0], data[1], data[2], data[3], data[4], data[5]
+                    data[0], data[1], data[2], data[3], data[4], data[5], data[6]
                 });
             }
         } else {
