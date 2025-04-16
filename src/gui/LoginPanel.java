@@ -1,7 +1,9 @@
 package gui;
 
+import DAO.Staff_DAO;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import javax.swing.*;
 
 public class LoginPanel extends JFrame {
@@ -17,7 +19,7 @@ public class LoginPanel extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
 
-        ImageIcon bgIcon = new ImageIcon("C:\\Users\\Admin\\OneDrive\\Desktop\\Project-Java\\-n-Java\\src\\gui\\img\\login.jpg");
+        ImageIcon bgIcon = new ImageIcon("C:\\Users\\Admin\\OneDrive\\Desktop\\Project-Java\\-n-Java\\src\\img\\login.jpg");
         Image scale = bgIcon.getImage().getScaledInstance(850, 600, Image.SCALE_SMOOTH);
         ImageIcon imgLabel = new ImageIcon(scale);
         JLabel background = new JLabel(imgLabel);
@@ -107,14 +109,29 @@ public class LoginPanel extends JFrame {
     }
 
     private String authenticate(String user, String pass) {
-        if ("admin".equals(user) && "password".equals(pass)) {
+    try {
+        // Kiểm tra nếu là admin
+        if ("admin".equals(user) && "1234".equals(pass)) {
             return "admin";
         }
-        if ("staff".equals(user) && "1234".equals(pass)) {
-            return "staff";
+
+        Staff_DAO staffDao = new Staff_DAO();
+        String[] account = staffDao.generateAccountByStaffID(user);
+        if (account != null) {
+            String usernameFromDb = account[0]; 
+            String passwordFromDb = account[1]; 
+
+            if (user.equals(usernameFromDb) && pass.equals(passwordFromDb)) {
+                return "staff"; 
+            }
         }
-        return null;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return null;
+}
+
 
     public boolean isSucceeded() {
         return succeeded;
