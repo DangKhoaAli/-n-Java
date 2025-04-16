@@ -106,7 +106,6 @@ public class BookSelection extends JDialog {
             for (Books b : books) {
                 tableModel.addRow(new Object[]{
                     b.getID(), b.getName(), b.getCategory(), b.getAuthor(),
-                    b.getSupplier(), b.getYear(), b.getPage_num(),
                     b.getPrice(), b.getLoan_fee(), b.getQuanlity(), b.getExist()
                 });
             }

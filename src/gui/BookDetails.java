@@ -53,7 +53,6 @@ public class BookDetails extends JDialog {
         scrollPane.getViewport().setBackground(Color.WHITE);
         add(scrollPane, BorderLayout.CENTER);
 
-<<<<<<< HEAD
         // Khi chọn dòng, đẩy dữ liệu xuống textfield
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
@@ -65,51 +64,24 @@ public class BookDetails extends JDialog {
                 txtSoTrangHuHong.setEnabled(editable);
             }
         });
-=======
-        // Tự động nạp dữ liệu xuống textfield khi chọn dòng
-        // table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-        //     @Override
-        //     public void valueChanged(ListSelectionEvent e) {
-        //         if (!e.getValueIsAdjusting()) {
-        //             int selectedRow = table.getSelectedRow();
-        //             if (selectedRow != -1) {
-        //                 // Lấy trạng thái và số trang hư hỏng từ bảng
-        //                 String trangThai = tableModel.getValueAt(selectedRow, 1).toString();
-        //                 String soTrangHuHong = tableModel.getValueAt(selectedRow, 2).toString();
-        //                 // Đẩy xuống textfield
-        //                 txtTrangThai.setText(trangThai);
-        //                 txtSoTrangHuHong.setText(soTrangHuHong);
-        //             }
-        //         }
-        //     }
-        // });
->>>>>>> 2f8b97053ce71afc85d4c58492d7535438fd5fd1
 
         // --- Panel nhập ---
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
         panelInput.setBackground(Color.BLUE);
-<<<<<<< HEAD
-=======
-        
         txtNhaCungCap = new JTextField();
         txtNhaCungCap.setBorder(BorderFactory.createTitledBorder("Nhà cung cấp"));
         txtNamXuatBan = new JTextField();
         txtNamXuatBan.setBorder(BorderFactory.createTitledBorder("Năm xuất bản"));
         txtSoTrang = new JTextField();
         txtSoTrang.setBorder(BorderFactory.createTitledBorder("Số trang"));
->>>>>>> 2f8b97053ce71afc85d4c58492d7535438fd5fd1
         txtTrangThai = new JTextField();
         txtTrangThai.setBorder(BorderFactory.createTitledBorder("Trạng thái"));
         txtSoTrangHuHong = new JTextField();
         txtSoTrangHuHong.setBorder(BorderFactory.createTitledBorder("Số trang hư hỏng"));
-<<<<<<< HEAD
-=======
-        
         panelInput.add(txtNhaCungCap);
         panelInput.add(txtNamXuatBan);
         panelInput.add(txtSoTrang);
->>>>>>> 2f8b97053ce71afc85d4c58492d7535438fd5fd1
         panelInput.add(txtTrangThai);
         panelInput.add(txtSoTrangHuHong);
 
@@ -144,12 +116,8 @@ public class BookDetails extends JDialog {
             String soTrang = txtSoTrang.getText().trim();
             String trangThai = txtTrangThai.getText().trim();
             String soTrangHuHongStr = txtSoTrangHuHong.getText().trim();
-<<<<<<< HEAD
-            String result = book_BLL.addBook(maChiTiet, bookCode, trangThai, soTrangHuHongStr);
-=======
 
             String result = book_BLL.addBook(maChiTiet, bookCode, nhaCungCap, namXuatBan, soTrang, trangThai, soTrangHuHongStr);
->>>>>>> 2f8b97053ce71afc85d4c58492d7535438fd5fd1
             JOptionPane.showMessageDialog(this, result);
             loadBookDetails(bookCode);
             if (bookPanel != null) bookPanel.loadBook();
@@ -163,13 +131,7 @@ public class BookDetails extends JDialog {
                 return;
             }
             String bookCode = bookData[0].toString();
-<<<<<<< HEAD
             String maChiTiet = tableModel.getValueAt(r, 0).toString();
-            String trangThai = txtTrangThai.getText().trim();
-            String soTrangHuHong = txtSoTrangHuHong.getText().trim();
-            String result = book_BLL.updateBook(maChiTiet, bookCode, trangThai, soTrangHuHong);
-=======
-            String maChiTiet = tableModel.getValueAt(selectedRow, 0).toString();
             String nhaCungCap = txtNhaCungCap.getText().trim();
             String namXuatBan = txtNamXuatBan.getText().trim();
             String soTrang = txtSoTrang.getText().trim();
@@ -177,7 +139,6 @@ public class BookDetails extends JDialog {
             String soTrangHuHong = txtSoTrangHuHong.getText().trim();
 
             String result = book_BLL.updateBook(maChiTiet, bookCode, nhaCungCap, namXuatBan, soTrang, trangThai, soTrangHuHong);
->>>>>>> 2f8b97053ce71afc85d4c58492d7535438fd5fd1
             JOptionPane.showMessageDialog(this, result);
             loadBookDetails(bookCode);
             if (bookPanel != null) bookPanel.loadBook();
@@ -211,7 +172,6 @@ public class BookDetails extends JDialog {
             dispose();
             if (bookPanel != null) bookPanel.loadBook();
         });
-<<<<<<< HEAD
 
         // Load chi tiết lần đầu
         loadBookDetails(bookData[0].toString());
@@ -219,25 +179,11 @@ public class BookDetails extends JDialog {
         setSize(600, 600);
         setLocationRelativeTo(getOwner());
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-=======
-        
-        setSize(800, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
->>>>>>> 2f8b97053ce71afc85d4c58492d7535438fd5fd1
         setVisible(true);
     }
 
     public void loadBookDetails(String ID) {
         tableModel.setRowCount(0);
-<<<<<<< HEAD
-        List<String> details = book_BLL.getBook(ID);
-        if (details != null) {
-            for (String line : details) {
-                String[] parts = line.split(";");
-                tableModel.addRow(new Object[]{parts[0], parts[1], parts[2]});
-=======
-        
         List<String> books = book_BLL.getBook(ID);
         // Kiểm tra danh sách có dữ liệu không
         if (books != null) {
@@ -251,10 +197,10 @@ public class BookDetails extends JDialog {
                     book.split(";")[5]  // Số trang hư hỏng
                     
                 });
->>>>>>> 2f8b97053ce71afc85d4c58492d7535438fd5fd1
             }
         } else {
             JOptionPane.showMessageDialog(this, "Không thể tải danh sách sách!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 }
