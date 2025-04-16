@@ -40,8 +40,8 @@ public class BookDetails extends JDialog {
 
     private void initUI(Object[] bookData) {
         book_BLL = new Book_Details_BLL();
-        setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(Color.BLUE);
+        setLayout(new BorderLayout(0, 0));
+        getContentPane().setBackground(new Color(230, 236, 243));
 
         // --- Bảng chi tiết ---
         String[] columnNames = {"Mã chi tiết sách", "Nhà cung câp", "Năm xuất bản", "Số trang", "Trạng thái", "Số trang hư hỏng"};
@@ -68,7 +68,7 @@ public class BookDetails extends JDialog {
         // --- Panel nhập ---
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
         txtNhaCungCap = new JTextField();
         txtNhaCungCap.setBorder(BorderFactory.createTitledBorder("Nhà cung cấp"));
         txtNamXuatBan = new JTextField();
@@ -87,20 +87,20 @@ public class BookDetails extends JDialog {
 
         // --- Panel nút ---
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.BLUE);
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnHuy = new JButton("Hủy");
-        btnDong = new JButton("Đóng");
+        panelButtons.setBackground(new Color(230, 236, 243));
+        btnThem = new RoundedButton("Thêm");
+        btnSua = new RoundedButton("Sửa");
+        btnXoa = new RoundedButton("Xóa");
+        btnHuy = new RoundedButton("Hủy");
+        btnDong = new RoundedButton("Đóng");
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnDong);
 
-        JPanel panelBottom = new JPanel(new BorderLayout(10,10));
-        panelBottom.setBackground(Color.BLUE);
+        JPanel panelBottom = new JPanel(new BorderLayout(0,0));
+        panelBottom.setBackground(new Color(230, 236, 243));
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
         add(panelBottom, BorderLayout.SOUTH);

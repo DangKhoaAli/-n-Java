@@ -1,19 +1,17 @@
 package gui;
 
+import BLL.Book_Return_BLL;
+import BLL.Pay_slip_BLL;
+import DAO.Book_Details_DAO;
+import DAO.Payment_slip_DAO;
 import java.awt.*;
-import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import BLL.Book_Return_BLL;
-import BLL.Pay_slip_BLL;
-import DAO.Book_Details_DAO;
-import DAO.Book_Returned_DAO;
-import DAO.Payment_slip_DAO;
 import model.Payment_slip;
 
 public class PayPanel extends JPanel {
@@ -49,11 +47,11 @@ public class PayPanel extends JPanel {
         book_return_BLL = new Book_Return_BLL();
         payment_slip_DAO = new Payment_slip_DAO();
 
-        setBackground(Color.BLUE);
-        setLayout(new BorderLayout(10,10));
+        setBackground(new Color(230, 236, 243));
+        setLayout(new BorderLayout(0,0));
 
         JPanel panelTable = new JPanel(new BorderLayout());
-        panelTable.setBackground(Color.BLUE);
+        panelTable.setBackground(new Color(230, 236, 243));
 
         String[] columnNames = {"Mã Phiếu Trả","Mã phiếu mượn","Mã thủ thư","Số lượng sách", "Ngày Trả", "Phí Trễ Hạn", "Phí Hư Hại"};
         tableModel = new DefaultTableModel(columnNames,0);
@@ -94,7 +92,7 @@ public class PayPanel extends JPanel {
 
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
         panelInput.add(txtPhieuTra);
         panelInput.add(txtPhieuMuon);
         panelInput.add(txtThuThu);
@@ -105,21 +103,22 @@ public class PayPanel extends JPanel {
         
         // Panel tìm kiếm
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.BLUE);
+        panelSearch.setBackground(new Color(230, 236, 243));
         panelSearch.add(new JLabel("Từ khóa:"));
-        txtTuKhoa = new JTextField(20);
+        txtTuKhoa = new RoundedTxtField(20, 16);
+        txtTuKhoa.setBackground(Color.WHITE);
         panelSearch.add(txtTuKhoa);
-        btnTim = new JButton("Tìm");
+        btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
         
         // Panel chứa các nút
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButtons.setBackground(Color.BLUE);
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnHuy = new JButton("Hủy");
-        btnXoa = new JButton("Xóa");
-        btnXemChiTiet = new JButton("Xem chi tiết");
+        panelButtons.setBackground(new Color(230, 236, 243));
+        btnThem = new RoundedButton("Thêm");
+        btnSua = new RoundedButton("Sửa");
+        btnHuy = new RoundedButton("Hủy");
+        btnXoa = new RoundedButton("Xóa");
+        btnXemChiTiet = new RoundedButton("Xem chi tiết");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
@@ -127,8 +126,8 @@ public class PayPanel extends JPanel {
         panelButtons.add(btnXoa);
         panelButtons.add(btnXemChiTiet);
 
-        JPanel panelBottom = new JPanel(new BorderLayout(10, 10));
-        panelBottom.setBackground(Color.BLUE);
+        JPanel panelBottom = new JPanel(new BorderLayout(0, 0));
+        panelBottom.setBackground(new Color(230, 236, 243));
         panelBottom.add(panelSearch, BorderLayout.NORTH);
         panelBottom.add(panelInput, BorderLayout.CENTER);
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
@@ -337,11 +336,6 @@ public class PayPanel extends JPanel {
         });
         loadPayDetails();
         add(panelTable, BorderLayout.CENTER);
-
-        // JPanel panelBottom = new JPanel(new BorderLayout(10,10));
-        panelBottom.add(panelSearch, BorderLayout.NORTH);
-        panelBottom.add(panelInput, BorderLayout.CENTER);
-        panelBottom.add(panelButtons, BorderLayout.SOUTH);
 
         add(panelBottom, BorderLayout.SOUTH);
     }

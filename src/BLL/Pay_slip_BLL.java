@@ -1,16 +1,15 @@
 package BLL;
 
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
 import DAO.Book_Details_DAO;
 import DAO.Book_Returned_DAO;
 import DAO.Loan_slip_DAO;
 import DAO.Payment_slip_DAO;
 import DAO.Staff_DAO;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import model.Loan_slip;
 import model.Payment_slip;
 
@@ -88,6 +87,9 @@ public class Pay_slip_BLL {
             LocalDate paymentDate = LocalDate.parse(payment_Date, formatter);
             if(paymentDate.isBefore(loan_slip_dao.getBorrowDate(ID_Loan_slip))){
                 return "Ngày trả không thể trước ngày mượn!";
+            }
+            if(paymentDate.isAfter(LocalDate.now())) {
+                return "Ngày trả không thể là một ngày trong tương lai!";
             }
 
             payment_slip_dao.addPayment_slip(ID, ID_Loan_slip, ID_Staff, So_luong, paymentDate);
