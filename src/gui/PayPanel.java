@@ -8,7 +8,6 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -30,16 +29,16 @@ public class PayPanel extends JPanel {
     private JTextField txtPhiTreHan;
     private JTextField txtPhiHuHai;
 
-    private JTextField txtTuKhoa;
+    private RoundedTxtField txtTuKhoa;
 
-    private JButton btnThem;
-    private JButton btnSua;
-    private JButton btnXoa;
-    private JButton btnHuy;
-    private JButton btnTim;
-    private JButton btnXemChiTiet;
+    private RoundedButton btnThem;
+    private RoundedButton btnSua;
+    private RoundedButton btnXoa;
+    private RoundedButton btnHuy;
+    private RoundedButton btnTim;
+    private RoundedButton btnXemChiTiet;
 
-    private Map<String, java.util.List<Object[]>> payDetailsMap = new HashMap<>();
+    // private Map<String, java.util.List<Object[]>> payDetailsMap = new HashMap<>();
 
     public PayPanel() {
         paySlipBLL = new Pay_slip_BLL();
@@ -107,6 +106,7 @@ public class PayPanel extends JPanel {
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new RoundedTxtField(20, 16);
         txtTuKhoa.setBackground(Color.WHITE);
+        txtTuKhoa.setPlaceholder("Nhập mã phiếu trả muốn tìm");
         panelSearch.add(txtTuKhoa);
         btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);

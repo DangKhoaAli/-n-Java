@@ -24,14 +24,14 @@ public class BookPanel extends JPanel {
     private JTextField txtSoLuong;
     
 
-    private JTextField txtTuKhoa;
+    private RoundedTxtField txtTuKhoa;
 
-    private JButton btnThem;
-    private JButton btnSua;
-    private JButton btnXoa;
-    private JButton btnHuy;
-    private JButton btnTim;
-    private JButton btnXemChiTiet;
+    private RoundedButton btnThem;
+    private RoundedButton btnSua;
+    private RoundedButton btnXoa;
+    private RoundedButton btnHuy;
+    private RoundedButton btnTim;
+    private RoundedButton btnXemChiTiet;
 
 
     public BookPanel() {
@@ -91,6 +91,7 @@ public class BookPanel extends JPanel {
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new RoundedTxtField(20, 16);
         txtTuKhoa.setBackground(Color.WHITE);
+        txtTuKhoa.setPlaceholder("Nhập tên sách muốn tìm");
  
 
         panelSearch.add(txtTuKhoa);

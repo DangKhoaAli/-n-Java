@@ -7,7 +7,6 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -31,17 +30,17 @@ public class LoanPanel extends JPanel {
     private JTextField txtNgayDuKienTra;
     private JTextField txtPhiMuon;
 
-    private JTextField txtTuKhoa;
+    private RoundedTxtField txtTuKhoa;
 
-    private JButton btnThem;
-    private JButton btnSua;
-    private JButton btnXoa;
-    private JButton btnHuy;
-    private JButton btnTim;
-    private JButton btnXemChiTiet;
+    private RoundedButton btnThem;
+    private RoundedButton btnSua;
+    private RoundedButton btnXoa;
+    private RoundedButton btnHuy;
+    private RoundedButton btnTim;
+    private RoundedButton btnXemChiTiet;
 
     // Map lưu chi tiết phiếu mượn (key: mã phiếu mượn, value: danh sách chi tiết)
-    private Map<String, java.util.List<Object[]>> loanDetailsMap = new HashMap<>();
+    // private Map<String, java.util.List<Object[]>> loanDetailsMap = new HashMap<>();
 
     public LoanPanel() {
         loan_slip_BLL = new Loan_slip_BLL();
@@ -121,6 +120,7 @@ public class LoanPanel extends JPanel {
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new RoundedTxtField(20, 16);
         txtTuKhoa.setBackground(Color.WHITE);
+        txtTuKhoa.setPlaceholder("Nhập mã phiếu mượn muốn tìm");
         panelSearch.add(txtTuKhoa);
         btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);

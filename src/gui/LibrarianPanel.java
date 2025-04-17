@@ -27,13 +27,13 @@ public class LibrarianPanel extends JPanel {
     private JTextField txtEmail;
     private JTextField txtLuong;
 
-    private JTextField txtTuKhoa;
+    private RoundedTxtField txtTuKhoa;
 
-    private JButton btnThem;
-    private JButton btnSua;
-    private JButton btnXoa;
-    private JButton btnHuy;
-    private JButton btnTim;
+    private RoundedButton btnThem;
+    private RoundedButton btnSua;
+    private RoundedButton btnXoa;
+    private RoundedButton btnHuy;
+    private RoundedButton btnTim;
 
     public LibrarianPanel() {
         staff_BLL = new Staff_BLL();
@@ -117,6 +117,7 @@ public class LibrarianPanel extends JPanel {
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new RoundedTxtField(20, 16);
         txtTuKhoa.setBackground(Color.WHITE);
+        txtTuKhoa.setPlaceholder("Nhập tên thủ thư muốn tìm");
         panelSearch.add(txtTuKhoa);
         btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
