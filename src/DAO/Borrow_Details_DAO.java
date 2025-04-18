@@ -1,5 +1,6 @@
 package DAO;
 
+import config.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,13 +8,35 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.DatabaseConnection;
-
 public class Borrow_Details_DAO {
     private Connection conn;
-    
+
     public Borrow_Details_DAO() {
         conn = DatabaseConnection.getConnection();
+    }
+
+    // Lấy danh sách chi tiết phiếu mượn (ID sách, tên sách, phí mượn)
+    public List<String[]> getBorrowDetails(String loanSlipID) throws SQLException {
+        List<String[]> borrowDetails = new ArrayList<>();
+        String sql = """
+                     SELECT bd.ID AS Book_ID, b.name AS Book_Name, b.loan_fee AS Loan_Fee
+                     FROM Borrowed_Book_Details bbd
+                     JOIN Book_Details bd ON bbd.ID_Book = bd.ID
+                     JOIN Book b ON bd.ID_Book = b.ID
+                     WHERE bbd.ID_Loan_slip = ?
+                     """;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, loanSlipID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                borrowDetails.add(new String[]{
+                    rs.getString("Book_ID"),
+                    rs.getString("Book_Name"),
+                    String.valueOf(rs.getFloat("Loan_Fee"))
+                });
+            }
+        }
+        return borrowDetails;
     }
 
     //Lấy danh sách chi tiết phiếu của phiếu mượn

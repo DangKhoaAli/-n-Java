@@ -38,6 +38,16 @@ public class Report_DAO {
         return executeDetailQuery(sql, date.getMonthValue(), date.getYear());
     }
 
+    public List<String[]> getLoanDetailsByMonthWithFees(LocalDate date) {
+        String sql = "SELECT Book_ID, Book_Name, loan_fee FROM Loan_slip WHERE MONTH(Borrow_Date) = ? AND YEAR(Borrow_Date) = ?";
+        return executeDetailQueryWithFees(sql, date.getMonthValue(), date.getYear());
+    }
+
+    public List<String[]> getReturnDetailsByMonthWithFees(LocalDate date) {
+        String sql = "SELECT Book_ID, Book_Name, late_fee, damage_fee FROM Payment_slip WHERE MONTH(payment_Date) = ? AND YEAR(payment_Date) = ?";
+        return executeDetailQueryWithFees(sql, date.getMonthValue(), date.getYear());
+    }
+
     private int executeCountQuery(String sql, Object... params) {
         try (PreparedStatement ps = prepareStatement(sql, params);
              ResultSet rs = ps.executeQuery()) {
@@ -68,6 +78,25 @@ public class Report_DAO {
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 details.add(new String[]{rs.getString(1), rs.getString(2)});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return details;
+    }
+
+    private List<String[]> executeDetailQueryWithFees(String sql, Object... params) {
+        List<String[]> details = new ArrayList<>();
+        try (PreparedStatement ps = prepareStatement(sql, params);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                List<String> row = new ArrayList<>();
+                row.add(rs.getString(1)); // Book ID
+                row.add(rs.getString(2)); // Book Name
+                for (int i = 3; i <= rs.getMetaData().getColumnCount(); i++) {
+                    row.add(String.valueOf(rs.getObject(i))); // Fees
+                }
+                details.add(row.toArray(new String[0]));
             }
         } catch (SQLException e) {
             e.printStackTrace();

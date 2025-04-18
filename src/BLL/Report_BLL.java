@@ -12,11 +12,11 @@ public class Report_BLL {
     }
 
     public List<String[]> getLoanDetailsByMonth(LocalDate date) {
-        return reportDAO.getLoanDetailsByMonth(date);
+        return reportDAO.getLoanDetailsByMonthWithFees(date);
     }
 
     public List<String[]> getReturnDetailsByMonth(LocalDate date) {
-        return reportDAO.getReturnDetailsByMonth(date);
+        return reportDAO.getReturnDetailsByMonthWithFees(date);
     }
 
     public int getTotalLoansByMonth(LocalDate date) {

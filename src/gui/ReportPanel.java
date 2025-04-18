@@ -39,7 +39,7 @@ public class ReportPanel extends JPanel {
         loanHeader.setFont(new Font("Arial", Font.BOLD, 14));
         loanPanel.add(loanHeader, BorderLayout.NORTH);
 
-        String[] loanColumnNames = {"ID Sách", "Tên Sách"};
+        String[] loanColumnNames = {"ID Sách", "Tên Sách", "Phí Mượn"};
         loanTableModel = new DefaultTableModel(loanColumnNames, 0);
         loanTable = new JTable(loanTableModel);
         loanPanel.add(new JScrollPane(loanTable), BorderLayout.CENTER);
@@ -50,7 +50,7 @@ public class ReportPanel extends JPanel {
         returnHeader.setFont(new Font("Arial", Font.BOLD, 14));
         returnPanel.add(returnHeader, BorderLayout.NORTH);
 
-        String[] returnColumnNames = {"ID Sách", "Tên Sách"};
+        String[] returnColumnNames = {"ID Sách", "Tên Sách", "Phí Trễ Hạn", "Phí Hư Hại"};
         returnTableModel = new DefaultTableModel(returnColumnNames, 0);
         returnTable = new JTable(returnTableModel);
         returnPanel.add(new JScrollPane(returnTable), BorderLayout.CENTER);
