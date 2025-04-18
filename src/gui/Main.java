@@ -17,12 +17,15 @@ public class Main extends JFrame {
 
         if("admin".equalsIgnoreCase(userRole)) {
             tabbedPane.addTab("Quản lý thủ thư", new LibrarianPanel());
-            // tabbedPane.addTab("Báo cáo thống kê", new ReportPanel());
         }
 
         tabbedPane.addTab("Quản lý phiếu mượn", new LoanPanel());
 
         tabbedPane.addTab("Quản lý phiếu trả", new PayPanel());
+
+        if("admin".equalsIgnoreCase(userRole)) {
+            tabbedPane.addTab("Báo cáo thống kê", new ReportPanel());
+        }
         
         getContentPane().add(tabbedPane);
     }
