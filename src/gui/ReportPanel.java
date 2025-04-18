@@ -115,27 +115,32 @@ public class ReportPanel extends JPanel {
         LocalDate date;
 
         try {
+            // Correct date parsing logic
             if (timeFrame.equals("Tháng")) {
                 date = LocalDate.parse("01/" + dateInput, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            } else {
+            } else if (timeFrame.equals("Năm")) {
                 date = LocalDate.parse("01/01/" + dateInput, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            } else {
+                throw new IllegalArgumentException("Invalid time frame selected.");
             }
 
-            // Load loan and return details
+            // Fetch loan and return details
             List<String[]> loanDetails = reportBLL.getLoanDetailsByMonth(date);
             List<String[]> returnDetails = reportBLL.getReturnDetailsByMonth(date);
 
-            loanTableModel.setRowCount(0);
+            // Populate loan table
+            loanTableModel.setRowCount(0); // Clear existing rows
             for (String[] loan : loanDetails) {
                 loanTableModel.addRow(loan);
             }
 
-            returnTableModel.setRowCount(0);
+            // Populate return table
+            returnTableModel.setRowCount(0); // Clear existing rows
             for (String[] ret : returnDetails) {
                 returnTableModel.addRow(ret);
             }
 
-            // Load summary statistics
+            // Fetch and display summary statistics
             int totalLoans = reportBLL.getTotalLoansByMonth(date);
             int totalReturns = reportBLL.getTotalReturnsByMonth(date);
             double totalRevenue = reportBLL.getTotalRevenueByMonth(date);
@@ -144,12 +149,15 @@ public class ReportPanel extends JPanel {
             lblTotalReturns.setText("Số sách trả: " + totalReturns);
             lblTotalRevenue.setText(String.format("Doanh thu: %.2f VND", totalRevenue));
         } catch (Exception ex) {
-            // Clear tables and statistics if input is invalid
+            // Handle invalid input or errors gracefully
             loanTableModel.setRowCount(0);
             returnTableModel.setRowCount(0);
             lblTotalLoans.setText("Số sách mượn: 0");
             lblTotalReturns.setText("Số sách trả: 0");
             lblTotalRevenue.setText("Doanh thu: 0.00 VND");
+
+            // Optionally log or display the error for debugging
+            ex.printStackTrace();
         }
     }
 }
