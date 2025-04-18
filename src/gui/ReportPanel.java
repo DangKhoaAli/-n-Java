@@ -24,7 +24,6 @@ public class ReportPanel extends JPanel {
 
     private JComboBox<String> cbTimeFrame;
     private JTextField txtDateInput;
-    private JButton btnGenerateReport;
 
     public ReportPanel() {
         reportBLL = new Report_BLL();
@@ -40,7 +39,7 @@ public class ReportPanel extends JPanel {
         loanHeader.setFont(new Font("Arial", Font.BOLD, 14));
         loanPanel.add(loanHeader, BorderLayout.NORTH);
 
-        String[] loanColumnNames = {"ID Sách", "Tên Sách", "Phí Mượn"};
+        String[] loanColumnNames = {"ID phiếu mượn", "ID Sách", "Tên Sách"};
         loanTableModel = new DefaultTableModel(loanColumnNames, 0);
         loanTable = new JTable(loanTableModel);
         loanPanel.add(new JScrollPane(loanTable), BorderLayout.CENTER);
@@ -51,7 +50,7 @@ public class ReportPanel extends JPanel {
         returnHeader.setFont(new Font("Arial", Font.BOLD, 14));
         returnPanel.add(returnHeader, BorderLayout.NORTH);
 
-        String[] returnColumnNames = {"ID Sách", "Tên Sách", "Phí Trễ Hạn", "Phí Hư Hại"};
+        String[] returnColumnNames = {"ID phiếu trả","ID Sách", "Tên Sách"};
         returnTableModel = new DefaultTableModel(returnColumnNames, 0);
         returnTable = new JTable(returnTableModel);
         returnPanel.add(new JScrollPane(returnTable), BorderLayout.CENTER);
@@ -62,9 +61,13 @@ public class ReportPanel extends JPanel {
 
         // --- Chi tiết thống kê ---
         JPanel panelSummary = new JPanel(new GridLayout(3, 1));
+        panelSummary.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20)); // Thêm khoảng cách padding
         lblTotalLoans = new JLabel("Số sách mượn: 0");
+        lblTotalLoans.setFont(new Font("Arial", Font.BOLD, 16)); // Tăng kích thước chữ
         lblTotalReturns = new JLabel("Số sách trả: 0");
+        lblTotalReturns.setFont(new Font("Arial", Font.BOLD, 16));
         lblTotalRevenue = new JLabel("Doanh thu: 0.00 VND");
+        lblTotalRevenue.setFont(new Font("Arial", Font.BOLD, 16));
 
         panelSummary.add(lblTotalLoans);
         panelSummary.add(lblTotalReturns);
@@ -72,7 +75,6 @@ public class ReportPanel extends JPanel {
         add(panelSummary, BorderLayout.SOUTH);
 
         // --- Panel nhập ---
-        btnGenerateReport = new JButton("Tạo thống kê");
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
         panelInput.setBackground(new Color(230, 236, 243));
@@ -80,16 +82,14 @@ public class ReportPanel extends JPanel {
         cbTimeFrame = new JComboBox<>(new String[]{"Tháng", "Năm"});
         cbTimeFrame.setBorder(BorderFactory.createTitledBorder("Chọn thời gian"));
         txtDateInput = new JTextField();
-        txtDateInput.setBorder(BorderFactory.createTitledBorder("Nhập thời gian (MM/yyyy, yyyy)"));
+        txtDateInput.setBorder(BorderFactory.createTitledBorder("Nhập thời gian (chọn tháng thì nhập MM/yyyy, chọn năm thì nhập yyyy)"));
 
         panelInput.add(cbTimeFrame);
         panelInput.add(txtDateInput);
-        panelInput.add(btnGenerateReport); // Add button to the input panel
 
         add(panelInput, BorderLayout.NORTH);
 
         // --- Xử lý sự kiện ---
-        btnGenerateReport.addActionListener(e -> generateReport());
         cbTimeFrame.addActionListener(e -> generateReport());
         txtDateInput.getDocument().addDocumentListener(new DocumentListener() {
             @Override

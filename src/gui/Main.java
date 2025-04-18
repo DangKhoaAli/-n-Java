@@ -24,7 +24,7 @@ public class Main extends JFrame {
         tabbedPane.addTab("Quản lý phiếu trả", new PayPanel());
 
         if("admin".equalsIgnoreCase(userRole)) {
-            tabbedPane.addTab("Báo cáo thống kê", new ReportPanel());
+            tabbedPane.addTab("Thống kê", new ReportPanel());
         }
         
         getContentPane().add(tabbedPane);
