@@ -37,7 +37,7 @@ public class PayDetails extends JFrame {
         this.bookDetailsDAO = new Book_Details_DAO();
         // this.setIconImage(new ImageIcon("src/icon/logo.png").getImage());
         this.payPanel = payPanel;
-        setTitle("Chi tiết phiếu mượn - " + payData[0]);
+        setTitle("Chi tiết phiếu trả - " + payData[0]);
         setLayout(new BorderLayout(0, 0));
         getContentPane().setBackground(new Color(230, 236, 243));
 
