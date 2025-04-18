@@ -48,6 +48,33 @@ public class Report_DAO {
         return executeDetailQueryWithFees(sql, date.getMonthValue(), date.getYear());
     }
 
+    public int getTotalBooksLoanedByMonth(LocalDate date) {
+        String sql = """
+                     SELECT SUM(quantity) 
+                     FROM Loan_slip 
+                     WHERE MONTH(Borrow_Date) = ? AND YEAR(Borrow_Date) = ?
+                     """;
+        return executeCountQuery(sql, date.getMonthValue(), date.getYear());
+    }
+
+    public int getTotalBooksReturnedByMonth(LocalDate date) {
+        String sql = """
+                     SELECT SUM(quantity) 
+                     FROM Payment_slip 
+                     WHERE MONTH(payment_Date) = ? AND YEAR(payment_Date) = ?
+                     """;
+        return executeCountQuery(sql, date.getMonthValue(), date.getYear());
+    }
+
+    public double getTotalRevenueIncludingLoanAndReturnFees(LocalDate date) {
+        String sql = """
+                     SELECT SUM(loan_fee + late_fee + damage_fee) 
+                     FROM Payment_slip 
+                     WHERE MONTH(payment_Date) = ? AND YEAR(payment_Date) = ?
+                     """;
+        return executeSumQuery(sql, date.getMonthValue(), date.getYear());
+    }
+
     private int executeCountQuery(String sql, Object... params) {
         try (PreparedStatement ps = prepareStatement(sql, params);
              ResultSet rs = ps.executeQuery()) {

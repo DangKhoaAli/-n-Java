@@ -20,14 +20,14 @@ public class Report_BLL {
     }
 
     public int getTotalLoansByMonth(LocalDate date) {
-        return reportDAO.getTotalLoansByMonth(date);
+        return reportDAO.getTotalBooksLoanedByMonth(date);
     }
 
     public int getTotalReturnsByMonth(LocalDate date) {
-        return reportDAO.getTotalReturnsByMonth(date);
+        return reportDAO.getTotalBooksReturnedByMonth(date);
     }
 
     public double getTotalRevenueByMonth(LocalDate date) {
-        return reportDAO.getTotalRevenueByMonth(date);
+        return reportDAO.getTotalRevenueIncludingLoanAndReturnFees(date);
     }
 }

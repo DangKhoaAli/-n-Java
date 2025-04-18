@@ -24,6 +24,7 @@ public class ReportPanel extends JPanel {
 
     private JComboBox<String> cbTimeFrame;
     private JTextField txtDateInput;
+    private JButton btnGenerateReport;
 
     public ReportPanel() {
         reportBLL = new Report_BLL();
@@ -71,6 +72,7 @@ public class ReportPanel extends JPanel {
         add(panelSummary, BorderLayout.SOUTH);
 
         // --- Panel nhập ---
+        btnGenerateReport = new JButton("Tạo thống kê");
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
         panelInput.setBackground(new Color(230, 236, 243));
@@ -82,10 +84,12 @@ public class ReportPanel extends JPanel {
 
         panelInput.add(cbTimeFrame);
         panelInput.add(txtDateInput);
+        panelInput.add(btnGenerateReport); // Add button to the input panel
 
         add(panelInput, BorderLayout.NORTH);
 
         // --- Xử lý sự kiện ---
+        btnGenerateReport.addActionListener(e -> generateReport());
         cbTimeFrame.addActionListener(e -> generateReport());
         txtDateInput.getDocument().addDocumentListener(new DocumentListener() {
             @Override
