@@ -6,24 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Report_DAO {
     private Connection conn;
 
     public Report_DAO() {
         conn = DatabaseConnection.getConnection();
-    }
-
-    public int getTotalLoansByDay(LocalDate date) {
-        return executeCountQuery("SELECT COUNT(*) FROM Loan_slip WHERE Borrow_Date = ?", date);
-    }
-
-    public int getTotalReturnsByDay(LocalDate date) {
-        return executeCountQuery("SELECT COUNT(*) FROM Payment_slip WHERE payment_Date = ?", date);
-    }
-
-    public double getTotalRevenueByDay(LocalDate date) {
-        return executeSumQuery("SELECT SUM(late_fee + damage_fee) FROM Payment_slip WHERE payment_Date = ?", date);
     }
 
     public int getTotalLoansByMonth(LocalDate date) {
@@ -38,16 +28,14 @@ public class Report_DAO {
         return executeSumQuery("SELECT SUM(late_fee + damage_fee) FROM Payment_slip WHERE MONTH(payment_Date) = ? AND YEAR(payment_Date) = ?", date.getMonthValue(), date.getYear());
     }
 
-    public int getTotalLoansByYear(LocalDate date) {
-        return executeCountQuery("SELECT COUNT(*) FROM Loan_slip WHERE YEAR(Borrow_Date) = ?", date.getYear());
+    public List<String[]> getLoanDetailsByMonth(LocalDate date) {
+        String sql = "SELECT Book_ID, Book_Name FROM Loan_slip WHERE MONTH(Borrow_Date) = ? AND YEAR(Borrow_Date) = ?";
+        return executeDetailQuery(sql, date.getMonthValue(), date.getYear());
     }
 
-    public int getTotalReturnsByYear(LocalDate date) {
-        return executeCountQuery("SELECT COUNT(*) FROM Payment_slip WHERE YEAR(payment_Date) = ?", date.getYear());
-    }
-
-    public double getTotalRevenueByYear(LocalDate date) {
-        return executeSumQuery("SELECT SUM(late_fee + damage_fee) FROM Payment_slip WHERE YEAR(payment_Date) = ?", date.getYear());
+    public List<String[]> getReturnDetailsByMonth(LocalDate date) {
+        String sql = "SELECT Book_ID, Book_Name FROM Payment_slip WHERE MONTH(payment_Date) = ? AND YEAR(payment_Date) = ?";
+        return executeDetailQuery(sql, date.getMonthValue(), date.getYear());
     }
 
     private int executeCountQuery(String sql, Object... params) {
@@ -72,6 +60,19 @@ public class Report_DAO {
             e.printStackTrace();
         }
         return 0.0;
+    }
+
+    private List<String[]> executeDetailQuery(String sql, Object... params) {
+        List<String[]> details = new ArrayList<>();
+        try (PreparedStatement ps = prepareStatement(sql, params);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                details.add(new String[]{rs.getString(1), rs.getString(2)});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return details;
     }
 
     private PreparedStatement prepareStatement(String sql, Object... params) throws SQLException {
