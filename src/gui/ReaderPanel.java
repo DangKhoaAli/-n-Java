@@ -34,6 +34,7 @@ public class ReaderPanel extends JPanel {
     private RoundedButton btnXoa;
     private RoundedButton btnHuy;
     private RoundedButton btnTim;
+    private RoundedButton btnDangXuat;
 
     public ReaderPanel() {
         reader_BLL = new Reader_BLL();
@@ -129,11 +130,13 @@ public class ReaderPanel extends JPanel {
         btnSua = new RoundedButton("Sửa");
         btnXoa = new RoundedButton("Xóa");
         btnHuy = new RoundedButton("Hủy");
+        btnDangXuat = new RoundedButton("Đăng xuất");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
+        panelButtons.add(btnDangXuat);
         
         btnThem.addActionListener(e -> {
             try {
@@ -248,6 +251,26 @@ public class ReaderPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "Không thể tải danh sách độc giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        });
+
+        btnDangXuat.addActionListener(e -> {
+            // đóng Main
+            JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            mainFrame.dispose();
+        
+            // tạo Login mới
+            LoginPanel login = new LoginPanel();
+            // đăng ký listener để khi login dispose→Main lại khởi chạy
+            login.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    if (login.isSucceeded()) {
+                        new Main(login.getUserRole()).setVisible(true);
+                    } else {
+                        System.exit(0);
+                    }
+                }
+            });
         });
 
         loadReaderTable();

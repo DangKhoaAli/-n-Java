@@ -38,6 +38,7 @@ public class LoanPanel extends JPanel {
     private RoundedButton btnHuy;
     private RoundedButton btnTim;
     private RoundedButton btnXemChiTiet;
+    private RoundedButton btnDangXuat;
 
     // Map lưu chi tiết phiếu mượn (key: mã phiếu mượn, value: danh sách chi tiết)
     // private Map<String, java.util.List<Object[]>> loanDetailsMap = new HashMap<>();
@@ -133,12 +134,14 @@ public class LoanPanel extends JPanel {
         btnXoa = new RoundedButton("Xóa");
         btnHuy = new RoundedButton("Hủy");
         btnXemChiTiet = new RoundedButton("Xem chi tiết");
+        btnDangXuat = new RoundedButton("Đăng xuất");
 
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnXemChiTiet);
+        panelButtons.add(btnDangXuat);
 
         // --- Gộp các panel nhập, tìm kiếm và nút ---
         JPanel panelBottom = new JPanel(new BorderLayout(0, 0));
@@ -326,6 +329,26 @@ public class LoanPanel extends JPanel {
             new LoanDetails(loanData, this);
         });
 
+        btnDangXuat.addActionListener(e -> {
+            // đóng Main
+            JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            mainFrame.dispose();
+        
+            // tạo Login mới
+            LoginPanel login = new LoginPanel();
+            // đăng ký listener để khi login dispose→Main lại khởi chạy
+            login.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    if (login.isSucceeded()) {
+                        new Main(login.getUserRole()).setVisible(true);
+                    } else {
+                        System.exit(0);
+                    }
+                }
+            });
+        });
+        
         loadLoan_slip();
 
         setPreferredSize(new Dimension(900, 600));
