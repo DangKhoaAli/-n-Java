@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 public class ReportPanel extends JPanel {
@@ -22,7 +24,6 @@ public class ReportPanel extends JPanel {
 
     private JComboBox<String> cbTimeFrame;
     private JTextField txtDateInput;
-    private JButton btnGenerate;
 
     public ReportPanel() {
         reportBLL = new Report_BLL();
@@ -30,17 +31,32 @@ public class ReportPanel extends JPanel {
         setBackground(new Color(230, 236, 243));
 
         // --- Bảng hiển thị sách mượn và trả ---
+        JPanel panelTables = new JPanel(new GridLayout(1, 2));
+
+        // Loan table with header
+        JPanel loanPanel = new JPanel(new BorderLayout());
+        JLabel loanHeader = new JLabel("Danh sách sách mượn", JLabel.CENTER);
+        loanHeader.setFont(new Font("Arial", Font.BOLD, 14));
+        loanPanel.add(loanHeader, BorderLayout.NORTH);
+
         String[] loanColumnNames = {"ID Sách", "Tên Sách"};
         loanTableModel = new DefaultTableModel(loanColumnNames, 0);
         loanTable = new JTable(loanTableModel);
+        loanPanel.add(new JScrollPane(loanTable), BorderLayout.CENTER);
+
+        // Return table with header
+        JPanel returnPanel = new JPanel(new BorderLayout());
+        JLabel returnHeader = new JLabel("Danh sách sách trả", JLabel.CENTER);
+        returnHeader.setFont(new Font("Arial", Font.BOLD, 14));
+        returnPanel.add(returnHeader, BorderLayout.NORTH);
 
         String[] returnColumnNames = {"ID Sách", "Tên Sách"};
         returnTableModel = new DefaultTableModel(returnColumnNames, 0);
         returnTable = new JTable(returnTableModel);
+        returnPanel.add(new JScrollPane(returnTable), BorderLayout.CENTER);
 
-        JPanel panelTables = new JPanel(new GridLayout(1, 2));
-        panelTables.add(new JScrollPane(loanTable));
-        panelTables.add(new JScrollPane(returnTable));
+        panelTables.add(loanPanel);
+        panelTables.add(returnPanel);
         add(panelTables, BorderLayout.CENTER);
 
         // --- Chi tiết thống kê ---
@@ -67,13 +83,26 @@ public class ReportPanel extends JPanel {
         panelInput.add(cbTimeFrame);
         panelInput.add(txtDateInput);
 
-        btnGenerate = new JButton("Tạo báo cáo");
-        panelInput.add(btnGenerate);
-
         add(panelInput, BorderLayout.NORTH);
 
         // --- Xử lý sự kiện ---
-        btnGenerate.addActionListener(e -> generateReport());
+        cbTimeFrame.addActionListener(e -> generateReport());
+        txtDateInput.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                generateReport();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                generateReport();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                generateReport();
+            }
+        });
     }
 
     private void generateReport() {
@@ -111,7 +140,12 @@ public class ReportPanel extends JPanel {
             lblTotalReturns.setText("Số sách trả: " + totalReturns);
             lblTotalRevenue.setText(String.format("Doanh thu: %.2f VND", totalRevenue));
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+            // Clear tables and statistics if input is invalid
+            loanTableModel.setRowCount(0);
+            returnTableModel.setRowCount(0);
+            lblTotalLoans.setText("Số sách mượn: 0");
+            lblTotalReturns.setText("Số sách trả: 0");
+            lblTotalRevenue.setText("Doanh thu: 0.00 VND");
         }
     }
 }
