@@ -87,7 +87,7 @@ public class Report_DAO {
         try (PreparedStatement ps = prepareStatement(sql, params);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                details.add(new String[]{rs.getString(1), rs.getString(2)});
+                details.add(new String[]{rs.getString(1), rs.getString(2), rs.getString(3)});
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -103,6 +103,7 @@ public class Report_DAO {
                 List<String> row = new ArrayList<>();
                 row.add(rs.getString(1)); // Book ID
                 row.add(rs.getString(2)); // Book Name
+                row.add(rs.getString(3));
                 // Handle potential null values for fees
                 for (int i = 3; i <= rs.getMetaData().getColumnCount(); i++) {
                     row.add(rs.getObject(i) != null ? String.valueOf(rs.getObject(i)) : "0.0");
