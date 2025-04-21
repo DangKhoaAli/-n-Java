@@ -19,7 +19,7 @@ public class LoginPanel extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
 
-        ImageIcon bgIcon = new ImageIcon("C:\\Users\\Admin\\OneDrive\\Desktop\\Project-Java\\-n-Java\\src\\img\\login.jpg");
+        ImageIcon bgIcon = new ImageIcon("D:\\Java\\src\\img\\login.jpg");
         Image scale = bgIcon.getImage().getScaledInstance(850, 600, Image.SCALE_SMOOTH);
         ImageIcon imgLabel = new ImageIcon(scale);
         JLabel background = new JLabel(imgLabel);
@@ -122,7 +122,7 @@ public class LoginPanel extends JFrame {
             String passwordFromDb = account[1]; 
 
             if (user.equals(usernameFromDb) && pass.equals(passwordFromDb)) {
-                return "staff"; 
+                return user;
             }
         }
     } catch (SQLException e) {

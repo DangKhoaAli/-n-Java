@@ -152,4 +152,24 @@ public class Book_Details_DAO {
             ps.executeUpdate();
         }
     }
+
+    public String getBookByID(String ID) throws SQLException {
+        String sql = """
+                    SELECT b.name AS Name, bd.status AS Status, bd.num_page_dama AS DamagedPages
+                    FROM 
+                        Book_Details bd
+                    JOIN 
+                        Book b ON bd.ID_Book = b.ID
+                    WHERE 
+                        bd.ID = ?
+                    """;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, ID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return ID + ";" + rs.getString("Name") + ";" + rs.getString("Status") + ";" + rs.getInt("DamagedPages");
+            }
+        }
+        return null;
+    }
 }

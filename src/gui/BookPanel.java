@@ -161,15 +161,15 @@ public class BookPanel extends JPanel {
                 // Nếu số lượng = 0, thì không cho chỉnh sửa
                 boolean editable = tontai > 0;
         
-                txtTenSach.setEnabled(editable);
-                txtTheLoai.setEnabled(editable);
-                txtTacGia.setEnabled(editable);
-                txtGia.setEnabled(editable);
-                txtPhiMuon.setEnabled(editable);
-        
+                txtTenSach.setEditable(editable);
+                txtTheLoai.setEditable(editable);
+                txtTacGia.setEditable(editable);
+                txtGia.setEditable(editable);
+                txtPhiMuon.setEditable(editable);
                 // Luôn khóa mã sách và số lượng
-                txtMaSach.setEnabled(false);
-                txtSoLuong.setEnabled(false);
+                // txtMaSach.setEnabled(false);
+                txtMaSach.setEditable(false);
+                txtSoLuong.setEditable(false);
             }
         });
         
@@ -201,37 +201,24 @@ public class BookPanel extends JPanel {
 
         btnXoa.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
-                return;
-            }
-            
-            try{
-                String ID = tableModel.getValueAt(selectedRow,0).toString();
-                
-                String result = book_BLL.deleteBook(ID);
-                JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                loadBook();
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(this, "Lỗi" + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
+            deleteRow(selectedRow);
         });
 
         btnHuy.addActionListener(e -> {
             txtMaSach.setText("");
-            txtMaSach.setEnabled(true);
+            txtMaSach.setEditable(true);
             txtTenSach.setText("");
-            txtTenSach.setEnabled(true);
+            txtTenSach.setEditable(true);
             txtTheLoai.setText("");
-            txtTheLoai.setEnabled(true);
+            txtTheLoai.setEditable(true);
             txtTacGia.setText("");
-            txtTacGia.setEnabled(true);
+            txtTacGia.setEditable(true);
             txtGia.setText("");
-            txtGia.setEnabled(true);
+            txtGia.setEditable(true);
             txtPhiMuon.setText("");
-            txtPhiMuon.setEnabled(true);
+            txtPhiMuon.setEditable(true);
             txtSoLuong.setText("");
-            txtSoLuong.setEnabled(true);
+            txtSoLuong.setEditable(true);
             table.clearSelection();
         });
 
@@ -275,7 +262,7 @@ public class BookPanel extends JPanel {
                 bookData[i] = table.getValueAt(selectedRow, i);
             }
             Frame ownerFrame = (Frame) SwingUtilities.getWindowAncestor(this);
-            new BookDetails(bookData,ownerFrame,this).setVisible(true);
+            new BookDetails(bookData,ownerFrame,this, selectedRow).setVisible(true);
         });
 
         loadBook();
@@ -319,5 +306,20 @@ public class BookPanel extends JPanel {
         }
     }
 
-
+    public void deleteRow(int selectedRow) {
+        if(selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
+            return;
+        }
+        
+        try{
+            String ID = tableModel.getValueAt(selectedRow,0).toString();
+            
+            String result = book_BLL.deleteBook(ID);
+            JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            loadBook();
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(this, "Lỗi" + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }

@@ -67,6 +67,14 @@ public class Borrow_Details_DAO {
         }
     }
 
+    public void deleteAllBD(String ID_Loan_slip) throws SQLException{
+        String sql = "DELETE FROM borrowed_book_details WHERE ID_Loan_slip = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, ID_Loan_slip);
+            ps.executeUpdate();
+        }
+    }
+
     public Boolean check_quan(String ID_Loan){
         String sql = "SELECT COUNT(*) AS count FROM borrowed_book_details WHERE ID_Loan_slip = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){

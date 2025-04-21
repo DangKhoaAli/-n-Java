@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import DAO.Borrow_Details_DAO;
 import DAO.Loan_slip_DAO;
+import DAO.Payment_slip_DAO;
 import DAO.Reader_DAO;
 import DAO.Staff_DAO;
 import model.Loan_slip;
@@ -14,11 +16,15 @@ public class Loan_slip_BLL {
     private Loan_slip_DAO Loan_slip_DAO;
     private Reader_DAO reader;
     private Staff_DAO staff;
+    private Payment_slip_DAO payment_slip_DAO;
+    private Borrow_Details_BLL borrow_Details_Bll;
 
     public Loan_slip_BLL(){
         Loan_slip_DAO = new Loan_slip_DAO();
         reader = new Reader_DAO();
         staff = new Staff_DAO();
+        payment_slip_DAO = new Payment_slip_DAO();
+        borrow_Details_Bll = new Borrow_Details_BLL();
 
     }
 
@@ -158,14 +164,25 @@ public class Loan_slip_BLL {
                 return "ID không được để trống!";
             }
 
-            Loan_slip existingReaders = Loan_slip_DAO.searchLoan_slip(ID);
-            if (existingReaders == null ) {
-                return "Không tìm thấy độc giả với ID này.";
+            Loan_slip existing = Loan_slip_DAO.searchLoan_slip(ID);
+            if (existing == null ) {
+                return "Không tìm thấy phieu muon với ID này.";
+            }
+
+            if (payment_slip_DAO.searchPayment_slipByID_Loan_slip(ID)) {
+                return "Phiếu mượn này đã có phiếu trả, không thể xóa.";
+            } else {
+                borrow_Details_Bll.getBorrow_Details(ID);
+                for (String book : borrow_Details_Bll.getBorrow_Details(ID)) {
+                    String[] parts = book.split(";");
+                    String ID_Book = parts[0];
+                    borrow_Details_Bll.deleteBorrow_Detail(ID_Book, ID);
+                }
+                Loan_slip_DAO.deleteLoan_slip(ID);
+                return "Xóa phiếu mượn thành công.";
             }
     
-            // Xóa độc giả khỏi cơ sở dữ liệu
-            Loan_slip_DAO.deleteLoan_slip(ID);
-            return "Xóa độc giả thành công.";
+
         } catch (SQLException e) {
             e.printStackTrace();
             return "Lỗi SQL: " + e.getMessage();

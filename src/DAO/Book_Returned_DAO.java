@@ -38,6 +38,7 @@ public class Book_Returned_DAO {
         return List_Returned;
     }
 
+
     // Thêm 1 chi tiết phiếu trả
     public void addBook_Returned(String ID_Pay_slip, String ID_Book, int status) throws SQLException{
         String sql = "INSERT INTO Book_Details_Returned (ID_Payment_slip, ID_Book, status, penalty_fee) VALUES (?, ?, ?, ?)";
@@ -55,6 +56,16 @@ public class Book_Returned_DAO {
 
     // Cập nhập 1 chi tiết phiếu trả
     public void updateBook_Returned(String ID, String ID_Book, int status) throws SQLException{
+        String sql = "UPDATE Book_Details_Returned SET status = ? WHERE ID_Payment_slip = ? AND ID_Book = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, status);
+            ps.setString(2, ID);
+            ps.setString(3, ID_Book);
+            ps.executeUpdate();
+        }
+    }
+
+    public void updateBook(String ID, String ID_Book, int status) throws SQLException{
         String sql = "UPDATE Book_Details_Returned SET status = ? WHERE ID_Payment_slip = ? AND ID_Book = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setInt(1, status);
@@ -139,5 +150,5 @@ public class Book_Returned_DAO {
         }
     }
 
-    public 
+    // public 
 }
