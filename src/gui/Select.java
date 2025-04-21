@@ -1,6 +1,9 @@
 package gui;
 
+import BLL.Reader_BLL;
 import BLL.Select_BLL;
+import model.Reader;
+
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
@@ -8,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class Select extends JDialog {           // để reload bảng khi cần
     private Select_BLL book_BLL;
+    private Reader_BLL reader_BLL;
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -23,6 +27,10 @@ public class Select extends JDialog {           // để reload bảng khi cần
         }
         else if(className.equals("pay")){
             PayBook(ID, book);
+            setModal(true);
+        }
+        else if (className.equals("reader")){
+            ReaderList(book);
             setModal(true);
         }
     }
@@ -176,6 +184,83 @@ public class Select extends JDialog {           // để reload bảng khi cần
         add(panelBottom, BorderLayout.SOUTH);
     }
 
+    
+    private void ReaderList(String[] book){
+        reader_BLL = new Reader_BLL();
+        setModal(true);
+        setTitle("Danh sách bạn đọc");
+        // setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icon/book.png")));
+        setLayout(new BorderLayout(10, 10));
+        getContentPane().setBackground(Color.BLUE);
+
+        // --- Bảng chi tiết ---
+        String[] columnNames = {"Mã độc giả", "Tên độc giả", "Giới tính", "Ngày sinh", "Email"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        table = new JTable(tableModel);
+        table.setBackground(Color.WHITE);
+        table.setSelectionBackground(Color.YELLOW);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        add(scrollPane, BorderLayout.CENTER);
+
+        
+
+        // --- Panel nhập ---
+        JPanel panelInput = new JPanel();
+        panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
+        panelInput.setBackground(Color.BLUE);
+
+
+        // --- Panel nút ---
+        JPanel panelSearch = new JPanel();
+        panelSearch.setBackground(Color.BLUE);
+        panelSearch.add(new JLabel("Từ khóa:"));
+        txtTuKhoa = new JTextField(20);
+        panelSearch.add(txtTuKhoa);
+        btnTim = new JButton("Tìm");
+        panelSearch.add(btnTim);
+        btnChon = new JButton("Chọn");
+        panelSearch.add(btnChon);
+
+        JPanel panelBottom = new JPanel(new BorderLayout(10,10));
+        panelBottom.setBackground(Color.BLUE);
+        panelBottom.add(panelInput, BorderLayout.CENTER);
+        add(panelBottom, BorderLayout.SOUTH);
+
+        // --- ActionListeners ---
+
+        btnTim.addActionListener(e -> {
+            String keyword = txtTuKhoa.getText().trim();
+            if (keyword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập từ khóa để tìm kiếm!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            loadReaderByName(keyword);
+        });
+
+        btnChon.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow != -1) {
+                book[0] = tableModel.getValueAt(selectedRow, 0).toString();
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một độc giả!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        loadReader(reader_BLL);
+
+        setSize(1000, 600);
+        setLocationRelativeTo(getOwner());
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        panelBottom.add(panelSearch, BorderLayout.NORTH);
+        panelBottom.add(panelInput, BorderLayout.CENTER);
+
+        add(panelBottom, BorderLayout.SOUTH);
+    }
+
+
     public void loadBookDetails() {
         tableModel.setRowCount(0);
         List<String> books = book_BLL.getAll_Book();
@@ -228,6 +313,43 @@ public class Select extends JDialog {           // để reload bảng khi cần
         }
     }
 
+    public void loadReader(Reader_BLL reader_BLL){
+        tableModel.setRowCount(0);
+        List<Reader> readers = reader_BLL.getReader();
+        if (readers != null && !readers.isEmpty()) {
+            for (Reader reader : readers) {
+                String[] data = {
+                    reader.getID(),
+                    reader.getName(),
+                    reader.getGender(),
+                    reader.getBirth().toString(),
+                    reader.getEmail()
+                };
+                tableModel.addRow(data);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả nào.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    public void loadReaderByName(String keyword) {
+        tableModel.setRowCount(0);
+        List<Reader> readers = reader_BLL.searchReader(keyword);
+        if (readers != null && !readers.isEmpty()) {
+            for (Reader reader : readers) {
+                String[] data = {
+                    reader.getID(),
+                    reader.getName(),
+                    reader.getGender(),
+                    reader.getBirth().toString(),
+                    reader.getEmail()
+                };
+                tableModel.addRow(data);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả nào.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
 }
 
 

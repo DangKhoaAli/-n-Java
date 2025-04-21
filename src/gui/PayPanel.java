@@ -41,7 +41,7 @@ public class PayPanel extends JPanel {
 
     // private Map<String, java.util.List<Object[]>> payDetailsMap = new HashMap<>();
 
-    public PayPanel() {
+    public PayPanel(String userRole) {
         paySlipBLL = new Pay_slip_BLL();
         book_details_DAO = new Book_Details_DAO();
         book_return_BLL = new Book_Return_BLL();
@@ -73,6 +73,8 @@ public class PayPanel extends JPanel {
 
         txtThuThu = new JTextField();
         txtThuThu.setBorder(BorderFactory.createTitledBorder("Mã thủ thư"));
+        txtThuThu.setEditable(false);
+        txtThuThu.setText(userRole);
 
         txtSoLuongSach = new JTextField();
         txtSoLuongSach.setBorder(BorderFactory.createTitledBorder("Số lượng sách"));
@@ -155,7 +157,7 @@ public class PayPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, result);
                 if (result.equals("Thêm phiếu trả thành công!")) {
                     for (int i = 1; i <= Integer.parseInt(soLuongSach); i++) {
-                        String[] selectedBookID = new String[1];
+                        String[] selectedBookID = new String[7];
                             Select dialog = new Select(PhieuMuon, selectedBookID, "pay");
                             dialog.setVisible(true);
             
@@ -254,12 +256,13 @@ public class PayPanel extends JPanel {
             txtPhieuTra.setText("");
             txtPhieuMuon.setText("");
             txtPhieuMuon.setEditable(true);
-            txtThuThu.setText("");
+            txtThuThu.setText(userRole);
             txtSoLuongSach.setText("");
             txtSoLuongSach.setEditable(true);
             txtNgayTra.setText("");
             txtPhiTreHan.setText("");
             txtPhiHuHai.setText("");
+            table.clearSelection();
         });
 
         btnTim.addActionListener(e -> {

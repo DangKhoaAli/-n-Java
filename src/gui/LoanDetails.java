@@ -1,6 +1,8 @@
 package gui;
 import BLL.Borrow_Details_BLL;
 import BLL.Loan_slip_BLL;
+import DAO.Reader_DAO;
+
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +16,7 @@ public class LoanDetails extends JFrame {
     private LoanPanel loanPanel;
     private Loan_slip_BLL loanSlipBLL;
     private Borrow_Details_BLL borrowDetailsBLL;
+    private Reader_DAO readerDAO;
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -31,6 +34,7 @@ public class LoanDetails extends JFrame {
     public LoanDetails(Object[] loanData, LoanPanel loanPanel) {
         this.borrowDetailsBLL = new Borrow_Details_BLL();
         this.loanSlipBLL = new Loan_slip_BLL();
+        this.readerDAO = new Reader_DAO();
         this.loanPanel = loanPanel;
 
         setTitle("Chi tiết phiếu mượn - " + loanData[0]);
@@ -130,7 +134,7 @@ public class LoanDetails extends JFrame {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 loanSlipBLL.update_fee(loanData[0].toString(), LocalDate.parse(loanData[4].toString(), formatter), LocalDate.parse(loanData[5].toString(), formatter));
                 loanSlipBLL.update_Quan(loanData[0].toString());
-                loanPanel.loadLoan_slip();
+                loanPanel.loadLoan_slip(readerDAO);
                 loadBorrow_Details(loanData[0].toString());
             } else {
                 JOptionPane.showMessageDialog(this, result);
@@ -159,19 +163,23 @@ public class LoanDetails extends JFrame {
             }
             String maSach = txtMaSach.getText().trim();
             String maSachCu = tableModel.getValueAt(selectedRow, 0).toString();
-            String result = borrowDetailsBLL.updateBorrow_Details(maSachCu, loanData[0].toString(), maSach, loanData[0].toString());
-            
+            String result = borrowDetailsBLL.updateBorrow_Details(maSachCu, maSach, loanData[0].toString());
+            JOptionPane.showMessageDialog(this, result);
+            loadBorrow_Details(loanData[0].toString());
 
         });
 
-        // btnXoa.addActionListener(e -> {
-        //     int selectedRow = table.getSelectedRow();
-        //     if (selectedRow == -1) {
-        //         JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
-        //         return;
-        //     }
-        //     tableModel.removeRow(selectedRow);
-        // });
+        btnXoa.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
+                return;
+            }
+            String maSach = tableModel.getValueAt(selectedRow, 0).toString();
+            String result = borrowDetailsBLL.deleteBorrow_Detail(maSach, loanData[0].toString());
+            JOptionPane.showMessageDialog(this, result);
+            loadBorrow_Details(loanData[0].toString());
+        });
 
 
         btnHuy.addActionListener(e -> {

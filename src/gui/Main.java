@@ -19,9 +19,9 @@ public class Main extends JFrame {
             tabbedPane.addTab("Quản lý thủ thư", new LibrarianPanel());
         }
 
-        tabbedPane.addTab("Quản lý phiếu mượn", new LoanPanel());
+        tabbedPane.addTab("Quản lý phiếu mượn", new LoanPanel(userRole));
 
-        tabbedPane.addTab("Quản lý phiếu trả", new PayPanel());
+        tabbedPane.addTab("Quản lý phiếu trả", new PayPanel(userRole));
 
         if("admin".equalsIgnoreCase(userRole)) {
             tabbedPane.addTab("Thống kê", new ReportPanel());

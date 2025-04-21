@@ -177,5 +177,12 @@ public class Payment_slip_DAO {
         }
     }
 
-
+    public boolean searchPayment_slipByID_Loan_slip(String ID) throws SQLException {
+        String sql = "SELECT * FROM Payment_slip WHERE ID_Loan_slip = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, ID);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        }
+    }
 }

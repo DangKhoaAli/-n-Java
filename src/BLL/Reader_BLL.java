@@ -1,12 +1,11 @@
 package BLL;
 
+import DAO.Reader_DAO;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import DAO.Reader_DAO;
 import model.Reader;
 
 public class Reader_BLL {
@@ -57,7 +56,7 @@ public class Reader_BLL {
                 return "Độc giả phải từ 10 tuổi trở lên.";
             }
 
-            if (!gender.equalsIgnoreCase("Nam") && !gender.equalsIgnoreCase("Nu")) {
+            if (!gender.equalsIgnoreCase("Nam") && !gender.equalsIgnoreCase("Nữ")) {
                 return "Giới tính phải là 'Nam' hoặc 'Nữ'.";
             }
 
