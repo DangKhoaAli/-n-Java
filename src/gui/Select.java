@@ -2,12 +2,11 @@ package gui;
 
 import BLL.Reader_BLL;
 import BLL.Select_BLL;
-import model.Reader;
-
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import model.Reader;
 
 public class Select extends JDialog {           // để reload bảng khi cần
     private Select_BLL book_BLL;
@@ -17,8 +16,8 @@ public class Select extends JDialog {           // để reload bảng khi cần
 
     private JTextField txtTuKhoa;
 
-    private JButton btnChon;
-    private JButton btnTim;
+    private RoundedButton btnChon;
+    private RoundedButton btnTim;
 
     public Select(String ID, String[] book, String className) {
         if(className.equals("loan")){
@@ -40,8 +39,8 @@ public class Select extends JDialog {           // để reload bảng khi cần
         setModal(true);
         setTitle("Chọn sách để mượn");
         // setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icon/book.png")));
-        setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(Color.BLUE);
+        setLayout(new BorderLayout(0, 0));
+        getContentPane().setBackground(new Color(230, 236, 243));
 
         // --- Bảng chi tiết ---
         String[] columnNames = {"Mã chi tiết sách", "Tên sách", "Thể loại", "Nhà cung câp", "Năm xuất bản", "Số trang", "Phí mượn", "Số trang hư hỏng"};
@@ -58,22 +57,22 @@ public class Select extends JDialog {           // để reload bảng khi cần
         // --- Panel nhập ---
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
 
 
         // --- Panel nút ---
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.BLUE);
+        panelSearch.setBackground(new Color(230, 236, 243));
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new JTextField(20);
         panelSearch.add(txtTuKhoa);
-        btnTim = new JButton("Tìm");
+        btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
-        btnChon = new JButton("Chọn");
+        btnChon = new RoundedButton("Chọn");
         panelSearch.add(btnChon);
 
         JPanel panelBottom = new JPanel(new BorderLayout(10,10));
-        panelBottom.setBackground(Color.BLUE);
+        panelBottom.setBackground(new Color(230, 236, 243));
         panelBottom.add(panelInput, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
 
@@ -118,8 +117,8 @@ public class Select extends JDialog {           // để reload bảng khi cần
         setModal(true);
         setTitle("Chọn sách để trả");
         // setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icon/book.png")));
-        setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(Color.BLUE);
+        setLayout(new BorderLayout(0, 0));
+        getContentPane().setBackground(new Color(230, 236, 243));
 
         // --- Bảng chi tiết ---
         String[] columnNames = {"Mã chi tiết sách", "Tên sách", "Thể loại", "Nhà cung câp", "Năm xuất bản", "Số trang", "Số trang hư hỏng"};
@@ -136,22 +135,22 @@ public class Select extends JDialog {           // để reload bảng khi cần
         // --- Panel nhập ---
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
 
 
         // --- Panel nút ---
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.BLUE);
+        panelSearch.setBackground(new Color(230, 236, 243));
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new JTextField(20);
         panelSearch.add(txtTuKhoa);
-        btnTim = new JButton("Tìm");
+        btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
-        btnChon = new JButton("Chọn");
+        btnChon = new RoundedButton("Chọn");
         panelSearch.add(btnChon);
 
         JPanel panelBottom = new JPanel(new BorderLayout(10,10));
-        panelBottom.setBackground(Color.BLUE);
+        panelBottom.setBackground(new Color(230, 236, 243));
         panelBottom.add(panelInput, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
 
@@ -191,7 +190,7 @@ public class Select extends JDialog {           // để reload bảng khi cần
         setTitle("Danh sách bạn đọc");
         // setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icon/book.png")));
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(Color.BLUE);
+        getContentPane().setBackground(new Color(230, 236, 243));
 
         // --- Bảng chi tiết ---
         String[] columnNames = {"Mã độc giả", "Tên độc giả", "Giới tính", "Ngày sinh", "Email"};
@@ -208,22 +207,23 @@ public class Select extends JDialog {           // để reload bảng khi cần
         // --- Panel nhập ---
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(Color.BLUE);
+        panelInput.setBackground(new Color(230, 236, 243));
 
 
         // --- Panel nút ---
         JPanel panelSearch = new JPanel();
-        panelSearch.setBackground(Color.BLUE);
+        panelSearch.setBackground(new Color(230, 236, 243));
         panelSearch.add(new JLabel("Từ khóa:"));
-        txtTuKhoa = new JTextField(20);
+        txtTuKhoa = new RoundedTxtField(20,16);
+        txtTuKhoa.setBackground(Color.WHITE);
         panelSearch.add(txtTuKhoa);
-        btnTim = new JButton("Tìm");
+        btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
-        btnChon = new JButton("Chọn");
+        btnChon = new RoundedButton("Chọn");
         panelSearch.add(btnChon);
 
         JPanel panelBottom = new JPanel(new BorderLayout(10,10));
-        panelBottom.setBackground(Color.BLUE);
+        panelBottom.setBackground(new Color(230, 236, 243));
         panelBottom.add(panelInput, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
 
