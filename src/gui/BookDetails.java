@@ -25,20 +25,13 @@ public class BookDetails extends JDialog {
     private JButton btnDong;
 
     // Constructor dành cho BookPanel / LoanPanel (Frame parent)
-    public BookDetails(Object[] bookData, Frame owner, BookPanel bookPanel) {
+    public BookDetails(Object[] bookData, Frame owner, BookPanel bookPanel, int selectedRow) {
         super(owner, "Chi tiết các cuốn của sách - " + bookData[1], true);
         this.bookPanel = bookPanel;
-        initUI(bookData);
+        initUI(bookData, bookPanel, selectedRow);
     }
 
-    // Constructor dành cho BookSelection (Dialog parent)
-    public BookDetails(Object[] bookData, Dialog owner, BookPanel bookPanel) {
-        super(owner, "Chi tiết các cuốn của sách - " + bookData[1], true);
-        this.bookPanel = bookPanel;
-        initUI(bookData);
-    }
-
-    private void initUI(Object[] bookData) {
+    private void initUI(Object[] bookData, BookPanel bookPanel, int selectedRow) {
         book_BLL = new Book_Details_BLL();
         setLayout(new BorderLayout(0, 0));
         getContentPane().setBackground(new Color(230, 236, 243));
@@ -57,11 +50,19 @@ public class BookDetails extends JDialog {
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
                 int r = table.getSelectedRow();
-                txtTrangThai.setText(tableModel.getValueAt(r, 1).toString());
-                txtSoTrangHuHong.setText(tableModel.getValueAt(r, 2).toString());
-                boolean editable = !"Đã hỏng".equals(tableModel.getValueAt(r, 1));
-                txtTrangThai.setEnabled(editable);
-                txtSoTrangHuHong.setEnabled(editable);
+                txtNhaCungCap.setText(tableModel.getValueAt(r, 1).toString());
+                txtNamXuatBan.setText(tableModel.getValueAt(r, 2).toString());
+                txtSoTrang.setText(tableModel.getValueAt(r, 3).toString());
+                txtTrangThai.setText(tableModel.getValueAt(r, 4).toString());
+                txtSoTrangHuHong.setText(tableModel.getValueAt(r, 5).toString());
+
+                txtTrangThai.setEnabled(false);
+                
+                boolean editable = !"Đã hỏng".equals(tableModel.getValueAt(r, 4));
+                txtNhaCungCap.setEnabled(editable);
+                txtNamXuatBan.setEnabled(editable);
+                txtSoTrang.setEnabled(editable);
+                txtSoTrangHuHong.setEnabled(false);
             }
         });
 
@@ -155,11 +156,29 @@ public class BookDetails extends JDialog {
             String result = book_BLL.deleteBook(tableModel.getValueAt(r, 0).toString(), bookCode);
             JOptionPane.showMessageDialog(this, result);
             loadBookDetails(bookCode);
+            int selectedRowDT = table.getRowCount();
+            boolean isSelected = true;
+            for (int i = 0; i < selectedRowDT; i++) {
+                if (!tableModel.getValueAt(i, 4).toString().equals("Đã hỏng")) {
+                    isSelected = false;
+                    break;
+                }
+            }
+            if(isSelected){
+                bookPanel.deleteRow(selectedRow);
+            }
+
             if (bookPanel != null) bookPanel.loadBook();
         });
 
         // Hủy input
         btnHuy.addActionListener(e -> {
+            txtNhaCungCap.setText("");
+            txtNhaCungCap.setEnabled(true);
+            txtNamXuatBan.setText("");
+            txtNamXuatBan.setEnabled(true);
+            txtSoTrang.setText("");
+            txtSoTrang.setEnabled(true);
             txtTrangThai.setText("");
             txtTrangThai.setEnabled(true);
             txtSoTrangHuHong.setText("");

@@ -1,19 +1,20 @@
 package BLL;
 
+import DAO.Book_Details_DAO;
 import DAO.Book_Returned_DAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
-import model.Book_Details_Returned;
 import model.Payment_slip;
 
 public class Book_Return_BLL {
     private Book_Returned_DAO book_Returned_DAO;
+    private Book_Details_DAO bookDetailsDAO ;
     
     public Book_Return_BLL() {
         book_Returned_DAO = new Book_Returned_DAO();
+        bookDetailsDAO = new Book_Details_DAO();
     }
 
     public List<String> getBookDetailsReturn(String loanSlipID) {
@@ -44,6 +45,7 @@ public class Book_Return_BLL {
             }
             
             book_Returned_DAO.addBook_Returned(paySlipID, bookID, Integer.parseInt(status));
+            bookDetailsDAO.updateStatus_Book(bookID, "Hiện có");
             return "Đã thêm chi tiết phiếu trả mới thành công!";
         } catch (SQLException e) {
             e.printStackTrace();
@@ -92,6 +94,7 @@ public class Book_Return_BLL {
             boolean exist = book_Returned_DAO.check(ID, ID_Book);
             if (exist) {
                 book_Returned_DAO.deleteBook_Returned(ID, ID_Book);
+                bookDetailsDAO.updateStatus_Book(ID_Book, "Đang được mượn");
                 return "Đã xóa 1 chi tiết phiếu mượn";
             } else {
                 return "Không tìm thấy chi tiết phiếu mượn để xóa!";

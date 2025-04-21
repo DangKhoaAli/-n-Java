@@ -108,17 +108,18 @@ public class Reader_DAO {
         }
     }
 
-    public static void main(String [] args){
-        Reader_DAO a = new Reader_DAO();
-        LocalDate Borrow_Date = LocalDate.of(2024, 3, 25); 
-        LocalDate Expected_Date = LocalDate.of(2024, 3, 30); 
-        try {
-            a.addReader("2", "Khoa",  "nam", Borrow_Date, "HCM", "05434543", "ajsb@sak.sd", Expected_Date);
-            a.updateReader("1", "Linh",  "nam", Borrow_Date, "HCM", "05434543", "ajsb@sak.sd", Expected_Date);
-
-                // a.deleteReader("1");
-        } catch (Exception e) {
-            // TODO: handle exception
+    public String getReaderName(String ID){
+        String sql = "SELECT name FROM Reader WHERE ID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, ID);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.getString("name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return null;
     }
+
 }

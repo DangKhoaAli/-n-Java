@@ -146,7 +146,7 @@ public class PayDetails extends JFrame {
                 JOptionPane.showMessageDialog(this, message);
 
                 loadPayDetails(maPhieuTra);
-                bookDetailsDAO.updateStatus_Book(maSach, "Hiện có");
+                
                 int rowCount = tableModel.getRowCount();
                 paymentSlipDAO.update_Quan(maPhieuTra, rowCount);
                 paymentSlipDAO.updateDamageFee(maPhieuTra);
@@ -194,7 +194,7 @@ public class PayDetails extends JFrame {
                 JOptionPane.showMessageDialog(this, result);
                 loadPayDetails(maPhieuTra);
                 
-                bookDetailsDAO.updateStatus_Book(masach, "Đang được mượn");
+                
                 int rowCount = tableModel.getRowCount();
                 paymentSlipDAO.update_Quan(maPhieuTra, rowCount);
                 paymentSlipDAO.updateDamageFee(maPhieuTra);
