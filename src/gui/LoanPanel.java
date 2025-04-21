@@ -10,7 +10,6 @@ import java.io.Reader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -33,16 +32,19 @@ public class LoanPanel extends JPanel {
     private JTextField txtNgayDuKienTra;
     private JTextField txtPhiMuon;
 
-    private JTextField txtTuKhoa;
+    private RoundedTxtField txtTuKhoa;
 
-    private JButton btnThem;
-    private JButton btnSua;
-    private JButton btnXoa;
-    private JButton btnHuy;
-    private JButton btnTim;
-    private JButton btnXemChiTiet;
+    private RoundedButton btnThem;
+    private RoundedButton btnSua;
+    private RoundedButton btnXoa;
+    private RoundedButton btnHuy;
+    private RoundedButton btnTim;
+    private RoundedButton btnXemChiTiet;
+    private RoundedButton btnDangXuat;
+
 
     public LoanPanel(String userRole) {
+
         loan_slip_BLL = new Loan_slip_BLL();
         borrow_details_BLL = new Borrow_Details_BLL();
         book_details_DAO = new Book_Details_DAO();
@@ -104,6 +106,7 @@ public class LoanPanel extends JPanel {
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new RoundedTxtField(20, 16);
         txtTuKhoa.setBackground(Color.WHITE);
+        txtTuKhoa.setPlaceholder("Nhập mã phiếu mượn muốn tìm");
         panelSearch.add(txtTuKhoa);
         btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
@@ -116,12 +119,14 @@ public class LoanPanel extends JPanel {
         btnXoa = new RoundedButton("Xóa");
         btnHuy = new RoundedButton("Hủy");
         btnXemChiTiet = new RoundedButton("Xem chi tiết");
+        btnDangXuat = new RoundedButton("Đăng xuất");
 
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnXemChiTiet);
+        panelButtons.add(btnDangXuat);
 
         // --- Gộp các panel nhập, tìm kiếm và nút ---
         JPanel panelBottom = new JPanel(new BorderLayout(0, 0));
@@ -312,7 +317,31 @@ public class LoanPanel extends JPanel {
             new LoanDetails(loanData, this);
         });
 
+
         loadLoan_slip(reader);
+
+        btnDangXuat.addActionListener(e -> {
+            // đóng Main
+            JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            mainFrame.dispose();
+        
+            // tạo Login mới
+            LoginPanel login = new LoginPanel();
+            // đăng ký listener để khi login dispose→Main lại khởi chạy
+            login.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    if (login.isSucceeded()) {
+                        new Main(login.getUserRole()).setVisible(true);
+                    } else {
+                        System.exit(0);
+                    }
+                }
+            });
+        });
+        
+        loadLoan_slip();
+
 
         setPreferredSize(new Dimension(900, 600));
         setLayout(new BorderLayout());

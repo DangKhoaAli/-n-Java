@@ -1,5 +1,6 @@
 package DAO;
 
+import config.DatabaseConnection;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,9 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-
-import config.DatabaseConnection;
 
 public class Book_Returned_DAO {
     private Connection conn;
@@ -150,5 +148,29 @@ public class Book_Returned_DAO {
         }
     }
 
-    // public 
+    // Lấy danh sách chi tiết phiếu trả (ID sách, tên sách, phí trễ hạn, phí hư hại)
+    public List<String[]> getReturnDetails(String paymentSlipID) throws SQLException {
+        List<String[]> returnDetails = new ArrayList<>();
+        String sql = """
+                     SELECT bd.ID AS Book_ID, b.name AS Book_Name, bdr.late_fee AS Late_Fee, bdr.penalty_fee AS Damage_Fee
+                     FROM Book_Details_Returned bdr
+                     JOIN Book_Details bd ON bdr.ID_Book = bd.ID
+                     JOIN Book b ON bd.ID_Book = b.ID
+                     WHERE bdr.ID_Payment_slip = ?
+                     """;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, paymentSlipID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                returnDetails.add(new String[]{
+                    rs.getString("Book_ID"),
+                    rs.getString("Book_Name"),
+                    String.valueOf(rs.getFloat("Late_Fee")),
+                    String.valueOf(rs.getFloat("Damage_Fee"))
+                });
+            }
+        }
+        return returnDetails;
+    }
+
 }

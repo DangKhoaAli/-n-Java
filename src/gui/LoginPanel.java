@@ -20,6 +20,9 @@ public class LoginPanel extends JFrame {
         setLayout(null);
 
         ImageIcon bgIcon = new ImageIcon("D:\\Java\\src\\img\\login.jpg");
+
+        // ImageIcon bgIcon = new ImageIcon("C:\\Users\\Admin\\OneDrive\\Desktop\\Project-Java\\-n-Java\\src\\img\\login.png");
+
         Image scale = bgIcon.getImage().getScaledInstance(850, 600, Image.SCALE_SMOOTH);
         ImageIcon imgLabel = new ImageIcon(scale);
         JLabel background = new JLabel(imgLabel);
@@ -56,6 +59,8 @@ public class LoginPanel extends JFrame {
         passwordField.setForeground(Color.GRAY);
         passwordField.setBounds(50, 65, 200, 30);
         formPanel.add(passwordField);
+
+        
         passwordField.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (new String(passwordField.getPassword()).equals("Password")) {
@@ -190,29 +195,86 @@ class RoundedTextField extends JTextField {
 
 class RoundedPasswordField extends JPasswordField {
     private int arc = 15;
+    private boolean showPass = false;
+    private Icon eyeIcon;
+    private Icon eyeSlashIcon;
+    private Rectangle iconBounds;
 
     public RoundedPasswordField(String text) {
         super(text);
         setOpaque(false);
+        setText(text);
+        setForeground(Color.GRAY);
+        setEchoChar((char) 0); // Mặc định hiển thị placeholder
+        setMargin(new Insets(2, 5, 2, 25)); // Dành khoảng trống cho icon
+        setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+
+        // Load icon
+        eyeIcon = resizeIcon(new ImageIcon(getClass().getResource("/img/eye.png")), 16, 16);
+        eyeSlashIcon = resizeIcon(new ImageIcon(getClass().getResource("/img/eye-slash.png")), 16, 16); // sửa từ .svg thành .png
+
+        // Toggle hiển thị mật khẩu khi nhấn vào icon
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (iconBounds != null && iconBounds.contains(e.getPoint())) {
+                    showPass = !showPass;
+                    if (showPass) {
+                        setEchoChar((char) 0); // hiện mật khẩu
+                    } else {
+                        setEchoChar('●'); // ẩn mật khẩu
+                    }
+                    repaint();
+                }
+            }
+        });
+
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (iconBounds != null && iconBounds.contains(e.getPoint())) {
+                    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                } else {
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        });
+        
+    }
+
+    private Icon resizeIcon(ImageIcon icon, int width, int height) {
+        Image img = icon.getImage();
+        Image resized = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(resized);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setColor(getBackground());
-        g2.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, arc, arc);
-        super.paintComponent(g);
+        g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
+
+        // Vẽ icon bên phải
+        Icon icon = showPass ? eyeSlashIcon : eyeIcon;
+        int iconX = getWidth() - icon.getIconWidth() - 8;
+        int iconY = (getHeight() - icon.getIconHeight()) / 2;
+        icon.paintIcon(this, g2, iconX, iconY);
+
+        iconBounds = new Rectangle(iconX, iconY, icon.getIconWidth(), icon.getIconHeight());
+
         g2.dispose();
+        super.paintComponent(g); // phải gọi sau khi vẽ icon để tránh che mất
     }
 
     @Override
     protected void paintBorder(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setColor(Color.GRAY);
-        g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, arc, arc);
+        g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
         g2.dispose();
     }
 }
+
 
 class RoundedButtonLogin extends JButton {
     private int arc = 20;

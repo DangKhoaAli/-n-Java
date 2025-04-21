@@ -27,13 +27,14 @@ public class LibrarianPanel extends JPanel {
     private JTextField txtEmail;
     private JTextField txtLuong;
 
-    private JTextField txtTuKhoa;
+    private RoundedTxtField txtTuKhoa;
 
-    private JButton btnThem;
-    private JButton btnSua;
-    private JButton btnXoa;
-    private JButton btnHuy;
-    private JButton btnTim;
+    private RoundedButton btnThem;
+    private RoundedButton btnSua;
+    private RoundedButton btnXoa;
+    private RoundedButton btnHuy;
+    private RoundedButton btnTim;
+    private RoundedButton btnDangXuat;
 
     public LibrarianPanel() {
         staff_BLL = new Staff_BLL();
@@ -117,6 +118,7 @@ public class LibrarianPanel extends JPanel {
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new RoundedTxtField(20, 16);
         txtTuKhoa.setBackground(Color.WHITE);
+        txtTuKhoa.setPlaceholder("Nhập tên thủ thư muốn tìm");
         panelSearch.add(txtTuKhoa);
         btnTim = new RoundedButton("Tìm");
         panelSearch.add(btnTim);
@@ -128,11 +130,13 @@ public class LibrarianPanel extends JPanel {
         btnSua = new RoundedButton("Sửa");
         btnXoa = new RoundedButton("Xóa");
         btnHuy = new RoundedButton("Hủy");
+        btnDangXuat = new RoundedButton("Đăng xuất");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
+        panelButtons.add(btnDangXuat);
         
         btnThem.addActionListener(e -> {
             try{
@@ -236,6 +240,26 @@ public class LibrarianPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "Không thể tải danh sách độc giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        });
+
+        btnDangXuat.addActionListener(e -> {
+            // đóng Main
+            JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            mainFrame.dispose();
+        
+            // tạo Login mới
+            LoginPanel login = new LoginPanel();
+            // đăng ký listener để khi login dispose→Main lại khởi chạy
+            login.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    if (login.isSucceeded()) {
+                        new Main(login.getUserRole()).setVisible(true);
+                    } else {
+                        System.exit(0);
+                    }
+                }
+            });
         });
 
         add(panelTable, BorderLayout.CENTER);

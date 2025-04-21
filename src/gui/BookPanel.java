@@ -23,16 +23,15 @@ public class BookPanel extends JPanel {
     private JTextField txtPhiMuon;
     private JTextField txtSoLuong;
     
+    private RoundedTxtField txtTuKhoa;
 
-    private JTextField txtTuKhoa;
-
-    private JButton btnThem;
-    private JButton btnSua;
-    private JButton btnXoa;
-    private JButton btnHuy;
-    private JButton btnTim;
-    private JButton btnXemChiTiet;
-
+    private RoundedButton btnThem;
+    private RoundedButton btnSua;
+    private RoundedButton btnXoa;
+    private RoundedButton btnHuy;
+    private RoundedButton btnTim;
+    private RoundedButton btnXemChiTiet;
+    private RoundedButton btnDangXuat;
 
     public BookPanel() {
         book_BLL = new Book_BLL();
@@ -91,6 +90,7 @@ public class BookPanel extends JPanel {
         panelSearch.add(new JLabel("Từ khóa:"));
         txtTuKhoa = new RoundedTxtField(20, 16);
         txtTuKhoa.setBackground(Color.WHITE);
+        txtTuKhoa.setPlaceholder("Nhập tên sách muốn tìm");
  
 
         panelSearch.add(txtTuKhoa);
@@ -106,12 +106,14 @@ public class BookPanel extends JPanel {
         btnXoa = new RoundedButton("Xóa");
         btnHuy = new RoundedButton("Hủy");
         btnXemChiTiet = new RoundedButton("Xem chi tiết");
+        btnDangXuat = new RoundedButton("Đăng xuất");
         
         panelButtons.add(btnThem);
         panelButtons.add(btnSua);
         panelButtons.add(btnXoa);
         panelButtons.add(btnHuy);
         panelButtons.add(btnXemChiTiet);
+        panelButtons.add(btnDangXuat);
         
         btnThem.addActionListener(e -> {
             String maSach = txtMaSach.getText().trim();
@@ -265,6 +267,26 @@ public class BookPanel extends JPanel {
             new BookDetails(bookData,ownerFrame,this, selectedRow).setVisible(true);
         });
 
+        btnDangXuat.addActionListener(e -> {
+            // đóng Main
+            JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            mainFrame.dispose();
+        
+            // tạo Login mới
+            LoginPanel login = new LoginPanel();
+            // đăng ký listener để khi login dispose→Main lại khởi chạy
+            login.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    if (login.isSucceeded()) {
+                        new Main(login.getUserRole()).setVisible(true);
+                    } else {
+                        System.exit(0);
+                    }
+                }
+            });
+        });
+        
         loadBook();
 
         add(panelTable, BorderLayout.CENTER);
