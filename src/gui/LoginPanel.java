@@ -114,8 +114,8 @@ public class LoginPanel extends JFrame {
     private String authenticate(String user, String pass) {
     try {
         // Kiểm tra nếu là admin
-        if ("admin".equals(user) && "1234".equals(pass)) {
-            return "admin";
+        if ("Admin".equals(user) && "1234".equals(pass)) {
+            return "Admin";
         }
 
         Staff_DAO staffDao = new Staff_DAO();

@@ -15,7 +15,7 @@ public class Main extends JFrame {
 
         tabbedPane.addTab("Quản lý độc giả", new ReaderPanel());
 
-        if("admin".equalsIgnoreCase(userRole)) {
+        if("Admin".equalsIgnoreCase(userRole)) {
             tabbedPane.addTab("Quản lý thủ thư", new LibrarianPanel());
         }
 
@@ -23,7 +23,7 @@ public class Main extends JFrame {
 
         tabbedPane.addTab("Quản lý phiếu trả", new PayPanel(userRole));
 
-        if("admin".equalsIgnoreCase(userRole)) {
+        if("Admin".equalsIgnoreCase(userRole)) {
             tabbedPane.addTab("Thống kê", new ReportPanel());
         }
         

@@ -44,7 +44,7 @@ public class ReaderPanel extends JPanel {
         JPanel panelTable = new JPanel(new BorderLayout());
         panelTable.setBackground(new Color(230, 236, 243));
 
-        String[] columnNames = {"Mã Độc Giả", "Họ Tên","Giới tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ","Email", "Ngày Đăng Ký", "Exist"};
+        String[] columnNames = {"Mã Độc Giả", "Họ Tên","Giới tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ","Email", "Ngày Đăng Ký", "Tồn tại"};
         tableModel = new DefaultTableModel(columnNames,0);
 
         table = new JTable(tableModel);
@@ -170,16 +170,19 @@ public class ReaderPanel extends JPanel {
                 String maDocGia = txtMaDocGia.getText();
                 String tenDocGia = txtTenDocGia.getText();
                 String gioiTinh = txtGioiTinh.getText();
-                LocalDate ngaySinh = LocalDate.parse(txtNgaySinh.getText()); // Chuyển đổi từ String sang LocalDate
+                String ngaySinh = txtNgaySinh.getText(); // Chuyển đổi từ String sang LocalDate
                 String soDienThoai = txtSoDienThoai.getText();
                 String diaChi = txtDiaChi.getText();
                 String email = txtEmail.getText();
-                LocalDate ngayDangKy = LocalDate.parse(txtNgayDangKy.getText()); // Chuyển đổi từ String sang LocalDate
-
+                String ngayDangKy = txtNgayDangKy.getText();
                 
-        
-                // Gọi phương thức updateReader
-                String result = reader_BLL.updateReader(maDocGia, tenDocGia, gioiTinh, ngaySinh, diaChi, soDienThoai, email, ngayDangKy);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                LocalDate ns = LocalDate.parse(ngaySinh, formatter);
+                LocalDate ndk = LocalDate.parse(ngayDangKy, formatter);
+                
+    
+                String result = reader_BLL.updateReader(maDocGia, tenDocGia, gioiTinh, ns, diaChi, soDienThoai, email, ndk);
                 
                 // Hiển thị thông báo từ kết quả trả về
                 JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -288,7 +291,6 @@ public class ReaderPanel extends JPanel {
     
         // Gọi BLL để lấy danh sách độc giả từ CSDL
         List<Reader> readers = reader_BLL.getReader();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         
         // Kiểm tra danh sách có dữ liệu không
         if (readers != null) {
@@ -297,11 +299,11 @@ public class ReaderPanel extends JPanel {
                     reader.getID(),
                     reader.getName(),
                     reader.getGender(),
-                    reader.getBirth().format(formatter),
+                    reader.getBirth().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     reader.getPhone(),
                     reader.getAddress(),
                     reader.getEmail(),
-                    reader.getRegistrationDate().format(formatter),
+                    reader.getRegistrationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     (Integer.parseInt(reader.getExist()) == 1) ? "Có" : "Không"
                 });
             }

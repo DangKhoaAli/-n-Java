@@ -25,13 +25,13 @@ public class BookDetails extends JDialog {
     private JButton btnDong;
 
     // Constructor dành cho BookPanel / LoanPanel (Frame parent)
-    public BookDetails(Object[] bookData, Frame owner, BookPanel bookPanel, int selectedRow, boolean exist) {
+    public BookDetails(Object[] bookData, Frame owner, BookPanel bookPanel, int selectedRow, String exist) {
         super(owner, "Chi tiết các cuốn của sách - " + bookData[1], true);
         this.bookPanel = bookPanel;
         initUI(bookData, bookPanel, selectedRow, exist);
     }
 
-    private void initUI(Object[] bookData, BookPanel bookPanel, int selectedRow, boolean exist) {
+    private void initUI(Object[] bookData, BookPanel bookPanel, int selectedRow, String exist) {
         book_BLL = new Book_Details_BLL();
         setLayout(new BorderLayout(0, 0));
         getContentPane().setBackground(new Color(230, 236, 243));
@@ -187,8 +187,11 @@ public class BookDetails extends JDialog {
             this.dispose();
             if (bookPanel != null) bookPanel.loadBook();
         });
-
-        setButtonsEnabled(exist);
+        System.out.println("exist: " + exist);
+        
+        if (exist.equals("0")) {
+            setButtonsEnabled(false);
+        }
 
         // Load chi tiết lần đầu
         loadBookDetails(bookData[0].toString());

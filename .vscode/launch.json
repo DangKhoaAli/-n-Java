@@ -6,7 +6,11 @@
       "name": "Main",
       "request": "launch",
       "mainClass": "gui.Main",
+<<<<<<< HEAD
       "projectName": "-n-Java_2930cd74"
+=======
+      "projectName": "Java_72da403b"
+>>>>>>> 49d49352c095b3463f6d35f443ea1ddad6ec1ebd
     },
     {
       "name": "C/C++ Runner: Debug Session",

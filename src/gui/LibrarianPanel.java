@@ -44,7 +44,7 @@ public class LibrarianPanel extends JPanel {
         JPanel panelTable = new JPanel(new BorderLayout());
         panelTable.setBackground(new Color(230, 236, 243));
 
-        String[] columnNames = {"Mã Thủ Thư", "Họ  và Tên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ", "Email", "Lương", "Exist"};
+        String[] columnNames = {"Mã Thủ Thư", "Họ  và Tên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ", "Email", "Lương", "Tồn tại"};
         tableModel = new DefaultTableModel(columnNames,0);
 
         table = new JTable(tableModel);
@@ -165,20 +165,24 @@ public class LibrarianPanel extends JPanel {
         btnSua.addActionListener(e -> {
             try {
                 String maThuthu = txtMaThuThu.getText().trim();
-                if ("AD000".equals(maThuthu)) {
-                    JOptionPane.showMessageDialog(this, "Không thể chỉnh sửa thông tin của thủ thư quản trị hệ thống (AD000)", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                if ("Admin".equals(maThuthu)) {
+                    JOptionPane.showMessageDialog(this, "Không thể chỉnh sửa thông tin của thủ thư quản trị hệ thống (Admin)", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
         
                 String tenThuthu = txtTenThuThu.getText();
                 String gioiTinh = txtGioiTinh.getText();
-                LocalDate ngaySinh = LocalDate.parse(txtNgaySinh.getText()); // Cần xử lý định dạng nếu cần
+                String ngaySinh = txtNgaySinh.getText(); // Cần xử lý định dạng nếu cần
                 String soDienThoai = txtSoDienThoai.getText();
                 String diaChi = txtDiaChi.getText();
                 String email = txtEmail.getText();
                 Float luong = Float.parseFloat(txtLuong.getText());
+
+                DateTimeFormatter formatter =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                LocalDate ns = LocalDate.parse(ngaySinh, formatter);
         
-                String result = staff_BLL.updateStaff(maThuthu, tenThuthu, gioiTinh, ngaySinh, diaChi, soDienThoai, email, luong);
+                String result = staff_BLL.updateStaff(maThuthu, tenThuthu, gioiTinh, ns, diaChi, soDienThoai, email, luong);
         
                 JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadStaffTable();
@@ -197,8 +201,8 @@ public class LibrarianPanel extends JPanel {
             }
         
             String ID = tableModel.getValueAt(selectedRow, 0).toString();
-            if ("AD000".equals(ID)) {
-                JOptionPane.showMessageDialog(this, "Không thể xóa thủ thư quản trị hệ thống (AD000)", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            if ("Admin".equals(ID)) {
+                JOptionPane.showMessageDialog(this, "Không thể xóa thủ thư quản trị hệ thống (Admin)", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         
@@ -295,7 +299,7 @@ public class LibrarianPanel extends JPanel {
                     staff.getID(),
                     staff.getName(),
                     staff.getGender(),
-                    staff.getBirth(),
+                    staff.getBirth().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     staff.getPhone(),
                     staff.getAddress(),
                     staff.getEmail(),
