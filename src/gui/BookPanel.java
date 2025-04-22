@@ -264,7 +264,7 @@ public class BookPanel extends JPanel {
                 bookData[i] = table.getValueAt(selectedRow, i);
             }
             Frame ownerFrame = (Frame) SwingUtilities.getWindowAncestor(this);
-            new BookDetails(bookData,ownerFrame,this, selectedRow, Boolean.parseBoolean(tableModel.getValueAt(selectedRow, 6).toString())).setVisible(true);
+            new BookDetails(bookData,ownerFrame,this, selectedRow, tableModel.getValueAt(selectedRow, 7).toString()).setVisible(true);
         });
 
         btnDangXuat.addActionListener(e -> {

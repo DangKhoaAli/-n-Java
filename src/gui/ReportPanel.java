@@ -66,7 +66,7 @@ public class ReportPanel extends JPanel {
         lblTotalReturns = new JLabel("Số sách trả: 0");
         lblTotalReturns.setFont(new Font("Arial", Font.BOLD, 16));
         lblTotalRevenue = new JLabel("Doanh thu: 0.00 VND");
-        lblTotalRevenue.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTotalRevenue.setFont(new Font("Time New Roman", Font.BOLD, 16));
 
         panelSummary.add(lblTotalLoans);
         panelSummary.add(lblTotalReturns);
