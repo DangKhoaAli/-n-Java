@@ -55,6 +55,7 @@ public class Borrow_Details_BLL {
             }
             
             borrow_details_dao.addBorrow_Detail(ID_Book, ID_Loan_slip);
+            book_details_dao.updateStatus_Book(ID_Book, "Đang được mượn");
             return "Thêm chi tiết phiếu mượn thành công!";
         } catch (SQLException e) {
             return "Lỗi thêm chi tiết phiếu mượn: " + e.getMessage();

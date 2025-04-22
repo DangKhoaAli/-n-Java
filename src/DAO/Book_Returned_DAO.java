@@ -53,23 +53,29 @@ public class Book_Returned_DAO {
     }
 
     // Cập nhập 1 chi tiết phiếu trả
-    public void updateBook_Returned(String ID, String ID_Book, int status) throws SQLException{
-        String sql = "UPDATE Book_Details_Returned SET status = ? WHERE ID_Payment_slip = ? AND ID_Book = ?";
+    public void updateBook_Returned(String ID, String ID_Book, String ID_Book_old, int status, float phi) throws SQLException{
+        String sql = "UPDATE Book_Details_Returned SET ID_Book = ?, status = ?, penalty_fee = ? WHERE ID_Payment_slip = ? AND ID_Book = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, status);
-            ps.setString(2, ID);
-            ps.setString(3, ID_Book);
+            ps.setString(1, ID_Book);
+            ps.setInt(2, status);
+            ps.setBigDecimal(3, new BigDecimal(phi));
+            ps.setString(4, ID);
+            ps.setString(5, ID_Book_old);
             ps.executeUpdate();
         }
     }
 
-    public void updateBook(String ID, String ID_Book, int status) throws SQLException{
-        String sql = "UPDATE Book_Details_Returned SET status = ? WHERE ID_Payment_slip = ? AND ID_Book = ?";
+    public void updateBook(String ID, String ID_Book, int status, float phi) throws SQLException{
+        String sql = "UPDATE Book_Details_Returned SET status = ?, penalty_fee = ? WHERE ID_Payment_slip = ? AND ID_Book = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)){
+            BigDecimal bdFee = new BigDecimal(Float.toString(phi));
+            System.out.println("bdFee plain: " + bdFee.toPlainString());
             ps.setInt(1, status);
-            ps.setString(2, ID);
-            ps.setString(3, ID_Book);
-            ps.executeUpdate();
+            ps.setBigDecimal(2, bdFee);
+            ps.setString(3, ID);
+            ps.setString(4, ID_Book);
+            int rows = ps.executeUpdate();
+            System.out.println("Rows affected: " + rows);
         }
     }
 

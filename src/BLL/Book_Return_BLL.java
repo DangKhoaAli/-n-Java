@@ -55,7 +55,7 @@ public class Book_Return_BLL {
         }
     }
 
-    public String updateBookReturn(String paySlipID, String bookID, String status, String phi) {
+    public String updateBookReturn(String paySlipID, String bookID, String bookID_old, String status, String phi) {
         try {
             if(bookID == null || bookID.isEmpty()) {
                 return "ID sách không được để trống!";
@@ -64,21 +64,35 @@ public class Book_Return_BLL {
                 return "Trạng thái không được để trống!";
             }
             
-            int num_page = book_Returned_DAO.getDamagedPage(bookID);
-            if(num_page > Integer.parseInt(status)) {
-                return "Số trang bị hỏng hiện tại không hợp lệ!";
-            }
-            int trangcu = book_Returned_DAO.getStatus_Book(paySlipID, bookID);
-            if(trangcu < Integer.parseInt(status)){
-                
-            }
-            boolean exist = book_Returned_DAO.check(paySlipID, bookID);
-            if(exist){
-                book_Returned_DAO.updateBook_Returned(paySlipID, bookID, Integer.parseInt(status));
-                return "Đã cập nhật chi tiết phiếu trả thành công!";
+            int num_page = book_Returned_DAO.getDamagedPage(bookID_old);
+            if (bookID.equals(bookID_old)) {
+                float temp = Float.parseFloat(phi) / 1000;
+                int Status = Integer.parseInt(status);
+                if (Status < num_page - temp) {
+                    return "Số trang bị hỏng hiện tại không hợp lệ!";
+                }
+                float pen_fee = (Status - num_page) * 1000.0f + Float.parseFloat(phi);
+                System.out.println("pen_fee: " + pen_fee);
+                book_Returned_DAO.updateBook(paySlipID, bookID, Status, pen_fee);
             } else {
-                return "Không tìm thấy chi tiết phiếu trả để cập nhật!";
+                int temp_page = (int) (num_page - Float.parseFloat(phi) / 1000);
+                int num_page1 = book_Returned_DAO.getDamagedPage(bookID); // Lấy số trang hiện tại của sách mới
+                int Status = Integer.parseInt(status);
+                if (Status < num_page1) {
+                    return "Số trang bị hỏng hiện tại không hợp lệ!";
+                }
+                float pen_fee = (Status - num_page1) * 1000.0f;
+                System.out.println("Phiếu phạt: " + pen_fee);
+                book_Returned_DAO.updateBook_Returned(paySlipID, bookID, bookID_old, Status, pen_fee);
+                bookDetailsDAO.updateStatus_Book(bookID_old, "Đang được mượn");
+                bookDetailsDAO.updateNum_page(temp_page, bookID_old);
+
             }
+            bookDetailsDAO.updateStatus_Book(bookID, "Hiện có");
+            bookDetailsDAO.updateNum_page(Integer.parseInt(status), bookID);
+            
+            return "Đã cập nhật chi tiết phiếu trả thành công!";
+
             
         } catch (SQLException e){
             return "Lỗi SQL: " + e.getMessage();

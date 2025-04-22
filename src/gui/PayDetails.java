@@ -81,6 +81,7 @@ public class PayDetails extends JFrame {
 
         txtMaSach = new JTextField();
         txtMaSach.setBorder(BorderFactory.createTitledBorder("Mã sách *"));
+        txtMaSach.setEditable(false);
         txtTenSach = new JTextField();
         txtTenSach.setBorder(BorderFactory.createTitledBorder("Tên sách *"));
         txtTenSach.setEditable(false);
@@ -166,14 +167,14 @@ public class PayDetails extends JFrame {
                     return;
                 }
                 String maSach = txtMaSach.getText().trim();
-                String status = txtTinhTrangHuHong.getText();
-                String phi = txtTinhTrangHuHong.getText();
-                String result = bookReturnBLL.updateBookReturn(maPhieuTra, maSach, status, phi);
+                String maSach_old = tableModel.getValueAt(selectedRow, 0).toString().trim();
+                String status = txtTinhTrangHuHong.getText().trim();
+                String phi = tableModel.getValueAt(selectedRow, 3).toString().trim();
+                String result = bookReturnBLL.updateBookReturn(maPhieuTra, maSach, maSach_old, status, phi);
+
                 JOptionPane.showMessageDialog(this, result);
                 if(result.equals("Đã cập nhật chi tiết phiếu trả thành công!")){
-                    bookReturnBLL.updatePen_fee(maPhieuTra, maSach);
                     paymentSlipDAO.updateDamageFee(maPhieuTra);
-                    bookDetailsDAO.updateNum_page(Integer.parseInt(status), maSach);
                     loadPayDetails(maPhieuTra);
                     payPanel.loadPayDetails();
                 }

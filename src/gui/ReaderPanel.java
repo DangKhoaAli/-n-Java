@@ -44,10 +44,8 @@ public class ReaderPanel extends JPanel {
         JPanel panelTable = new JPanel(new BorderLayout());
         panelTable.setBackground(new Color(230, 236, 243));
 
-        String[] columnNames = {"Mã Độc Giả", "Họ Tên","Giới tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ","Email", "Ngày Đăng Ký"};
+        String[] columnNames = {"Mã Độc Giả", "Họ Tên","Giới tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ","Email", "Ngày Đăng Ký", "Exist"};
         tableModel = new DefaultTableModel(columnNames,0);
-
-        tableModel.addRow(new Object[]{"DG001","Nguyễn Văn A","Nam","01/01/2001","0987654321","A","a@email.com","03/25/2025"});
 
         table = new JTable(tableModel);
         table.setBackground(Color.WHITE);
@@ -302,7 +300,8 @@ public class ReaderPanel extends JPanel {
                     reader.getPhone(),
                     reader.getAddress(),
                     reader.getEmail(),
-                    reader.getRegistrationDate()
+                    reader.getRegistrationDate(),
+                    (Integer.parseInt(reader.getExist()) == 1) ? "Có" : "Không"
                 });
             }
         } else {

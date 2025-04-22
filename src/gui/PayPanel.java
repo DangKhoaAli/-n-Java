@@ -4,6 +4,8 @@ import BLL.Book_Return_BLL;
 import BLL.Pay_slip_BLL;
 import DAO.Book_Details_DAO;
 import DAO.Payment_slip_DAO;
+import DAO.Staff_DAO;
+
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +20,8 @@ public class PayPanel extends JPanel {
     private Book_Details_DAO book_details_DAO;
     private Book_Return_BLL book_return_BLL;
     private Payment_slip_DAO payment_slip_DAO;
+    private Staff_DAO staff_DAO;
+
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -46,6 +50,7 @@ public class PayPanel extends JPanel {
         book_details_DAO = new Book_Details_DAO();
         book_return_BLL = new Book_Return_BLL();
         payment_slip_DAO = new Payment_slip_DAO();
+        staff_DAO = new Staff_DAO();
 
         setBackground(new Color(230, 236, 243));
         setLayout(new BorderLayout(0,0));
@@ -199,7 +204,7 @@ public class PayPanel extends JPanel {
                 // Hiển thị dữ liệu
                 txtPhieuTra.setText(tableModel.getValueAt(selectedRow, 0).toString());
                 txtPhieuMuon.setText(tableModel.getValueAt(selectedRow, 0).toString());
-                txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString().split("-")[0]);
                 txtSoLuongSach.setText(tableModel.getValueAt(selectedRow, 3).toString());
                 txtNgayTra.setText(tableModel.getValueAt(selectedRow, 4).toString());
                 txtPhiTreHan.setText(tableModel.getValueAt(selectedRow, 5).toString());
@@ -254,15 +259,16 @@ public class PayPanel extends JPanel {
 
         btnHuy.addActionListener(e -> {
             txtPhieuTra.setText("");
+            txtPhieuTra.setEditable(true);
             txtPhieuMuon.setText("");
             txtPhieuMuon.setEditable(true);
             txtThuThu.setText(userRole);
             txtSoLuongSach.setText("");
             txtSoLuongSach.setEditable(true);
             txtNgayTra.setText("");
-            txtPhiTreHan.setText("");
-            txtPhiHuHai.setText("");
-            table.clearSelection();
+            txtPhiTreHan.setText("0");
+            txtPhiHuHai.setText("0");
+
         });
 
         btnTim.addActionListener(e -> {
@@ -339,7 +345,7 @@ public class PayPanel extends JPanel {
                 tableModel.addRow(new Object[]{
                     paymentSlip.getID(),
                     paymentSlip.getID_Loan_slip(),
-                    paymentSlip.getID_Staff(),
+                    paymentSlip.getID_Staff() + " - " + staff_DAO.getStaffName(paymentSlip.getID_Staff()),
                     paymentSlip.getSo_luong(),
                     paymentSlip.getPayment_Date().format(formatter),
                     paymentSlip.getLate_fee(),
