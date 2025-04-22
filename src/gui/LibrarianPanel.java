@@ -44,7 +44,7 @@ public class LibrarianPanel extends JPanel {
         JPanel panelTable = new JPanel(new BorderLayout());
         panelTable.setBackground(new Color(230, 236, 243));
 
-        String[] columnNames = {"Mã Thủ Thư", "Họ  và Tên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ", "Email", "Lương"};
+        String[] columnNames = {"Mã Thủ Thư", "Họ  và Tên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ", "Email", "Lương", "Exist"};
         tableModel = new DefaultTableModel(columnNames,0);
 
         table = new JTable(tableModel);
@@ -299,7 +299,8 @@ public class LibrarianPanel extends JPanel {
                     staff.getPhone(),
                     staff.getAddress(),
                     staff.getEmail(),
-                    staff.getWage()
+                    staff.getWage(),
+                    staff.getExist()
                 });
             }
         } else {

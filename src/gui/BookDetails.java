@@ -25,13 +25,13 @@ public class BookDetails extends JDialog {
     private JButton btnDong;
 
     // Constructor dành cho BookPanel / LoanPanel (Frame parent)
-    public BookDetails(Object[] bookData, Frame owner, BookPanel bookPanel, int selectedRow) {
+    public BookDetails(Object[] bookData, Frame owner, BookPanel bookPanel, int selectedRow, boolean exist) {
         super(owner, "Chi tiết các cuốn của sách - " + bookData[1], true);
         this.bookPanel = bookPanel;
-        initUI(bookData, bookPanel, selectedRow);
+        initUI(bookData, bookPanel, selectedRow, exist);
     }
 
-    private void initUI(Object[] bookData, BookPanel bookPanel, int selectedRow) {
+    private void initUI(Object[] bookData, BookPanel bookPanel, int selectedRow, boolean exist) {
         book_BLL = new Book_Details_BLL();
         setLayout(new BorderLayout(0, 0));
         getContentPane().setBackground(new Color(230, 236, 243));
@@ -57,11 +57,11 @@ public class BookDetails extends JDialog {
                 txtSoTrangHuHong.setText(tableModel.getValueAt(r, 5).toString());
                 boolean editable = !"Đã hỏng".equals(tableModel.getValueAt(r, 4));
 
-                txtNhaCungCap.setEnabled(false);
-                txtNamXuatBan.setEnabled(false);
-                txtSoTrang.setEnabled(false);
-                cbTrangThai.setEnabled(editable);
-                txtSoTrangHuHong.setEnabled(editable);
+                txtNhaCungCap.setEditable(false);
+                txtNamXuatBan.setEditable(false);
+                txtSoTrang.setEditable(false);
+                cbTrangThai.setEditable(editable);
+                txtSoTrangHuHong.setEditable(editable);
             }
         });
 
@@ -175,15 +175,10 @@ public class BookDetails extends JDialog {
         // Hủy input
         btnHuy.addActionListener(e -> {
             txtNhaCungCap.setText("");
-            txtNhaCungCap.setEnabled(true);
             txtNamXuatBan.setText("");
-            txtNamXuatBan.setEnabled(true);
             txtSoTrang.setText("");
-            txtSoTrang.setEnabled(true);
             cbTrangThai.setSelectedIndex(0);
-            cbTrangThai.setEnabled(true);
             txtSoTrangHuHong.setText("");
-            txtSoTrangHuHong.setEnabled(true);
             table.clearSelection();
         });
 
@@ -192,6 +187,8 @@ public class BookDetails extends JDialog {
             this.dispose();
             if (bookPanel != null) bookPanel.loadBook();
         });
+
+        setButtonsEnabled(exist);
 
         // Load chi tiết lần đầu
         loadBookDetails(bookData[0].toString());
@@ -221,6 +218,13 @@ public class BookDetails extends JDialog {
         } else {
             JOptionPane.showMessageDialog(this, "Không thể tải danh sách sách!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        btnThem.setEnabled(enabled);
+        btnSua.setEnabled(enabled);
+        btnXoa.setEnabled(enabled);
+        btnHuy.setEnabled(enabled);
     }
 
 }
