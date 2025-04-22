@@ -199,7 +199,7 @@ public class BookDetails extends JDialog {
         setSize(600, 600);
         setLocationRelativeTo(getOwner());
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setVisible(true);
+        // setVisible(true);
     }
 
     public void loadBookDetails(String ID) {

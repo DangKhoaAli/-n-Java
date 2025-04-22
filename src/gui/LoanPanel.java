@@ -5,7 +5,6 @@ import BLL.Loan_slip_BLL;
 import DAO.Book_Details_DAO;
 import DAO.Reader_DAO;
 import DAO.Staff_DAO;
-
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -343,7 +342,7 @@ public class LoanPanel extends JPanel {
             });
         });
         
-        loadLoan_slip(reader);
+        loadLoan_slip();
 
 
         setPreferredSize(new Dimension(900, 600));

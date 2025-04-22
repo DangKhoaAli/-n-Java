@@ -288,6 +288,7 @@ public class ReaderPanel extends JPanel {
     
         // Gọi BLL để lấy danh sách độc giả từ CSDL
         List<Reader> readers = reader_BLL.getReader();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         
         // Kiểm tra danh sách có dữ liệu không
         if (readers != null) {
@@ -296,11 +297,11 @@ public class ReaderPanel extends JPanel {
                     reader.getID(),
                     reader.getName(),
                     reader.getGender(),
-                    reader.getBirth(),
+                    reader.getBirth().format(formatter),
                     reader.getPhone(),
                     reader.getAddress(),
                     reader.getEmail(),
-                    reader.getRegistrationDate(),
+                    reader.getRegistrationDate().format(formatter),
                     (Integer.parseInt(reader.getExist()) == 1) ? "Có" : "Không"
                 });
             }
