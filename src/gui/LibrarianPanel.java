@@ -163,44 +163,55 @@ public class LibrarianPanel extends JPanel {
         });
 
         btnSua.addActionListener(e -> {
-            try{
-                // Lấy dữ liệu từ các ô nhập
-                String maThuthu = txtMaThuThu.getText();
+            try {
+                String maThuthu = txtMaThuThu.getText().trim();
+                if ("AD000".equals(maThuthu)) {
+                    JOptionPane.showMessageDialog(this, "Không thể chỉnh sửa thông tin của thủ thư quản trị hệ thống (AD000)", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+        
                 String tenThuthu = txtTenThuThu.getText();
                 String gioiTinh = txtGioiTinh.getText();
-                LocalDate ngaySinh = LocalDate.parse(txtNgaySinh.getText()); // Chuyển đổi từ String sang LocalDate
+                LocalDate ngaySinh = LocalDate.parse(txtNgaySinh.getText()); // Cần xử lý định dạng nếu cần
                 String soDienThoai = txtSoDienThoai.getText();
                 String diaChi = txtDiaChi.getText();
                 String email = txtEmail.getText();
-                Float Luong = Float.parseFloat(txtLuong.getText());
-
-                String result = staff_BLL.updateStaff(maThuthu, tenThuthu, gioiTinh, ngaySinh, diaChi, soDienThoai, email, Luong);
-
+                Float luong = Float.parseFloat(txtLuong.getText());
+        
+                String result = staff_BLL.updateStaff(maThuthu, tenThuthu, gioiTinh, ngaySinh, diaChi, soDienThoai, email, luong);
+        
                 JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadStaffTable();
-
-            } catch (Exception ex){
+        
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         });
+        
 
         btnXoa.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
-            if(selectedRow == -1) {
+            if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
                 return;
             }
-            try{
-                String ID = tableModel.getValueAt(selectedRow,0).toString();
-                
-                
+        
+            String ID = tableModel.getValueAt(selectedRow, 0).toString();
+            if ("AD000".equals(ID)) {
+                JOptionPane.showMessageDialog(this, "Không thể xóa thủ thư quản trị hệ thống (AD000)", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        
+            try {
                 String result = staff_BLL.deleteStaff(ID);
                 JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadStaffTable();
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(this, "Lỗi" + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         });
+        
+        
 
         btnHuy.addActionListener(e -> {
             txtMaThuThu.setText("");

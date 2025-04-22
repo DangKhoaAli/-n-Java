@@ -11,23 +11,23 @@ public class Report_BLL {
         reportDAO = new Report_DAO();
     }
 
-    public List<String[]> getLoanDetailsByMonth(LocalDate date) {
-        return reportDAO.getLoanDetailsByMonthWithBookInfo(date);
+    public List<String[]> getLoanDetails(LocalDate date) {
+        return reportDAO.getLoanDetails(date);
     }
 
-    public List<String[]> getReturnDetailsByMonth(LocalDate date) {
-        return reportDAO.getReturnDetailsByMonth(date);
+    public List<String[]> getReturnDetails(LocalDate date) {
+        return reportDAO.getReturnDetails(date);
     }
 
-    public int getTotalLoansByMonth(LocalDate date) {
-        return reportDAO.getTotalLoansByMonth(date);
+    public int getTotalLoans(LocalDate date) {
+        return reportDAO.getTotalLoans(date);
     }
 
-    public int getTotalReturnsByMonth(LocalDate date) {
-        return reportDAO.getTotalReturnsByMonth(date);
+    public int getTotalReturns(LocalDate date) {
+        return reportDAO.getTotalReturns(date);
     }
 
-    public double getTotalRevenueByMonth(LocalDate date) {
-        return reportDAO.getTotalRevenueByMonth(date);
+    public double getTotalRevenue(LocalDate date) {
+        return reportDAO.getTotalRevenue(date);
     }
 }

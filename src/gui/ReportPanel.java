@@ -28,12 +28,11 @@ public class ReportPanel extends JPanel {
     public ReportPanel() {
         reportBLL = new Report_BLL();
         setLayout(new BorderLayout(0, 0));
-        setBackground(new Color(230, 236, 243));
 
         // --- Bảng hiển thị sách mượn và trả ---
         JPanel panelTables = new JPanel(new GridLayout(1, 2));
 
-        // Loan table with header
+        // Loan table
         JPanel loanPanel = new JPanel(new BorderLayout());
         JLabel loanHeader = new JLabel("Danh sách sách mượn", JLabel.CENTER);
         loanHeader.setFont(new Font("Arial", Font.BOLD, 14));
@@ -44,7 +43,7 @@ public class ReportPanel extends JPanel {
         loanTable = new JTable(loanTableModel);
         loanPanel.add(new JScrollPane(loanTable), BorderLayout.CENTER);
 
-        // Return table with header
+        // Return table
         JPanel returnPanel = new JPanel(new BorderLayout());
         JLabel returnHeader = new JLabel("Danh sách sách trả", JLabel.CENTER);
         returnHeader.setFont(new Font("Arial", Font.BOLD, 14));
@@ -61,9 +60,9 @@ public class ReportPanel extends JPanel {
 
         // --- Chi tiết thống kê ---
         JPanel panelSummary = new JPanel(new GridLayout(3, 1));
-        panelSummary.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20)); // Thêm khoảng cách padding
+        panelSummary.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20)); 
         lblTotalLoans = new JLabel("Số sách mượn: 0");
-        lblTotalLoans.setFont(new Font("Arial", Font.BOLD, 16)); // Tăng kích thước chữ
+        lblTotalLoans.setFont(new Font("Arial", Font.BOLD, 16)); 
         lblTotalReturns = new JLabel("Số sách trả: 0");
         lblTotalReturns.setFont(new Font("Arial", Font.BOLD, 16));
         lblTotalRevenue = new JLabel("Doanh thu: 0.00 VND");
@@ -77,7 +76,7 @@ public class ReportPanel extends JPanel {
         // --- Panel nhập ---
         JPanel panelInput = new JPanel();
         panelInput.setLayout(new BoxLayout(panelInput, BoxLayout.Y_AXIS));
-        panelInput.setBackground(new Color(230, 236, 243));
+
 
         cbTimeFrame = new JComboBox<>(new String[]{"Tháng", "Năm"});
         cbTimeFrame.setBorder(BorderFactory.createTitledBorder("Chọn thời gian"));
@@ -115,7 +114,6 @@ public class ReportPanel extends JPanel {
         LocalDate date;
 
         try {
-            // Correct date parsing logic
             if (timeFrame.equals("Tháng")) {
                 date = LocalDate.parse("01/" + dateInput, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             } else if (timeFrame.equals("Năm")) {
@@ -124,39 +122,34 @@ public class ReportPanel extends JPanel {
                 throw new IllegalArgumentException("Invalid time frame selected.");
             }
 
-            // Fetch loan and return details
-            List<String[]> loanDetails = reportBLL.getLoanDetailsByMonth(date);
-            List<String[]> returnDetails = reportBLL.getReturnDetailsByMonth(date);
+            List<String[]> loanDetails = reportBLL.getLoanDetails(date);
+            List<String[]> returnDetails = reportBLL.getReturnDetails(date);
 
-            // Populate loan table
-            loanTableModel.setRowCount(0); // Clear existing rows
+            loanTableModel.setRowCount(0); 
             for (String[] loan : loanDetails) {
                 loanTableModel.addRow(loan);
             }
 
-            // Populate return table
-            returnTableModel.setRowCount(0); // Clear existing rows
+            returnTableModel.setRowCount(0); 
             for (String[] ret : returnDetails) {
                 returnTableModel.addRow(ret);
             }
 
-            // Fetch and display summary statistics
-            int totalLoans = reportBLL.getTotalLoansByMonth(date);
-            int totalReturns = reportBLL.getTotalReturnsByMonth(date);
-            double totalRevenue = reportBLL.getTotalRevenueByMonth(date);
+            int totalLoans = reportBLL.getTotalLoans(date);
+            int totalReturns = reportBLL.getTotalReturns(date);
+            double totalRevenue = reportBLL.getTotalRevenue(date);
 
             lblTotalLoans.setText("Số sách mượn: " + totalLoans);
             lblTotalReturns.setText("Số sách trả: " + totalReturns);
             lblTotalRevenue.setText(String.format("Doanh thu: %.2f VND", totalRevenue));
         } catch (Exception ex) {
-            // Handle invalid input or errors gracefully
+
             loanTableModel.setRowCount(0);
             returnTableModel.setRowCount(0);
             lblTotalLoans.setText("Số sách mượn: 0");
             lblTotalReturns.setText("Số sách trả: 0");
             lblTotalRevenue.setText("Doanh thu: 0.00 VND");
 
-            // Optionally log or display the error for debugging
             ex.printStackTrace();
         }
     }

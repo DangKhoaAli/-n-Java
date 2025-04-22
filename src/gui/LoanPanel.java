@@ -343,7 +343,7 @@ public class LoanPanel extends JPanel {
             });
         });
         
-        loadLoan_slip();
+        loadLoan_slip(reader);
 
 
         setPreferredSize(new Dimension(900, 600));

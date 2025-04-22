@@ -16,15 +16,15 @@ public class Report_DAO {
         conn = DatabaseConnection.getConnection();
     }
 
-    public int getTotalLoansByMonth(LocalDate date) {
+    public int getTotalLoans(LocalDate date) {
         return executeCountQuery("SELECT SUM(so_luong) FROM Loan_slip WHERE MONTH(Borrow_Date) = ? OR YEAR(Borrow_Date) = ?", date.getMonthValue(), date.getYear());
     }
 
-    public int getTotalReturnsByMonth(LocalDate date) {
+    public int getTotalReturns(LocalDate date) {
         return executeCountQuery("SELECT SUM(so_luong) FROM Payment_slip WHERE MONTH(payment_Date) = ? OR YEAR(payment_Date) = ?", date.getMonthValue(), date.getYear());
     }
 
-    public double getTotalRevenueByMonth(LocalDate date) {
+    public double getTotalRevenue(LocalDate date) {
         return executeSumQuery("SELECT SUM(ls.loan_fee) + SUM(ps.late_fee) + SUM(ps.damage_fee) AS total_revenue "
                          + "FROM Loan_slip ls "
                          + "JOIN Payment_slip ps ON ls.ID = ps.ID_Loan_slip "
@@ -33,7 +33,7 @@ public class Report_DAO {
                          date.getMonthValue(), date.getYear(), date.getMonthValue(), date.getYear());
     }
 
-    public List<String[]> getLoanDetailsByMonthWithBookInfo(LocalDate date) {
+    public List<String[]> getLoanDetails(LocalDate date) {
         String sql = """
                      SELECT ls.ID, bd.ID AS Book_ID, b.name AS Book_Name
                      FROM Loan_slip ls
@@ -42,10 +42,10 @@ public class Report_DAO {
                      JOIN Book b ON bd.ID_Book = b.ID
                      WHERE MONTH(ls.Borrow_Date) = ? OR YEAR(ls.Borrow_Date) = ?
                      """;
-        return executeDetailQueryWithFees(sql, date.getMonthValue(), date.getYear());
+        return executeDetailQuery(sql, date.getMonthValue(), date.getYear());
     }
     
-    public List<String[]> getReturnDetailsByMonth(LocalDate date) {
+    public List<String[]> getReturnDetails(LocalDate date) {
         String sql = """
                      SELECT ps.ID, bd.ID AS Book_ID, b.name AS Book_Name
                      FROM Payment_slip ps
@@ -87,36 +87,17 @@ public class Report_DAO {
         try (PreparedStatement ps = prepareStatement(sql, params);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                details.add(new String[]{rs.getString(1), rs.getString(2), rs.getString(3)});
+                details.add(new String[]{
+                    rs.getString("ID"),
+                    rs.getString("Book_ID"),
+                    rs.getString("Book_Name")
+                });
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return details;
     }
-
-    private List<String[]> executeDetailQueryWithFees(String sql, Object... params) {
-        List<String[]> details = new ArrayList<>();
-        try (PreparedStatement ps = prepareStatement(sql, params);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                List<String> row = new ArrayList<>();
-                row.add(rs.getString(1)); // Book ID
-                row.add(rs.getString(2)); // Book Name
-                row.add(rs.getString(3));
-                // Handle potential null values for fees
-                for (int i = 3; i <= rs.getMetaData().getColumnCount(); i++) {
-                    row.add(rs.getObject(i) != null ? String.valueOf(rs.getObject(i)) : "0.0");
-                }
-                details.add(row.toArray(new String[0]));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return details;
-    }
-    
-    
 
     private PreparedStatement prepareStatement(String sql, Object... params) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(sql);

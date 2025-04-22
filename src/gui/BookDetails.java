@@ -15,7 +15,7 @@ public class BookDetails extends JDialog {
     private JTextField txtNhaCungCap;
     private JTextField txtNamXuatBan;
     private JTextField txtSoTrang;
-    private JTextField txtTrangThai;
+    private JComboBox<String> cbTrangThai;
     private JTextField txtSoTrangHuHong;
 
     private JButton btnThem;
@@ -53,16 +53,15 @@ public class BookDetails extends JDialog {
                 txtNhaCungCap.setText(tableModel.getValueAt(r, 1).toString());
                 txtNamXuatBan.setText(tableModel.getValueAt(r, 2).toString());
                 txtSoTrang.setText(tableModel.getValueAt(r, 3).toString());
-                txtTrangThai.setText(tableModel.getValueAt(r, 4).toString());
+                cbTrangThai.setSelectedItem(tableModel.getValueAt(r, 4).toString());
                 txtSoTrangHuHong.setText(tableModel.getValueAt(r, 5).toString());
-
-                txtTrangThai.setEnabled(false);
-                
                 boolean editable = !"Đã hỏng".equals(tableModel.getValueAt(r, 4));
-                txtNhaCungCap.setEnabled(editable);
-                txtNamXuatBan.setEnabled(editable);
-                txtSoTrang.setEnabled(editable);
-                txtSoTrangHuHong.setEnabled(false);
+
+                txtNhaCungCap.setEnabled(false);
+                txtNamXuatBan.setEnabled(false);
+                txtSoTrang.setEnabled(false);
+                cbTrangThai.setEnabled(editable);
+                txtSoTrangHuHong.setEnabled(editable);
             }
         });
 
@@ -76,14 +75,16 @@ public class BookDetails extends JDialog {
         txtNamXuatBan.setBorder(BorderFactory.createTitledBorder("Năm xuất bản"));
         txtSoTrang = new JTextField();
         txtSoTrang.setBorder(BorderFactory.createTitledBorder("Số trang"));
-        txtTrangThai = new JTextField();
-        txtTrangThai.setBorder(BorderFactory.createTitledBorder("Trạng thái"));
+        cbTrangThai = new JComboBox<>(new String[]{"Hiện có","Đã hỏng"});
+        cbTrangThai.setBackground(Color.WHITE);
+        cbTrangThai.setOpaque(true);
+        cbTrangThai.setBorder(BorderFactory.createTitledBorder("Trạng thái"));
         txtSoTrangHuHong = new JTextField();
         txtSoTrangHuHong.setBorder(BorderFactory.createTitledBorder("Số trang hư hỏng"));
         panelInput.add(txtNhaCungCap);
         panelInput.add(txtNamXuatBan);
         panelInput.add(txtSoTrang);
-        panelInput.add(txtTrangThai);
+        panelInput.add(cbTrangThai);
         panelInput.add(txtSoTrangHuHong);
 
         // --- Panel nút ---
@@ -115,7 +116,7 @@ public class BookDetails extends JDialog {
             String nhaCungCap = txtNhaCungCap.getText().trim();
             String namXuatBan = txtNamXuatBan.getText().trim();
             String soTrang = txtSoTrang.getText().trim();
-            String trangThai = txtTrangThai.getText().trim();
+            String trangThai = cbTrangThai.getSelectedItem().toString();
             String soTrangHuHongStr = txtSoTrangHuHong.getText().trim();
 
             String result = book_BLL.addBook(maChiTiet, bookCode, nhaCungCap, namXuatBan, soTrang, trangThai, soTrangHuHongStr);
@@ -136,7 +137,7 @@ public class BookDetails extends JDialog {
             String nhaCungCap = txtNhaCungCap.getText().trim();
             String namXuatBan = txtNamXuatBan.getText().trim();
             String soTrang = txtSoTrang.getText().trim();
-            String trangThai = txtTrangThai.getText().trim();
+            String trangThai = cbTrangThai.getSelectedItem().toString();
             String soTrangHuHong = txtSoTrangHuHong.getText().trim();
 
             String result = book_BLL.updateBook(maChiTiet, bookCode, nhaCungCap, namXuatBan, soTrang, trangThai, soTrangHuHong);
@@ -179,8 +180,8 @@ public class BookDetails extends JDialog {
             txtNamXuatBan.setEnabled(true);
             txtSoTrang.setText("");
             txtSoTrang.setEnabled(true);
-            txtTrangThai.setText("");
-            txtTrangThai.setEnabled(true);
+            cbTrangThai.setSelectedIndex(0);
+            cbTrangThai.setEnabled(true);
             txtSoTrangHuHong.setText("");
             txtSoTrangHuHong.setEnabled(true);
             table.clearSelection();
@@ -188,7 +189,7 @@ public class BookDetails extends JDialog {
 
         // Đóng dialog
         btnDong.addActionListener(e -> {
-            dispose();
+            this.dispose();
             if (bookPanel != null) bookPanel.loadBook();
         });
 

@@ -268,6 +268,7 @@ public class PayPanel extends JPanel {
             txtNgayTra.setText("");
             txtPhiTreHan.setText("0");
             txtPhiHuHai.setText("0");
+
         });
 
         btnTim.addActionListener(e -> {
