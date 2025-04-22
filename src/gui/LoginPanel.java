@@ -19,7 +19,7 @@ public class LoginPanel extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
 
-        ImageIcon bgIcon = new ImageIcon("D:\\Java\\src\\img\\login.jpg");
+        ImageIcon bgIcon = new ImageIcon("D:\\Java\\src\\img\\login.png");
 
         // ImageIcon bgIcon = new ImageIcon("C:\\Users\\Admin\\OneDrive\\Desktop\\Project-Java\\-n-Java\\src\\img\\login.png");
 

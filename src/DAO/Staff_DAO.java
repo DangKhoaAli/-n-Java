@@ -127,6 +127,19 @@ public class Staff_DAO {
         return null; 
     }
 
+    public String getStaffName(String staffID){
+        String sql = "SELECT name FROM Staff WHERE ID = ? AND exist = '1'";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, staffID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; 
+    }
     
 }
 

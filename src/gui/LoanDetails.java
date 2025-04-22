@@ -134,7 +134,7 @@ public class LoanDetails extends JFrame {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 loanSlipBLL.update_fee(loanData[0].toString(), LocalDate.parse(loanData[4].toString(), formatter), LocalDate.parse(loanData[5].toString(), formatter));
                 loanSlipBLL.update_Quan(loanData[0].toString());
-                loanPanel.loadLoan_slip(readerDAO);
+                loanPanel.loadLoan_slip();
                 loadBorrow_Details(loanData[0].toString());
             } else {
                 JOptionPane.showMessageDialog(this, result);

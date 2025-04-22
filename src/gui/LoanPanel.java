@@ -4,9 +4,9 @@ import BLL.Borrow_Details_BLL;
 import BLL.Loan_slip_BLL;
 import DAO.Book_Details_DAO;
 import DAO.Reader_DAO;
+import DAO.Staff_DAO;
 
 import java.awt.*;
-import java.io.Reader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -20,6 +20,7 @@ public class LoanPanel extends JPanel {
     private Borrow_Details_BLL borrow_details_BLL;
     private Book_Details_DAO book_details_DAO;
     private Reader_DAO reader;
+    private Staff_DAO staff_DAO;
 
     private JTable table;
     private DefaultTableModel tableModel;
@@ -49,6 +50,7 @@ public class LoanPanel extends JPanel {
         borrow_details_BLL = new Borrow_Details_BLL();
         book_details_DAO = new Book_Details_DAO();
         reader = new Reader_DAO();
+        staff_DAO = new Staff_DAO();
 
         setBackground(new Color(230, 236, 243));
         setLayout(new BorderLayout(0, 0));
@@ -193,7 +195,7 @@ public class LoanPanel extends JPanel {
                 }
 
 
-                loadLoan_slip(reader);
+                loadLoan_slip();
 
             } catch (DateTimeParseException ex ){
                 JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày. Vui lòng nhập ngày theo định dạng dd/MM/yyyy!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -210,8 +212,8 @@ public class LoanPanel extends JPanel {
         
                 // Hiển thị dữ liệu
                 txtPhieuMuon.setText(tableModel.getValueAt(selectedRow, 0).toString());
-                txtDocGia.setText(tableModel.getValueAt(selectedRow, 1).toString());
-                txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString());
+                txtDocGia.setText(tableModel.getValueAt(selectedRow, 1).toString().split(" - ")[0]);
+                txtThuThu.setText(tableModel.getValueAt(selectedRow, 2).toString().split("-")[0]);
                 txtSoLuongSach.setText(tableModel.getValueAt(selectedRow, 3).toString());
                 txtNgayMuon.setText(tableModel.getValueAt(selectedRow, 4).toString());
                 txtNgayDuKienTra.setText(tableModel.getValueAt(selectedRow, 5).toString());
@@ -240,7 +242,7 @@ public class LoanPanel extends JPanel {
                 String result = loan_slip_BLL.updateLoan_slip(PhieuMuon, docGia, thuThu, ngaymuon, ngaytra);
                 loan_slip_BLL.update_fee(PhieuMuon, ngaymuon, ngaytra);
                 JOptionPane.showMessageDialog(this, result);
-                loadLoan_slip(reader);
+                loadLoan_slip();
             } catch (DateTimeParseException ex ){
                 JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày. Vui lòng nhập ngày theo định dạng yyyy-MM-dd!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex){
@@ -257,18 +259,19 @@ public class LoanPanel extends JPanel {
             String maPhieuMuon = tableModel.getValueAt(selectedRow, 0).toString();
             String result = loan_slip_BLL.deleteLoan_slip(maPhieuMuon);
             JOptionPane.showMessageDialog(this, result);
-            loadLoan_slip(reader);
+            loadLoan_slip();
         });
 
         btnHuy.addActionListener(e -> {
             txtPhieuMuon.setText("");
             txtPhieuMuon.setEditable(true);
             txtDocGia.setText("");
+            txtThuThu.setText(userRole);
             txtSoLuongSach.setText("");
             txtSoLuongSach.setEditable(true);
             txtNgayMuon.setText("");
             txtNgayDuKienTra.setText("");
-            txtPhiMuon.setText("");
+            txtPhiMuon.setText("0");
             table.clearSelection();
         });
 
@@ -277,7 +280,7 @@ public class LoanPanel extends JPanel {
                 String keyword = txtTuKhoa.getText().trim();
                 if (keyword.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Vui lòng nhập ID cần tìm kiếm!");
-                    loadLoan_slip(reader);
+                    loadLoan_slip();
                     return;
                 }
 
@@ -296,7 +299,7 @@ public class LoanPanel extends JPanel {
                 }
                 else {
                     JOptionPane.showMessageDialog(this, "Không tìm thấy phiếu mượn với ID: " + keyword);
-                    loadLoan_slip(reader);
+                    loadLoan_slip();
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -318,7 +321,7 @@ public class LoanPanel extends JPanel {
         });
 
 
-        loadLoan_slip(reader);
+        loadLoan_slip();
 
         btnDangXuat.addActionListener(e -> {
             // đóng Main
@@ -351,11 +354,9 @@ public class LoanPanel extends JPanel {
         
     }
 
-    public void loadLoan_slip(Reader_DAO reader) {
-        // Xóa dữ liệu cũ trên bảng
+    public void loadLoan_slip() {
         tableModel.setRowCount(0);
     
-        // Gọi BLL để lấy danh sách độc giả từ CSDL
         List<Loan_slip> Loan = loan_slip_BLL.getLoan_slip();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         
@@ -365,7 +366,7 @@ public class LoanPanel extends JPanel {
                 tableModel.addRow(new Object[]{
                     loan.getID(),
                     loan.getID_Reader() + " - " + reader.getReaderName(loan.getID_Reader()),
-                    loan.getID_Staff(),
+                    loan.getID_Staff() + " - " + staff_DAO.getStaffName(loan.getID_Staff()),
                     loan.getSo_luong(),
                     loan.getBorrow_Day().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     loan.getExpected_Date().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
