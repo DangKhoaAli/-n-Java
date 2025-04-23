@@ -201,6 +201,18 @@ public class ReaderPanel extends JPanel {
                 return;
             }
 
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn xóa dòng này không?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+        
+            if (confirm != JOptionPane.YES_OPTION) {
+                return; // Người dùng chọn "Không"
+            }
+
             try{
                 String ID = tableModel.getValueAt(selectedRow,0).toString();
                 
