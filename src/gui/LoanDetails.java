@@ -177,6 +177,19 @@ public class LoanDetails extends JFrame {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
                 return;
             }
+
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn xóa dòng này không?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+        
+            if (confirm != JOptionPane.YES_OPTION) {
+                return; // Người dùng chọn "Không"
+            }
+
             String maSach = tableModel.getValueAt(selectedRow, 0).toString();
             String result = borrowDetailsBLL.deleteBorrow_Detail(maSach, loanData[0].toString());
             JOptionPane.showMessageDialog(this, result);

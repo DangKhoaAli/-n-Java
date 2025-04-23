@@ -190,6 +190,19 @@ public class PayDetails extends JFrame {
                     JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa");
                     return;
                 }
+
+                int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc chắn muốn xóa dòng này không?",
+                    "Xác nhận xóa",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+                );
+            
+                if (confirm != JOptionPane.YES_OPTION) {
+                    return; // Người dùng chọn "Không"
+                }
+
                 String masach = txtMaSach.getText().trim();
                 String result = bookReturnBLL.deleteBookReturn(maPhieuTra, masach);
                 JOptionPane.showMessageDialog(this, result);
