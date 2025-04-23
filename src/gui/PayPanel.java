@@ -3,6 +3,7 @@ package gui;
 import BLL.Book_Return_BLL;
 import BLL.Pay_slip_BLL;
 import DAO.Book_Details_DAO;
+import DAO.Book_Returned_DAO;
 import DAO.Payment_slip_DAO;
 import DAO.Staff_DAO;
 
@@ -19,6 +20,7 @@ public class PayPanel extends JPanel {
     private Pay_slip_BLL paySlipBLL;
     private Book_Details_DAO book_details_DAO;
     private Book_Return_BLL book_return_BLL;
+    private Book_Returned_DAO book_return;
     private Payment_slip_DAO payment_slip_DAO;
     private Staff_DAO staff_DAO;
 
@@ -49,6 +51,7 @@ public class PayPanel extends JPanel {
         paySlipBLL = new Pay_slip_BLL();
         book_details_DAO = new Book_Details_DAO();
         book_return_BLL = new Book_Return_BLL();
+        book_return = new Book_Returned_DAO();
         payment_slip_DAO = new Payment_slip_DAO();
         staff_DAO = new Staff_DAO();
 
@@ -169,7 +172,15 @@ public class PayPanel extends JPanel {
                             if (selectedBookID[0] != null && !selectedBookID[0].isEmpty()) {
                                 String maSach = selectedBookID[0];
                                 String sotranghong = JOptionPane.showInputDialog(this, "Số trang hiện đang hỏng:");
-
+                                while (true) {
+                                    int num = book_return.getDamagedPage(maSach);
+                                    if (Integer.parseInt(sotranghong)< num){
+                                        JOptionPane.showMessageDialog(this, "Số trang hỏng hiện tại không thể nhỏ hơn lúc mượn!(Hiện tại là " + num + " trang)");
+                                        sotranghong = JOptionPane.showInputDialog(this, "Nhập lại số trang hỏng: ");
+                                    } else {
+                                        break;
+                                    }
+                                }
 
                                 String result1 = book_return_BLL.addBookReturned(PhieuTra, maSach, sotranghong);
                                 if (result1.equals("Đã thêm chi tiết phiếu trả mới thành công!")) {

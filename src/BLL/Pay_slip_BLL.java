@@ -142,7 +142,7 @@ public class Pay_slip_BLL {
             for (int i=0; i<so_luong; i++){
                 String [] temp = bookDetails.get(i).split(";");
                 book_return_dao.deleteBook_Returned(ID, temp[0]);
-                book_details_dao.updateStatus_Book(ID_Loan_slip, "Đang được mượn");
+                book_details_dao.updateStatus_Book(temp[0], "Đang được mượn");
             }
 
             payment_slip_dao.deletePayment_slip(ID);
