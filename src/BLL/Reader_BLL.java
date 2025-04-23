@@ -15,7 +15,6 @@ public class Reader_BLL {
         reader_DAO = new Reader_DAO();
     }
 
-    // Lấy danh sách tất cả độc giả
     public List<Reader> getReader() {
         try {
             List<Reader> readers = reader_DAO.getAll_Reader();
@@ -80,7 +79,6 @@ public class Reader_BLL {
                 return "Ngày đăng ký không thể là ngày trong tương lai.";
             }
 
-            // Thêm độc giả vào cơ sở dữ liệu
             reader_DAO.addReader(ID, name, gender, birth, address, phone, email, registrationDate);
             return "Đã thêm thành công 1 độc giả.";
         } catch (SQLException e) {
@@ -131,7 +129,6 @@ public class Reader_BLL {
                 return "Ngày đăng ký không thể là ngày trong tương lai.";
             }
 
-            // Cập nhật độc giả trong cơ sở dữ liệu
             reader_DAO.updateReader(ID, name, gender, birth, address, phone, email, registrationDate);
             return "Cập nhật độc giả thành công.";
         } catch (SQLException e) {
@@ -152,8 +149,7 @@ public class Reader_BLL {
             if (!existingReaders) {
                 return "Không tìm thấy độc giả với ID này.";
             }
-    
-            // Xóa độc giả khỏi cơ sở dữ liệu
+
             reader_DAO.deleteReader(ID);
             return "Xóa độc giả thành công.";
         } catch (SQLException e) {

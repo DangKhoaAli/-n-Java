@@ -57,7 +57,6 @@ public class ReaderPanel extends JPanel {
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                // Tránh xử lý hai lần (khi bắt đầu và khi kết thúc)
                 if (!e.getValueIsAdjusting()) {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
@@ -147,14 +146,11 @@ public class ReaderPanel extends JPanel {
                 String email = txtEmail.getText();
                 String ngayDangKyStr = txtNgayDangKy.getText();
 
-                // Định dạng ngày (cần khớp với dữ liệu nhập vào)
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-                // Chuyển đổi chuỗi ngày thành LocalDate
                 LocalDate ngaySinh = LocalDate.parse(ngaySinhStr, formatter);
                 LocalDate ngayDangKy = LocalDate.parse(ngayDangKyStr, formatter);
 
-                // Gọi phương thức thêm độc giả
                 JOptionPane.showMessageDialog(null, reader_BLL.addReader(maDocGia, tenDocGia, gioiTinh, ngaySinh, diaChi, soDienThoai, email, ngayDangKy));
                 loadReaderTable();
             } catch (DateTimeParseException ex) {
@@ -166,11 +162,10 @@ public class ReaderPanel extends JPanel {
 
         btnSua.addActionListener(e -> {
             try {
-                // Lấy dữ liệu từ các ô nhập
                 String maDocGia = txtMaDocGia.getText();
                 String tenDocGia = txtTenDocGia.getText();
                 String gioiTinh = txtGioiTinh.getText();
-                String ngaySinh = txtNgaySinh.getText(); // Chuyển đổi từ String sang LocalDate
+                String ngaySinh = txtNgaySinh.getText(); 
                 String soDienThoai = txtSoDienThoai.getText();
                 String diaChi = txtDiaChi.getText();
                 String email = txtEmail.getText();
@@ -184,7 +179,7 @@ public class ReaderPanel extends JPanel {
     
                 String result = reader_BLL.updateReader(maDocGia, tenDocGia, gioiTinh, ns, diaChi, soDienThoai, email, ndk);
                 
-                // Hiển thị thông báo từ kết quả trả về
+                
                 JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadReaderTable();
         
@@ -255,13 +250,10 @@ public class ReaderPanel extends JPanel {
         });
 
         btnDangXuat.addActionListener(e -> {
-            // đóng Main
             JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             mainFrame.dispose();
         
-            // tạo Login mới
             LoginPanel login = new LoginPanel();
-            // đăng ký listener để khi login dispose→Main lại khởi chạy
             login.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosed(java.awt.event.WindowEvent e) {
@@ -286,13 +278,13 @@ public class ReaderPanel extends JPanel {
     }
 
     private void loadReaderTable() {
-        // Xóa dữ liệu cũ trên bảng
+        
         tableModel.setRowCount(0);
     
-        // Gọi BLL để lấy danh sách độc giả từ CSDL
+        
         List<Reader> readers = reader_BLL.getReader();
         
-        // Kiểm tra danh sách có dữ liệu không
+
         if (readers != null) {
             for (Reader reader : readers) {
                 tableModel.addRow(new Object[]{

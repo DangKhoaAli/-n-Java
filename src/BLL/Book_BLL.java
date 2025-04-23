@@ -1,11 +1,10 @@
 package BLL;
 
+import DAO.Book_DAO;
+import DAO.Book_Details_DAO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import DAO.Book_DAO;
-import DAO.Book_Details_DAO;
 import model.Books;
 
 public class Book_BLL {
@@ -165,9 +164,9 @@ public class Book_BLL {
                 return "Không tìm thấy sach với ID này.";
             }
     
-            // Xóa độc giả khỏi cơ sở dữ liệu
+
             book_DAO.deleteBook(ID);
-            // Xóa tất cả chi tiết sách liên quan đến ID_Book
+
             book_Details_DAO.deleteAllBook_Details(ID);
             return "Xóa sach thành công.";
         } catch (SQLException e) {

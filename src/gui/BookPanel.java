@@ -168,11 +168,9 @@ public class BookPanel extends JPanel {
             if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
                 int selectedRow = table.getSelectedRow();
         
-                // Lấy giá trị số lượng
                 String tontaiStr = tableModel.getValueAt(selectedRow, 7).toString();
                 int tontai = Integer.parseInt(tontaiStr);
-        
-                // Hiển thị dữ liệu
+
                 txtMaSach.setText(tableModel.getValueAt(selectedRow, 0).toString());
                 txtTenSach.setText(tableModel.getValueAt(selectedRow, 1).toString());
                 txtTheLoai.setText(tableModel.getValueAt(selectedRow, 2).toString());
@@ -181,7 +179,7 @@ public class BookPanel extends JPanel {
                 txtPhiMuon.setText(tableModel.getValueAt(selectedRow, 5).toString());
                 txtSoLuong.setText(tableModel.getValueAt(selectedRow, 6).toString());
         
-                // Nếu số lượng = 0, thì không cho chỉnh sửa
+                
                 boolean editable = tontai > 0;
         
                 txtTenSach.setEditable(editable);
@@ -189,8 +187,7 @@ public class BookPanel extends JPanel {
                 txtTacGia.setEditable(editable);
                 txtGia.setEditable(editable);
                 txtPhiMuon.setEditable(editable);
-                // Luôn khóa mã sách và số lượng
-                // txtMaSach.setEnabled(false);
+                
                 txtMaSach.setEditable(false);
                 txtSoLuong.setEditable(false);
             }
@@ -199,7 +196,6 @@ public class BookPanel extends JPanel {
         
         btnSua.addActionListener(e -> {
             try {
-                // Lấy dữ liệu từ các ô nhập
                 String maSach = txtMaSach.getText();
                 String tenSach = txtTenSach.getText();
                 String tacgia = txtTacGia.getText();
@@ -209,10 +205,8 @@ public class BookPanel extends JPanel {
                 String phimuon = txtPhiMuon.getText();
                 
         
-                // Gọi phương thức updateReader
                 String result = book_BLL.updateBooks(maSach, tenSach, tacgia, theloai, soluong, gia, phimuon);
                 
-                // Hiển thị thông báo từ kết quả trả về
                 JOptionPane.showMessageDialog(this, result, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadBook();
         
@@ -289,14 +283,11 @@ public class BookPanel extends JPanel {
         });
 
         btnDangXuat.addActionListener(e -> {
-            // đóng Main
             JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             mainFrame.dispose();
         
-            // tạo Login mới
             LoginPanel login = new LoginPanel();
-            // đăng ký listener để khi login dispose→Main lại khởi chạy
-            login.addWindowListener(new java.awt.event.WindowAdapter() {
+                  login.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosed(java.awt.event.WindowEvent e) {
                     if (login.isSucceeded()) {
@@ -330,7 +321,6 @@ public class BookPanel extends JPanel {
         tableModel.setRowCount(0);
         
         List<Books> books = book_BLL.getBook();
-        // Kiểm tra danh sách có dữ liệu không
         if (books != null) {
             for (Books book  : books) {
                 tableModel.addRow(new Object[]{

@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class BookDetails extends JDialog {
-    private BookPanel bookPanel;             // để reload bảng khi cần
+    private BookPanel bookPanel;             
     private Book_Details_BLL book_BLL;
     private JTable table;
     private DefaultTableModel tableModel;
@@ -24,7 +24,6 @@ public class BookDetails extends JDialog {
     private JButton btnHuy;
     private JButton btnDong;
 
-    // Constructor dành cho BookPanel / LoanPanel (Frame parent)
     public BookDetails(Object[] bookData, Frame owner, BookPanel bookPanel, int selectedRow, String exist) {
         super(owner, "Chi tiết các cuốn của sách - " + bookData[1], true);
         this.bookPanel = bookPanel;
@@ -107,7 +106,6 @@ public class BookDetails extends JDialog {
         panelBottom.add(panelButtons, BorderLayout.SOUTH);
         add(panelBottom, BorderLayout.SOUTH);
 
-        // --- ActionListeners ---
 
         // Thêm bản sao mới
         btnThem.addActionListener(e -> {
@@ -199,22 +197,22 @@ public class BookDetails extends JDialog {
         setSize(600, 600);
         setLocationRelativeTo(getOwner());
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        // setVisible(true);
+    
     }
 
     public void loadBookDetails(String ID) {
         tableModel.setRowCount(0);
         List<String> books = book_BLL.getBook(ID);
-        // Kiểm tra danh sách có dữ liệu không
+
         if (books != null) {
             for (String book  : books) {
                 tableModel.addRow(new Object[]{
-                    book.split(";")[0], // Mã chi tiết sách
-                    book.split(";")[1], // Nhà cung cấp
-                    book.split(";")[2], // Năm xuất bản
-                    book.split(";")[3], // Số trang
-                    book.split(";")[4], // Trạng thái
-                    book.split(";")[5]  // Số trang hư hỏng
+                    book.split(";")[0], 
+                    book.split(";")[1], 
+                    book.split(";")[2], 
+                    book.split(";")[3], 
+                    book.split(";")[4], 
+                    book.split(";")[5]  
                     
                 });
             }

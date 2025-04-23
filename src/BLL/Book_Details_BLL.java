@@ -1,11 +1,10 @@
 package BLL;
 
+import DAO.Book_DAO;
+import DAO.Book_Details_DAO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import DAO.Book_DAO;
-import DAO.Book_Details_DAO;
 
 public class Book_Details_BLL {
     private Book_DAO book_DAO;
@@ -67,9 +66,6 @@ public class Book_Details_BLL {
             return "Số trang hỏng không hợp lệ! Vui lòng nhập số nguyên dương.";
         }
 
-        // // Tách ID sách từ ID chi tiết (nếu cần)
-        // String[] temp = ID.split("_");
-        // String bookID = temp[0];
 
         book_Details_DAO.addBook_Details(ID, ID_Book, supplier, Integer.parseInt(year), Integer.parseInt(page_num), status, Integer.parseInt(page_num_dame));
         book_DAO.updateBook_quan(book_Details_DAO.count_Details(ID_Book), ID_Book);
@@ -144,10 +140,8 @@ public class Book_Details_BLL {
                 }
             }
     
-            // Thực hiện xóa chi tiết sách
             book_Details_DAO.deleteBook_Details(ID, ID_Book);
     
-            // Lấy lại danh sách sau khi đã xóa
             List<String> updatedBookDetails = book_Details_DAO.getALL_Book_Details(ID_Book);
             boolean allDamaged = !updatedBookDetails.isEmpty();
     

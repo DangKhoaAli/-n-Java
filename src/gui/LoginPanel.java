@@ -277,6 +277,7 @@ class RoundedButtonLogin extends JButton {
     private int arc = 20;
 
     public RoundedButtonLogin(String text) {
+        
         super(text);
         setOpaque(false);
         setContentAreaFilled(false);
