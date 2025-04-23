@@ -315,7 +315,7 @@ public class Select extends JDialog {           // để reload bảng khi cần
 
     public void loadReader(Reader_BLL reader_BLL){
         tableModel.setRowCount(0);
-        List<Reader> readers = reader_BLL.getReader();
+        List<Reader> readers = reader_BLL.getReaderExist();
         if (readers != null && !readers.isEmpty()) {
             for (Reader reader : readers) {
                 String[] data = {

@@ -33,6 +33,23 @@ public class Reader_DAO {
         return Readers;
     }
 
+    // Lấy danh sách độc giả còn tồn tại
+    public List<Reader> getReader() throws SQLException{
+        List<Reader> Readers = new ArrayList<>();
+        String sql = "SELECT * FROM Reader WHERE exist = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, "1");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Readers.add(new Reader(rs.getString("ID"), rs.getString("name"), rs.getString("gender"), 
+                            rs.getDate("birth").toLocalDate(), rs.getString("address"), rs.getString("phone"), 
+                            rs.getString("email"), rs.getString("exist"), rs.getDate("registrationDate").toLocalDate()));
+            }
+        }
+
+        return Readers;
+    }
+
     // Thêm 1 độc giả
     public void addReader(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, LocalDate registrationDate) throws SQLException{
         String sql = "INSERT INTO Reader (ID, name, gender, birth, address, phone, email, registrationDate, exist) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";

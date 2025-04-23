@@ -28,6 +28,18 @@ public class Reader_BLL {
         }
     }
 
+    public List<Reader> getReaderExist() {
+        try {
+            List<Reader> readers = reader_DAO.getReader();
+            if (readers == null || readers.isEmpty()) {
+                return new ArrayList<>();
+            }
+            return readers;
+        } catch (SQLException e) {
+            return new ArrayList<>();
+        }
+    }
+
     public List<Reader> searchReader(String key) {
         try {
             List<Reader> result = reader_DAO.searchReader(key);
