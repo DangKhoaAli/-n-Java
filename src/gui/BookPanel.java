@@ -129,16 +129,37 @@ public class BookPanel extends JPanel {
 
             if(result.equals("Da them thanh cong sach!")) {
                 int soluong = Integer.parseInt(soLuong);
-                String nhaCungCap = JOptionPane.showInputDialog(this, "Nhà cung cấp:");
-                String namXuatBan = JOptionPane.showInputDialog(this, "Năm xuất bản:");
-                String soTrang = JOptionPane.showInputDialog(this, "Số trang:");
-                for(int i = 1; i<=soluong; i++){
+        
+                String nhaCungCap = "";
+                while (nhaCungCap == null || nhaCungCap.trim().isEmpty()) {
+                    nhaCungCap = JOptionPane.showInputDialog(this, "Nhà cung cấp:");
+                    if (nhaCungCap == null) return; 
+                    if (nhaCungCap.trim().isEmpty()) JOptionPane.showMessageDialog(this, "Vui lòng nhập nhà cung cấp!");
+                }
+
+                String namXuatBan = "";
+                while (true) {
+                    namXuatBan = JOptionPane.showInputDialog(this, "Năm xuất bản:");
+                    if (namXuatBan == null) return;
+                    if (namXuatBan.matches("\\d{4}")) break;
+                    JOptionPane.showMessageDialog(this, "Vui lòng nhập năm xuất bản hợp lệ (4 chữ số)!");
+                }
+            
+                String soTrang = "";
+                while (true) {
+                    soTrang = JOptionPane.showInputDialog(this, "Số trang:");
+                    if (soTrang == null) return;
+                    if (soTrang.matches("\\d+")) break;
+                    JOptionPane.showMessageDialog(this, "Vui lòng nhập số nguyên dương!");
+                }
+            
+                for (int i = 1; i <= soluong; i++) {
                     String maChiTiet = maSach + "_" + i;
-                    
                     String result1 = book_details_BLL.addBook(maChiTiet, maSach, nhaCungCap, namXuatBan, soTrang, "Hiện có", "0");
                     JOptionPane.showMessageDialog(this, result1);
                 }
             }
+            
 
             loadBook();
         });
