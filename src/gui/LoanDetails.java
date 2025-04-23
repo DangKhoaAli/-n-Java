@@ -36,6 +36,7 @@ public class LoanDetails extends JFrame {
         this.loanSlipBLL = new Loan_slip_BLL();
         this.readerDAO = new Reader_DAO();
         this.loanPanel = loanPanel;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         setTitle("Chi tiết phiếu mượn - " + loanData[0]);
         setLayout(new BorderLayout(0, 0));
@@ -131,7 +132,6 @@ public class LoanDetails extends JFrame {
             String result = borrowDetailsBLL.addBorrow_Detail(maSach, loanData[0].toString());
             if (result.equals("Thêm chi tiết phiếu mượn thành công!")) {
                 JOptionPane.showMessageDialog(this, result);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 loanSlipBLL.update_fee(loanData[0].toString(), LocalDate.parse(loanData[4].toString(), formatter), LocalDate.parse(loanData[5].toString(), formatter));
                 loanSlipBLL.update_Quan(loanData[0].toString());
                 loanPanel.loadLoan_slip();
@@ -165,6 +165,8 @@ public class LoanDetails extends JFrame {
             String maSachCu = tableModel.getValueAt(selectedRow, 0).toString();
             String result = borrowDetailsBLL.updateBorrow_Details(maSachCu, maSach, loanData[0].toString());
             JOptionPane.showMessageDialog(this, result);
+            loanSlipBLL.update_fee(loanData[0].toString(), LocalDate.parse(loanData[4].toString(), formatter), LocalDate.parse(loanData[5].toString(), formatter));
+            loanPanel.loadLoan_slip();
             loadBorrow_Details(loanData[0].toString());
 
         });

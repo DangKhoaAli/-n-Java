@@ -106,7 +106,7 @@ public class Loan_slip_DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        totalFee = totalFee * (ChronoUnit.DAYS.between(Borrow_Date, Expected_Date) + 1);
+        totalFee = totalFee * (ChronoUnit.DAYS.between(Borrow_Date, Expected_Date)/5 + 1);
         if (totalFee < 0){
             totalFee = 0;
         }

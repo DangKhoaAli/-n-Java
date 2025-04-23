@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import DAO.Borrow_Details_DAO;
 import DAO.Loan_slip_DAO;
 import DAO.Payment_slip_DAO;
 import DAO.Reader_DAO;

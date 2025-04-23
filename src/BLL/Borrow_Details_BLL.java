@@ -4,12 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import DAO.Book_Details_DAO;
 import DAO.Book_Returned_DAO;
 import DAO.Borrow_Details_DAO;
-import gui.BookDetails;
 
 public class Borrow_Details_BLL {
     private Borrow_Details_DAO borrow_details_dao;
