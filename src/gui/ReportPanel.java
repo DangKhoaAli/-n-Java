@@ -107,7 +107,7 @@ public class ReportPanel extends JPanel {
             }
         });
     }
-
+    
     private void generateReport() {
         String timeFrame = cbTimeFrame.getSelectedItem().toString();
         String dateInput = txtDateInput.getText().trim();

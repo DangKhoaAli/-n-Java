@@ -17,7 +17,6 @@ public class RoundedTxtField extends JTextField {
         setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         setUI(new BasicTextFieldUI());
 
-        // Repaint on focus changes to show/hide placeholder
         addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -31,9 +30,7 @@ public class RoundedTxtField extends JTextField {
         });
     }
 
-    /**
-     * Thiết lập văn bản hiển thị khi trường trống
-     */
+    // Hiện thị văn bản ẩn
     public void setPlaceholder(String placeholder) {
         this.placeholder = placeholder;
         repaint();
@@ -44,13 +41,11 @@ public class RoundedTxtField extends JTextField {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        // Vẽ nền bo góc
         g2.setColor(getBackground());
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
 
         super.paintComponent(g2);
 
-        // Vẽ placeholder nếu không có text
         if (placeholder != null && getText().isEmpty() && !isFocusOwner()) {
             g2.setColor(Color.GRAY);
             FontMetrics fm = g2.getFontMetrics();

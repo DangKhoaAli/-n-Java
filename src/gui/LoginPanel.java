@@ -91,7 +91,7 @@ public class LoginPanel extends JFrame {
             if (role != null) {
                 succeeded = true;
                 userRole = role;
-                dispose(); // Tắt login window
+                dispose(); 
             } else {
                 JOptionPane.showMessageDialog(LoginPanel.this,
                         "Sai tên hoặc mật khẩu", "Lỗi",
@@ -118,6 +118,7 @@ public class LoginPanel extends JFrame {
             return "Admin";
         }
 
+        // Khong la Admin thi kiem tra co tai khoan trong DB khong
         Staff_DAO staffDao = new Staff_DAO();
         String[] account = staffDao.generateAccountByStaffID(user);
         if (account != null) {
@@ -203,13 +204,12 @@ class RoundedPasswordField extends JPasswordField {
         setOpaque(false);
         setText(text);
         setForeground(Color.GRAY);
-        setEchoChar((char) 0); // Mặc định hiển thị placeholder
-        setMargin(new Insets(2, 5, 2, 25)); // Dành khoảng trống cho icon
+        setEchoChar((char) 0); 
+        setMargin(new Insets(2, 5, 2, 25)); 
         setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 
-        // Load icon
         eyeIcon = resizeIcon(new ImageIcon(getClass().getResource("/img/eye.png")), 16, 16);
-        eyeSlashIcon = resizeIcon(new ImageIcon(getClass().getResource("/img/eye-slash.png")), 16, 16); // sửa từ .svg thành .png
+        eyeSlashIcon = resizeIcon(new ImageIcon(getClass().getResource("/img/eye-slash.png")), 16, 16); 
 
         // Toggle hiển thị mật khẩu khi nhấn vào icon
         addMouseListener(new MouseAdapter() {
@@ -252,7 +252,6 @@ class RoundedPasswordField extends JPasswordField {
         g2.setColor(getBackground());
         g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
 
-        // Vẽ icon bên phải
         Icon icon = showPass ? eyeSlashIcon : eyeIcon;
         int iconX = getWidth() - icon.getIconWidth() - 8;
         int iconY = (getHeight() - icon.getIconHeight()) / 2;
@@ -261,7 +260,7 @@ class RoundedPasswordField extends JPasswordField {
         iconBounds = new Rectangle(iconX, iconY, icon.getIconWidth(), icon.getIconHeight());
 
         g2.dispose();
-        super.paintComponent(g); // phải gọi sau khi vẽ icon để tránh che mất
+        super.paintComponent(g); 
     }
 
     @Override

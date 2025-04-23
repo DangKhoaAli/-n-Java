@@ -54,11 +54,9 @@ public class LibrarianPanel extends JPanel {
         scrollPane.getViewport().setBackground(Color.WHITE);
         panelTable.add(scrollPane, BorderLayout.CENTER);
 
-        // Tự động đẩy dữ liệu khi chọn dòng
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+          table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                // Tránh xử lý hai lần (khi bắt đầu và khi kết thúc)
                 if (!e.getValueIsAdjusting()) {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
@@ -172,7 +170,7 @@ public class LibrarianPanel extends JPanel {
         
                 String tenThuthu = txtTenThuThu.getText();
                 String gioiTinh = txtGioiTinh.getText();
-                String ngaySinh = txtNgaySinh.getText(); // Cần xử lý định dạng nếu cần
+                String ngaySinh = txtNgaySinh.getText(); 
                 String soDienThoai = txtSoDienThoai.getText();
                 String diaChi = txtDiaChi.getText();
                 String email = txtEmail.getText();
@@ -215,8 +213,6 @@ public class LibrarianPanel extends JPanel {
             }
         });
         
-        
-
         btnHuy.addActionListener(e -> {
             txtMaThuThu.setText("");
             txtTenThuThu.setText("");
@@ -258,13 +254,10 @@ public class LibrarianPanel extends JPanel {
         });
 
         btnDangXuat.addActionListener(e -> {
-            // đóng Main
             JFrame mainFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             mainFrame.dispose();
-        
-            // tạo Login mới
+
             LoginPanel login = new LoginPanel();
-            // đăng ký listener để khi login dispose→Main lại khởi chạy
             login.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosed(java.awt.event.WindowEvent e) {
@@ -304,7 +297,7 @@ public class LibrarianPanel extends JPanel {
                     staff.getAddress(),
                     staff.getEmail(),
                     staff.getWage(),
-                    staff.getExist()
+                    (Integer.parseInt(staff.getExist()) == 0) ? "Không" : "Có"
                 });
             }
         } else {

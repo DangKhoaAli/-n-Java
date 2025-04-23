@@ -28,6 +28,7 @@ public class Staff_BLL {
         }
     }
 
+    // Tìm kiếm thủ thư theo tên
     public List<Staff> searchStaff(String key) {
         try {
             List<Staff> result = Staff_DAO.searchStaff(key);
@@ -37,6 +38,7 @@ public class Staff_BLL {
         }
     }
 
+    // Thêm thủ thư
     public String addStaff(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, float wage) {
         try {
             if (ID == null || ID.isEmpty() || name == null || name.isEmpty()) {
@@ -72,8 +74,6 @@ public class Staff_BLL {
                 return "Lương không thể nhỏ hơn 0.";
             }
 
-
-            // Thêm thủ thư vào cơ sở dữ liệu
             Staff_DAO.addStaff(ID, name, gender, birth, address, phone, email, wage);
             return "Đã thêm thành công 1 thủ thư.";
         } catch (SQLException e) {
@@ -84,6 +84,7 @@ public class Staff_BLL {
         }
     }
 
+    // Sửa thủ thư
     public String updateStaff(String ID, String name, String gender, LocalDate birth, String address, String phone, String email, float wage) {
         try {
 
@@ -120,7 +121,6 @@ public class Staff_BLL {
                 return "Lương không thể nhỏ hơn 0.";
             }
 
-            // Cập nhật thủ thư trong cơ sở dữ liệu
             Staff_DAO.updateStaff(ID, name, gender, birth, address, phone, email, wage);
             return "Cập nhật thủ thư thành công.";
         } catch (SQLException e) {
@@ -131,6 +131,7 @@ public class Staff_BLL {
         }
     }
 
+    // Xóa thủ thư ( chuyển exist về 0)
     public String deleteStaff(String ID) {
         try {
             if (ID == null || ID.isEmpty()) {
@@ -142,7 +143,6 @@ public class Staff_BLL {
                 return "Không tìm thấy thủ thư với ID này.";
             }
     
-            // Xóa thủ thư khỏi cơ sở dữ liệu
             Staff_DAO.deleteStaff(ID);
             return "Xóa thủ thư thành công.";
         } catch (SQLException e) {

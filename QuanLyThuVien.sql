@@ -1785,7 +1785,7 @@ VALUES
 -- Insert data for Staff
 INSERT INTO Staff (ID, name, gender, birth, address, phone, email, wage, exist)
 VALUES
-('AD000','Admin','Nam','2005-01-12','HCM','0123456789','admin@gmail.com',1000000,'1'),
+('Admin','Quản trị viên','Nam','2005-01-12','HCM','0123456789','admin@gmail.com',1000000,'1'),
 ('S001', 'Le Van C', 'Nam', '1985-03-03', 'Danang', '0912345678', 'c@gmail.com', 5000000, '1'), -- Updated to VND
 ('S002', 'Pham Thi D', 'Nu', '1988-04-04', 'Hue', '0923456789', 'd@gmail.com', 6000000, '1'),
 ('S003', 'Nguyen Van A', 'Nam', '1990-01-01', 'Hanoi', '0123456789', 'a@gmail.com', 5500000, '1'),
